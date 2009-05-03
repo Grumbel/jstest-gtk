@@ -16,35 +16,29 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <gtkmm/stock.h>
-#include "device_select_window.hpp"
+#ifndef HEADER_JOYSTICK_DEVICE_TEST_TAB_HPP
+#define HEADER_JOYSTICK_DEVICE_TEST_TAB_HPP
+
+#include <gtkmm/box.h>
+#include <gtkmm/frame.h>
+#include <gtkmm/table.h>
 
-DeviceSelectWindow::DeviceSelectWindow()
-  : buttonbox(Gtk::BUTTONBOX_END),
-    close_button(Gtk::Stock::CLOSE)
+class JoystickDeviceTestTab : public Gtk::VBox
 {
-  set_default_size(480, 640);
+private:
+  Gtk::Frame axis_frame;
+  Gtk::Frame button_frame;
+  Gtk::Table axis_table;
+  Gtk::Table button_table;
 
-  buttonbox.add(close_button);
+public:
+  JoystickDeviceTestTab(int axis_count, int button_count);
 
-  vbox.pack_start(notebook,  Gtk::PACK_EXPAND_WIDGET);
-  vbox.pack_start(buttonbox, Gtk::PACK_SHRINK);
-  add(vbox);
-  
-  notebook.append_page(jsdev_tab, "jsdev");
-
-  // Signals
-  close_button.signal_clicked().connect(sigc::mem_fun(this, &DeviceSelectWindow::on_close));
-}
-
-DeviceSelectWindow::~DeviceSelectWindow()
-{
-}
-
-void 
-DeviceSelectWindow::on_close()
-{
-  hide();
-}
+private:
+  JoystickDeviceTestTab(const JoystickDeviceTestTab&);
+  JoystickDeviceTestTab& operator=(const JoystickDeviceTestTab&);
+};
 
+#endif
+
 /* EOF */

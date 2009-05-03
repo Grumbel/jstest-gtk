@@ -95,8 +95,8 @@ void
 JoystickDeviceTab::on_properties()
 {
   // FIXME: We need to cleanup this memleak
-  JoystickDeviceProperties* properties = new JoystickDeviceProperties();
-  properties->show();
+  JoystickDeviceProperties* properties = new JoystickDeviceProperties("Test Dummy Joystick");
+  properties->show_all();
 }
 
 /* EOF */

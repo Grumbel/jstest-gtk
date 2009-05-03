@@ -20,6 +20,7 @@ env.ParseConfig('pkg-config --cflags --libs gtkmm-2.4 gtkglextmm-1.2')
 env.Program('jstest-gtk', [
     'src/device_select_window.cpp',
     'src/joystick_device_tab.cpp',
+    'src/joystick_device_test_tab.cpp',
     'src/joystick_device_properties.cpp',
     'src/main.cpp'
     ])

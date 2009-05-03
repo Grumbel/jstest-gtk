@@ -16,41 +16,34 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef HEADER_JOYSTICK_DEVICE_PROPERTIES_HPP
-#define HEADER_JOYSTICK_DEVICE_PROPERTIES_HPP
-
-#include <gtkmm/window.h>
-#include <gtkmm/box.h>
 #include <gtkmm/label.h>
-#include <gtkmm/buttonbox.h>
-#include <gtkmm/button.h>
-#include <gtkmm/notebook.h>
-#include <gtkmm/frame.h>
 
 #include "joystick_device_test_tab.hpp"
 
-class JoystickDeviceProperties : public Gtk::Window
+JoystickDeviceTestTab::JoystickDeviceTestTab(int axis_count,
+                                             int button_count)
+  : axis_frame("Axis"),
+    button_frame("Button"),
+    axis_table(axis_count, 2),
+    button_table(button_count, 2)
 {
-private:
-  Gtk::VBox  vbox;
-  Gtk::Label label;
+  for(int i = 0; i < axis_count; ++i)
+    {
+      Gtk::Label& label = *Gtk::manage(new Gtk::Label("Axis 1"));
+      axis_table.attach(label, 0, 1, i, i+1);
+    }
 
-  Gtk::Notebook notebook;
-  JoystickDeviceTestTab test_tab;
-  
-  Gtk::HButtonBox buttonbox;
-  Gtk::Button     close_button;
+  for(int i = 0; i < button_count; ++i)
+    {
+      Gtk::Label& label = *Gtk::manage(new Gtk::Label("Button 1"));
+      button_table.attach(label, 0, 1, i, i+1);
+    }
 
-public:
-  JoystickDeviceProperties(const std::string& name);
+  pack_start(axis_frame,   Gtk::PACK_EXPAND_WIDGET);
+  pack_start(button_frame, Gtk::PACK_EXPAND_WIDGET);
 
-  void on_close();
-
-private:
-  JoystickDeviceProperties(const JoystickDeviceProperties&);
-  JoystickDeviceProperties& operator=(const JoystickDeviceProperties&);
-};
+  axis_frame.add(axis_table);
+  button_frame.add(button_table);
+}
 
-#endif
-
 /* EOF */

@@ -16,11 +16,36 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <gtkmm/stock.h>
+
 #include "joystick_device_properties.hpp"
 
-JoystickDeviceProperties::JoystickDeviceProperties()
+JoystickDeviceProperties::JoystickDeviceProperties(const std::string& name)
+  : label(name),
+    test_tab(6, 8),
+    buttonbox(Gtk::BUTTONBOX_END),
+    close_button(Gtk::Stock::CLOSE)
 {
+  set_default_size(480, 640);
+
+  vbox.pack_start(label, Gtk::PACK_SHRINK);
   
+  notebook.append_page(test_tab, "Joystick Test");
+  vbox.pack_start(notebook, Gtk::PACK_EXPAND_WIDGET);
+
+  buttonbox.add(close_button);
+  vbox.pack_start(buttonbox, Gtk::PACK_SHRINK);
+
+  add(vbox);
+
+  // Signals
+  close_button.signal_clicked().connect(sigc::mem_fun(this, &JoystickDeviceProperties::on_close));
+}
+
+void
+JoystickDeviceProperties::on_close()
+{
+  hide();
 }
 
 /* EOF */
