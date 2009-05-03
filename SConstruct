@@ -22,6 +22,7 @@ env.Program('jstest-gtk', [
     'src/joystick_list_widget.cpp',
     'src/joystick_test_widget.cpp',
     'src/device_property_dialog.cpp',
+    'src/joystick.cpp',
     'src/main.cpp'
     ])
     
