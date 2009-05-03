@@ -53,21 +53,22 @@ JoystickDeviceTab::JoystickDeviceTab()
           "update the list, press Properties to get a seperate device dialog. The "
           "devices listed are only joystick devices, not evdev devices or SDL "
           "devices, you can view the other ones via the top tab."),
-    frame("Device List"),
+    //frame("Device List"),
     buttonbox(Gtk::BUTTONBOX_SPREAD),
     refresh_button(Gtk::Stock::REFRESH),
     properties_button(Gtk::Stock::PROPERTIES)
 {
-  frame.set_border_width(5);
+  //frame.set_border_width(5);
   label.set_line_wrap();
-  pack_start(label, Gtk::PACK_SHRINK, 16);
+  //pack_start(label, Gtk::PACK_SHRINK, 16);
 
   scrolled.set_border_width(5);
   scrolled.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_ALWAYS);
   scrolled.add(treeview);
-  frame.add(scrolled);
+  //frame.add(scrolled);
   //frame.add(treeview);
-  add(frame);
+  //add(frame);
+  add(scrolled);
 
   buttonbox.add(refresh_button);
   buttonbox.add(properties_button);
@@ -80,7 +81,7 @@ JoystickDeviceTab::JoystickDeviceTab()
   // Set model
   device_list = Gtk::ListStore::create(DeviceListColumns::instance());
   treeview.set_model(device_list);
-
+  treeview.set_headers_visible(false);
   treeview.append_column("Icon", DeviceListColumns::instance().icon);
   treeview.append_column("Name", DeviceListColumns::instance().name);
   //treeview.append_column("Path", DeviceListColumns::instance().path);
