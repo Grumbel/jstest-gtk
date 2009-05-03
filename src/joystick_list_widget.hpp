@@ -16,13 +16,42 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef HEADER_JSTEST_GTK_MAIN_HPP
-#define HEADER_JSTEST_GTK_MAIN_HPP
+#ifndef HEADER_JSTEST_GTK_JOYSTICK_LIST_WIDGET_HPP
+#define HEADER_JSTEST_GTK_JOYSTICK_LIST_WIDGET_HPP
+
+#include <gtkmm/label.h>
+#include <gtkmm/box.h>
+#include <gtkmm/button.h>
+#include <gtkmm/frame.h>
+#include <gtkmm/buttonbox.h>
+#include <gtkmm/treeview.h>
+#include <gtkmm/scrolledwindow.h>
+#include <gtkmm/liststore.h>
 
-class Main
+class JoystickListWidget : public Gtk::VBox
 {
+private:
+  Gtk::Label label;
+
+  Gtk::Frame frame;
+  Gtk::ScrolledWindow scrolled;
+  Gtk::TreeView treeview;
+
+  Gtk::HButtonBox buttonbox;
+  Gtk::Button refresh_button;
+  Gtk::Button properties_button;
+
+  Glib::RefPtr<Gtk::ListStore> device_list;
+
 public:
-  int main(int argc, char** argv);
+  JoystickListWidget();
+
+  void on_refresh();
+  void on_properties();
+
+private:
+  JoystickListWidget(const JoystickListWidget&);
+  JoystickListWidget& operator=(const JoystickListWidget&);
 };
 
 #endif

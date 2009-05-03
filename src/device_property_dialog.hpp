@@ -16,13 +16,37 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef HEADER_JSTEST_GTK_MAIN_HPP
-#define HEADER_JSTEST_GTK_MAIN_HPP
+#ifndef HEADER_JSTEST_GTK_DEVICE_PROPERTY_DIALOG_HPP
+#define HEADER_JSTEST_GTK_DEVICE_PROPERTY_DIALOG_HPP
+
+#include <gtkmm/dialog.h>
+#include <gtkmm/alignment.h>
+#include <gtkmm/box.h>
+#include <gtkmm/label.h>
+#include <gtkmm/buttonbox.h>
+#include <gtkmm/button.h>
+#include <gtkmm/notebook.h>
+#include <gtkmm/frame.h>
+
+#include "joystick_test_widget.hpp"
 
-class Main
+class DevicePropertyDialog : public Gtk::Dialog
 {
+private:
+  Gtk::Alignment alignment;
+  Gtk::Label label;
+
+  Gtk::Notebook notebook;
+  JoystickDeviceTestTab test_tab;
+  
 public:
-  int main(int argc, char** argv);
+  DevicePropertyDialog(const std::string& name);
+
+  void on_response(int response_id);
+
+private:
+  DevicePropertyDialog(const DevicePropertyDialog&);
+  DevicePropertyDialog& operator=(const DevicePropertyDialog&);
 };
 
 #endif

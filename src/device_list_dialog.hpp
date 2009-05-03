@@ -16,13 +16,32 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef HEADER_JSTEST_GTK_MAIN_HPP
-#define HEADER_JSTEST_GTK_MAIN_HPP
+#ifndef HEADER_JSTEST_GTK_DEVICE_LIST_DIALOG_HPP
+#define HEADER_JSTEST_GTK_DEVICE_LIST_DIALOG_HPP
+
+#include <gtkmm/dialog.h>
+#include <gtkmm/box.h>
+#include <gtkmm/notebook.h>
+#include <gtkmm/button.h>
+#include <gtkmm/buttonbox.h>
+
+#include "joystick_list_widget.hpp"
 
-class Main
+class DeviceListDialog : public Gtk::Dialog
 {
+private:
+  Gtk::Notebook   notebook;
+  JoystickListWidget jsdev_tab;
+
 public:
-  int main(int argc, char** argv);
+  DeviceListDialog();
+  ~DeviceListDialog();
+
+  void on_response(int response_id);
+
+private:
+  DeviceListDialog(const DeviceListDialog&);
+  DeviceListDialog& operator=(const DeviceListDialog&);
 };
 
 #endif

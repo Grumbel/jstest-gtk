@@ -1,0 +1,19 @@
+[[ jstest-gtk ]]
+================
+
+jstest-gtk is a simple joystick tester based on Gtk+. It provides you
+with a list of attached joysticks as well as the ability to display
+which buttons and axis are pressed.
+
+You can find the latest version at:
+
+ * http://github.com/Grumbel/jstest-gtk/tree/master
+
+[[ Compiling ]]
+===============
+
+jstest-gtk uses SCons, you can compile it by typing:
+
+ $ scons
+
+# EOF #

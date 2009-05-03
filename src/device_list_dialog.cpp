@@ -16,15 +16,34 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef HEADER_JSTEST_GTK_MAIN_HPP
-#define HEADER_JSTEST_GTK_MAIN_HPP
+#include <gtkmm/stock.h>
+#include "device_list_dialog.hpp"
 
-class Main
+DeviceListDialog::DeviceListDialog()
 {
-public:
-  int main(int argc, char** argv);
-};
-
-#endif
+  set_has_separator(false);
+  set_default_size(400, 400);
 
+  get_action_area()->set_layout(Gtk::BUTTONBOX_DEFAULT_STYLE);
+
+  get_vbox()->add(notebook);
+  
+  notebook.append_page(jsdev_tab, "jsdev");
+  notebook.set_border_width(5);
+
+  add_button(Gtk::Stock::HELP,  1);
+  add_button(Gtk::Stock::CLOSE, 0);
+}
+
+DeviceListDialog::~DeviceListDialog()
+{
+}
+
+void 
+DeviceListDialog::on_response(int response_id)
+{
+  if (response_id == 0)
+    hide();
+}
+
 /* EOF */

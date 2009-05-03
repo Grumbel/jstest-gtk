@@ -16,15 +16,33 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef HEADER_JSTEST_GTK_MAIN_HPP
-#define HEADER_JSTEST_GTK_MAIN_HPP
-
-class Main
-{
-public:
-  int main(int argc, char** argv);
-};
-
-#endif
+#include <gtkmm/stock.h>
 
+#include "device_property_dialog.hpp"
+
+DevicePropertyDialog::DevicePropertyDialog(const std::string& name)
+  : label(name, Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER),
+    test_tab(6, 8)
+{
+  label.set_use_markup(true);
+  set_has_separator(false);
+
+  alignment.set_padding(8, 8, 8, 8);
+  alignment.add(label);
+  get_vbox()->pack_start(alignment, Gtk::PACK_SHRINK);
+
+  notebook.set_border_width(5);
+  notebook.append_page(test_tab, "Joystick Test");
+  get_vbox()->add(notebook);
+
+  add_button(Gtk::Stock::CLOSE, 0);
+}
+
+void 
+DevicePropertyDialog::on_response(int response_id)
+{
+  hide();
+}
+
+
 /* EOF */

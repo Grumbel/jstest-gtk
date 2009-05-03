@@ -19,17 +19,40 @@
 #include <iostream>
 #include <gtkmm/main.h>
 
-#include "device_select_window.hpp"
+#include "device_list_dialog.hpp"
+#include "device_property_dialog.hpp"
 #include "main.hpp"
 
 int
 Main::main(int argc, char** argv)
 {
+  typedef std::vector<std::string> DeviceFiles;
+  DeviceFiles device_files;
+
+  for(int i = 1; i < argc; ++i)
+    {
+      device_files.push_back(argv[i]);
+    }
+
   Gtk::Main kit(&argc, &argv);
-  
-  DeviceSelectWindow window;
-  window.show_all();
-  Gtk::Main::run(window);
+
+  if (device_files.empty())
+    {
+      DeviceListDialog window;
+      window.show_all();
+      Gtk::Main::run(window);
+    }
+  else
+    {
+      for(DeviceFiles::iterator i = device_files.begin(); i != device_files.end(); ++i)
+        {
+          std::cout << *i << std::endl;
+          DevicePropertyDialog prop(*i);
+          prop.show_all();
+          prop.run();
+          //Gtk::Main::run(prop);
+        }
+    }
 }
 
 int main(int argc, char** argv)

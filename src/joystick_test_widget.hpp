@@ -16,13 +16,27 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef HEADER_JSTEST_GTK_MAIN_HPP
-#define HEADER_JSTEST_GTK_MAIN_HPP
+#ifndef HEADER_JSTEST_GTK_JOYSTICK_TEST_WIDGET_HPP
+#define HEADER_JSTEST_GTK_JOYSTICK_TEST_WIDGET_HPP
+
+#include <gtkmm/box.h>
+#include <gtkmm/frame.h>
+#include <gtkmm/table.h>
 
-class Main
+class JoystickDeviceTestTab : public Gtk::VBox
 {
+private:
+  Gtk::Frame axis_frame;
+  Gtk::Frame button_frame;
+  Gtk::Table axis_table;
+  Gtk::Table button_table;
+
 public:
-  int main(int argc, char** argv);
+  JoystickDeviceTestTab(int axis_count, int button_count);
+
+private:
+  JoystickDeviceTestTab(const JoystickDeviceTestTab&);
+  JoystickDeviceTestTab& operator=(const JoystickDeviceTestTab&);
 };
 
 #endif
