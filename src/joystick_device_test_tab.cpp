@@ -17,26 +17,37 @@
 */
 
 #include <gtkmm/label.h>
+#include <gtkmm/image.h>
 
 #include "joystick_device_test_tab.hpp"
 
-JoystickDeviceTestTab::JoystickDeviceTestTab(int axis_count,
-                                             int button_count)
+JoystickDeviceTestTab::JoystickDeviceTestTab(int axis_count, int button_count)
   : axis_frame("Axis"),
     button_frame("Button"),
     axis_table(axis_count, 2),
-    button_table(button_count, 2)
+    button_table(button_count % 8 + 1, button_count / 8 + 1)
 {
+  axis_frame.set_border_width(5);
+  button_frame.set_border_width(5);
+
   for(int i = 0; i < axis_count; ++i)
     {
       Gtk::Label& label = *Gtk::manage(new Gtk::Label("Axis 1"));
       axis_table.attach(label, 0, 1, i, i+1);
+
+      Gtk::Image& image = *Gtk::manage(new Gtk::Image(Gdk::Pixbuf::create_from_file("data/axis.png")));
+      axis_table.attach(image, 1, 2, i, i+1);
     }
+
+  button_table.set_homogeneous();
 
   for(int i = 0; i < button_count; ++i)
     {
-      Gtk::Label& label = *Gtk::manage(new Gtk::Label("Button 1"));
-      button_table.attach(label, 0, 1, i, i+1);
+      int x = i % 8;
+      int y = i / 8;
+
+      Gtk::Image& image = *Gtk::manage(new Gtk::Image(Gdk::Pixbuf::create_from_file("data/button_off.png")));
+      button_table.attach(image, x, x+1, y, y+1);
     }
 
   pack_start(axis_frame,   Gtk::PACK_EXPAND_WIDGET);

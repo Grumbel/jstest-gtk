@@ -21,31 +21,28 @@
 #include "joystick_device_properties.hpp"
 
 JoystickDeviceProperties::JoystickDeviceProperties(const std::string& name)
-  : label(name),
-    test_tab(6, 8),
-    buttonbox(Gtk::BUTTONBOX_END),
-    close_button(Gtk::Stock::CLOSE)
+  : label(name, Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER),
+    test_tab(6, 8)
 {
-  set_default_size(480, 640);
+  label.set_use_markup(true);
+  set_has_separator(false);
 
-  vbox.pack_start(label, Gtk::PACK_SHRINK);
-  
+  alignment.set_padding(8, 8, 8, 8);
+  alignment.add(label);
+  get_vbox()->pack_start(alignment, Gtk::PACK_SHRINK);
+
+  notebook.set_border_width(5);
   notebook.append_page(test_tab, "Joystick Test");
-  vbox.pack_start(notebook, Gtk::PACK_EXPAND_WIDGET);
+  get_vbox()->add(notebook);
 
-  buttonbox.add(close_button);
-  vbox.pack_start(buttonbox, Gtk::PACK_SHRINK);
-
-  add(vbox);
-
-  // Signals
-  close_button.signal_clicked().connect(sigc::mem_fun(this, &JoystickDeviceProperties::on_close));
+  add_button(Gtk::Stock::CLOSE, 0);
 }
 
-void
-JoystickDeviceProperties::on_close()
+void 
+JoystickDeviceProperties::on_response(int response_id)
 {
   hide();
 }
+
 
 /* EOF */

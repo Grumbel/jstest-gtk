@@ -19,7 +19,8 @@
 #ifndef HEADER_JOYSTICK_DEVICE_PROPERTIES_HPP
 #define HEADER_JOYSTICK_DEVICE_PROPERTIES_HPP
 
-#include <gtkmm/window.h>
+#include <gtkmm/dialog.h>
+#include <gtkmm/alignment.h>
 #include <gtkmm/box.h>
 #include <gtkmm/label.h>
 #include <gtkmm/buttonbox.h>
@@ -29,22 +30,19 @@
 
 #include "joystick_device_test_tab.hpp"
 
-class JoystickDeviceProperties : public Gtk::Window
+class JoystickDeviceProperties : public Gtk::Dialog
 {
 private:
-  Gtk::VBox  vbox;
+  Gtk::Alignment alignment;
   Gtk::Label label;
 
   Gtk::Notebook notebook;
   JoystickDeviceTestTab test_tab;
   
-  Gtk::HButtonBox buttonbox;
-  Gtk::Button     close_button;
-
 public:
   JoystickDeviceProperties(const std::string& name);
 
-  void on_close();
+  void on_response(int response_id);
 
 private:
   JoystickDeviceProperties(const JoystickDeviceProperties&);

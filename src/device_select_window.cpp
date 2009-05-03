@@ -20,21 +20,15 @@
 #include "device_select_window.hpp"
 
 DeviceSelectWindow::DeviceSelectWindow()
-  : buttonbox(Gtk::BUTTONBOX_END),
-    close_button(Gtk::Stock::CLOSE)
 {
+  set_has_separator(false);
   set_default_size(480, 640);
 
-  buttonbox.add(close_button);
-
-  vbox.pack_start(notebook,  Gtk::PACK_EXPAND_WIDGET);
-  vbox.pack_start(buttonbox, Gtk::PACK_SHRINK);
-  add(vbox);
+  get_vbox()->add(notebook);
   
   notebook.append_page(jsdev_tab, "jsdev");
-
-  // Signals
-  close_button.signal_clicked().connect(sigc::mem_fun(this, &DeviceSelectWindow::on_close));
+  notebook.set_border_width(5);
+  add_button(Gtk::Stock::CLOSE, 0);
 }
 
 DeviceSelectWindow::~DeviceSelectWindow()
@@ -42,7 +36,7 @@ DeviceSelectWindow::~DeviceSelectWindow()
 }
 
 void 
-DeviceSelectWindow::on_close()
+DeviceSelectWindow::on_response(int response_id)
 {
   hide();
 }

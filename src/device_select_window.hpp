@@ -19,7 +19,7 @@
 #ifndef HEADER_DEVICE_SELECT_WINDOW_HPP
 #define HEADER_DEVICE_SELECT_WINDOW_HPP
 
-#include <gtkmm/window.h>
+#include <gtkmm/dialog.h>
 #include <gtkmm/box.h>
 #include <gtkmm/notebook.h>
 #include <gtkmm/button.h>
@@ -27,21 +27,18 @@
 
 #include "joystick_device_tab.hpp"
 
-class DeviceSelectWindow : public Gtk::Window
+class DeviceSelectWindow : public Gtk::Dialog
 {
 private:
-  Gtk::VBox       vbox;
   Gtk::Notebook   notebook;
-  Gtk::HButtonBox buttonbox;
-  Gtk::Button     close_button;
-
   JoystickDeviceTab jsdev_tab;
 
 public:
   DeviceSelectWindow();
   ~DeviceSelectWindow();
 
-  void on_close();
+  void on_response(int response_id);
+
 private:
   DeviceSelectWindow(const DeviceSelectWindow&);
   DeviceSelectWindow& operator=(const DeviceSelectWindow&);

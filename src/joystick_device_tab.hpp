@@ -25,7 +25,6 @@
 #include <gtkmm/frame.h>
 #include <gtkmm/buttonbox.h>
 #include <gtkmm/treeview.h>
-#include <gtkmm/treeview.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/liststore.h>
 
