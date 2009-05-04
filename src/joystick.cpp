@@ -71,8 +71,8 @@ Joystick::Joystick(const std::string& filename_)
         }
       else
         {
-          for(int i = 0; i < num_axis; ++i)
-            std::cout << "Axis: " << i << " -> " << (int)axismap[i] << std::endl;
+          //for(int i = 0; i < num_axis; ++i)
+          // std::cout << "Axis: " << i << " -> " << (int)axismap[i] << std::endl;
         }
 
       // Button Mapping
@@ -85,8 +85,8 @@ Joystick::Joystick(const std::string& filename_)
         }
       else
         {
-          for(int i = 0; i < num_button; ++i)
-            std::cout << "Button: " << i << " -> " << (int)btnmap[i] << std::endl;
+          //for(int i = 0; i < num_button; ++i)
+          //std::cout << "Button: " << i << " -> " << (int)btnmap[i] << std::endl;
         }
 
       int axis_count;
@@ -101,11 +101,12 @@ Joystick::Joystick(const std::string& filename_)
         }
     }
   
-  Glib::signal_io().connect(sigc::mem_fun(this, &Joystick::on_in), fd, Glib::IO_IN);
+  connection = Glib::signal_io().connect(sigc::mem_fun(this, &Joystick::on_in), fd, Glib::IO_IN);
 }
 
 Joystick::~Joystick()
 {
+  connection.disconnect();
   close(fd);
 }
 
@@ -146,6 +147,33 @@ Joystick::update()
     {
       throw std::runtime_error("Joystick::update(): unknown read error");
     }
+}
+
+std::vector<JoystickDescription>
+Joystick::get_joysticks()
+{
+  std::vector<JoystickDescription> joysticks;
+
+  for(int i = 0; i < 32; ++i)
+    {
+      try 
+        {
+          std::ostringstream str;
+          str << "/dev/input/js" << i;
+          Joystick joystick(str.str());
+
+          joysticks.push_back(JoystickDescription(joystick.get_filename(),
+                                                  joystick.get_name(),                                                  
+                                                  joystick.get_axis_count(),
+                                                  joystick.get_button_count()));
+        }
+      catch(std::exception& err)
+        {
+          // ok
+        }
+    }
+
+  return joysticks;
 }
 
 /* EOF */

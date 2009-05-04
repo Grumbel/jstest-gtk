@@ -20,6 +20,8 @@
 #define HEADER_JSTEST_GTK_JOYSTICK_HPP
 
 #include <sigc++/signal.h>
+
+#include "joystick_description.hpp"
 
 class Joystick
 {
@@ -31,6 +33,8 @@ private:
   int axis_count;
   int button_count;
 
+  sigc::connection connection;
+
 public:
   Joystick(const std::string& filename);
   ~Joystick();
@@ -40,12 +44,15 @@ public:
   void update();
   bool on_in(Glib::IOCondition cond);
 
+  std::string get_filename() const { return filename; }
   std::string get_name() const { return name; }
   int get_axis_count() const   { return axis_count; }
   int get_button_count() const { return button_count; }
 
   sigc::signal<void, int, int>  axis_move;
   sigc::signal<void, int, bool> button_move;
+
+  static std::vector<JoystickDescription> get_joysticks();
 
 private:
   Joystick(const Joystick&);

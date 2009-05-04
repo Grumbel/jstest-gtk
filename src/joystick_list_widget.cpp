@@ -86,22 +86,24 @@ JoystickListWidget::JoystickListWidget()
   treeview.append_column("Icon", DeviceListColumns::instance().icon);
   treeview.append_column("Name", DeviceListColumns::instance().name);
   //treeview.append_column("Path", DeviceListColumns::instance().path);
+
+  on_refresh();
 }
 
 void
 JoystickListWidget::on_refresh()
 {
-  Gtk::ListStore::iterator it;
+  const std::vector<JoystickDescription>& joysticks = Joystick::get_joysticks();
 
-  it = device_list->append();
-  (*it)[DeviceListColumns::instance().icon] =  Gdk::Pixbuf::create_from_file("data/xbox360_small.png");
-  (*it)[DeviceListColumns::instance().path] = "/dev/input/js0";
-  (*it)[DeviceListColumns::instance().name] = "\n  Microsoft Sidewinder\n    Device: /dev/input/js0\n";
+  device_list->clear();
 
-  it = device_list->append();
-  (*it)[DeviceListColumns::instance().icon] =  Gdk::Pixbuf::create_from_file("data/xbox360_small.png");
-  (*it)[DeviceListColumns::instance().path] = "/dev/input/js1";
-  (*it)[DeviceListColumns::instance().name] = "\n  Logitech Joystick\n    Device: /dev/input/js1\n";
+  for(std::vector<JoystickDescription>::const_iterator i = joysticks.begin(); i != joysticks.end(); ++i)
+    {
+      Gtk::ListStore::iterator it = device_list->append();
+      (*it)[DeviceListColumns::instance().icon] = Gdk::Pixbuf::create_from_file("data/xbox360_small.png");
+      (*it)[DeviceListColumns::instance().path] = i->filename;
+      (*it)[DeviceListColumns::instance().name] = "\n  " + i->name + "\n    Device: " + i->filename + "\n";
+    }
 }
 
 void

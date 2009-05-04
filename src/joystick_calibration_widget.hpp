@@ -16,35 +16,25 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <gtkmm/stock.h>
+#ifndef HEADER_JOYSTICK_CALIBRATION_WIDGET_HPP
+#define HEADER_JOYSTICK_CALIBRATION_WIDGET_HPP
 
-#include "device_property_dialog.hpp"
+#include <gtkmm/box.h>
+#include <gtkmm/label.h>
 
-DevicePropertyDialog::DevicePropertyDialog(Joystick& joystick)
-  : label("<b>" + joystick.get_name() + "</b>", Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER),
-    test_tab(joystick)
+class JoystickCalibrationWidget : public Gtk::VBox
 {
-  label.set_use_markup(true);
-  set_has_separator(false);
+private:
+  Gtk::Label label;
 
-  alignment.set_padding(8, 8, 8, 8);
-  alignment.add(label);
-  get_vbox()->pack_start(alignment, Gtk::PACK_SHRINK);
+public:
+  JoystickCalibrationWidget();
 
-  notebook.set_border_width(5);
-  notebook.append_page(test_tab, "Test");
-  notebook.append_page(cfg_tab, "Settings");
-  notebook.append_page(calibration_tab, "Calibration");
-  get_vbox()->add(notebook);
-
-  add_button(Gtk::Stock::CLOSE, 0);
-}
-
-void 
-DevicePropertyDialog::on_response(int response_id)
-{
-  hide();
-}
-
+private:
+  JoystickCalibrationWidget(const JoystickCalibrationWidget&);
+  JoystickCalibrationWidget& operator=(const JoystickCalibrationWidget&);
+};
 
+#endif
+
 /* EOF */

@@ -31,6 +31,7 @@
 #include "joystick.hpp"
 #include "joystick_test_widget.hpp"
 #include "joystick_map_widget.hpp"
+#include "joystick_calibration_widget.hpp"
 
 class DevicePropertyDialog : public Gtk::Dialog
 {
@@ -40,8 +41,8 @@ private:
 
   Gtk::Notebook notebook;
   JoystickTestWidget test_tab;
-  JoystickMapWidget  btnmap_tab;
-  JoystickMapWidget  axismap_tab;
+  JoystickMapWidget  cfg_tab;
+  JoystickCalibrationWidget calibration_tab;
   
 public:
   DevicePropertyDialog(Joystick& joystick);

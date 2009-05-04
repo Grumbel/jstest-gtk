@@ -22,10 +22,12 @@
 #include <gtkmm/box.h>
 #include <gtkmm/buttonbox.h>
 #include <gtkmm/button.h>
+#include <gtkmm/label.h>
 
 class JoystickMapWidget : public Gtk::VBox
 {
 private:
+  Gtk::Label label;
   Gtk::HButtonBox buttonbox;
   Gtk::Button up_button;
   Gtk::Button down_button;
