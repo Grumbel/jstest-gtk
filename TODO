@@ -1,24 +1,9 @@
-* implement jsdev testing
+* remove modal'ness of the dialog
 
 * provide additional support for SDL and evdev devices
 
-* create a small data base with most common joysticks, maybe add a way
+* create a small database with most common joysticks, maybe add a way
   how a user can automatically submit his joystick profile, to ease
   the database generation
-
-
-Rename
-======
-
-DeviceListDialog
- + JoystickListWidget
- + EvdevListWidget
- + SDLJoystickListWidget
-
-DevicePropertyDialog
- + JoystickTestWidget
- + EvdevTestWidget
- + JoystickForceFeedbackWidget
- + SDLJoystickTestWidget
 
 # EOF #

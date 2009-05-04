@@ -38,9 +38,10 @@ Main::~Main()
 void
 Main::show_device_list_dialog()
 {
-  DeviceListDialog window;
-  window.show_all();
-  Gtk::Main::run(window);
+  DeviceListDialog* dialog = new DeviceListDialog();
+  dialogs.push_back(dialog);
+  dialog->show_all();
+  dialog->signal_hide().connect(sigc::bind(sigc::mem_fun(this, &Main::on_dialog_hide), dialog));
 }
 
 void
@@ -48,10 +49,24 @@ Main::show_device_property_dialog(const std::string& filename)
 {
   std::cout << "Main::show_device_property_dialog: " << filename << std::endl;
 
-  Joystick joystick(filename);
-  DevicePropertyDialog prop(joystick);
-  prop.show_all();
-  prop.run();
+  Joystick* joystick = new Joystick(filename);
+  DevicePropertyDialog* prop = new DevicePropertyDialog(*joystick);
+  prop->signal_hide().connect(sigc::bind(sigc::mem_fun(this, &Main::on_dialog_hide), prop));
+  prop->show_all();
+  joysticks.push_back(joystick);
+  dialogs.push_back(prop);
+}
+
+void
+Main::on_dialog_hide(Gtk::Dialog* dialog)
+{
+  dialogs.erase(std::remove(dialogs.begin(), dialogs.end(), dialog), dialogs.end());
+  delete dialog;
+
+  if (dialogs.empty())
+    {
+      Gtk::Main::quit();
+    }
 }
 
 int
@@ -78,6 +93,7 @@ Main::main(int argc, char** argv)
           show_device_property_dialog(*i);
         }
     }
+  Gtk::Main::run();
 }
 
 int main(int argc, char** argv)

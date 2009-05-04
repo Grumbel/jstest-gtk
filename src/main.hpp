@@ -20,8 +20,9 @@
 #define HEADER_JSTEST_GTK_MAIN_HPP
 
 #include <vector>
+#include <gtkmm/dialog.h>
 
-#include "joystick.hpp"
+class Joystick;
 
 class Main
 {
@@ -31,7 +32,10 @@ public:
   static Main* current() { return current_; }
 
 private:
-  std::vector<Joystick*> joystick;
+  std::vector<Joystick*> joysticks;
+  std::vector<Gtk::Dialog*> dialogs;
+
+  void on_dialog_hide(Gtk::Dialog* dialog);
 
 public:
   Main();
