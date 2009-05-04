@@ -16,35 +16,26 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <gtkmm/stock.h>
-
-#include "device_property_dialog.hpp"
+#include <iostream>
+#include "jscfg.hpp"
 
-DevicePropertyDialog::DevicePropertyDialog(Joystick& joystick)
-  : label("<b>" + joystick.get_name() + "</b>", Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER),
-    test_tab(joystick)
+void print_help()
 {
-  label.set_use_markup(true);
-  set_has_separator(false);
-
-  alignment.set_padding(8, 8, 8, 8);
-  alignment.add(label);
-  get_vbox()->pack_start(alignment, Gtk::PACK_SHRINK);
-
-  notebook.set_border_width(5);
-  notebook.append_page(test_tab, "Joystick Test");
-  notebook.append_page(btnmap_tab,  "Button Mapping");
-  notebook.append_page(axismap_tab, "Axis Mapping");
-  get_vbox()->add(notebook);
-
-  add_button(Gtk::Stock::CLOSE, 0);
+  std::cout << "Usage: jscfg [OPTIONS] JOYSTICKDEVICE\n"
+            << "\n" 
+            << "  --help, -h                 Display this help\n"
+            << "  --btnmap, -b B1,B2,...     Display this help\n"
+            << "  --axismap, -a A1,A2,...    Display this help\n"
 }
-
-void 
-DevicePropertyDialog::on_response(int response_id)
+
+int main(int argc, char** argv)
 {
-  hide();
+  for(int i = 1; i < argc; ++i)
+    {
+      
+    }
+  
+  return 0;
 }
-
 
 /* EOF */
