@@ -21,8 +21,39 @@
 
 #include "device_list_dialog.hpp"
 #include "device_property_dialog.hpp"
+#include "joystick.hpp"
 #include "main.hpp"
+
+Main* Main::current_ = 0;
 
+Main::Main()
+{
+  current_ = this;
+}
+
+Main::~Main()
+{
+}
+
+void
+Main::show_device_list_dialog()
+{
+  DeviceListDialog window;
+  window.show_all();
+  Gtk::Main::run(window);
+}
+
+void
+Main::show_device_property_dialog(const std::string& filename)
+{
+  std::cout << "Main::show_device_property_dialog: " << filename << std::endl;
+
+  Joystick joystick(filename);
+  DevicePropertyDialog prop(joystick);
+  prop.show_all();
+  prop.run();
+}
+
 int
 Main::main(int argc, char** argv)
 {
@@ -38,19 +69,13 @@ Main::main(int argc, char** argv)
 
   if (device_files.empty())
     {
-      DeviceListDialog window;
-      window.show_all();
-      Gtk::Main::run(window);
+      show_device_list_dialog();
     }
   else
     {
       for(DeviceFiles::iterator i = device_files.begin(); i != device_files.end(); ++i)
         {
-          std::cout << *i << std::endl;
-          DevicePropertyDialog prop(*i);
-          prop.show_all();
-          prop.run();
-          //Gtk::Main::run(prop);
+          show_device_property_dialog(*i);
         }
     }
 }

@@ -41,8 +41,66 @@ Joystick::Joystick(const std::string& filename_)
   else
     {
       // ok
-    }
+      uint8_t num_axis   = 0;
+      uint8_t num_button = 0;
+      ioctl(fd, JSIOCGAXES,    &num_axis);
+      ioctl(fd, JSIOCGBUTTONS, &num_button);
+      axis_count   = num_axis;
+      button_count = num_button;
 
+      // Get Name 
+      char name_c_str[1024];
+      if (ioctl(fd, JSIOCGNAME(sizeof(name_c_str)), name_c_str) < 0)
+        {
+          std::ostringstream str;
+          str << filename << ": " << strerror(errno);
+          throw std::runtime_error(str.str());          
+        }
+      else
+        {
+          name = name_c_str;
+        }
+
+      // Axis Mapping
+      uint8_t  axismap[ABS_MAX + 1];
+      if (ioctl(fd, JSIOCGAXMAP, axismap) < 0)
+        {
+          std::ostringstream str;
+          str << filename << ": " << strerror(errno);
+          throw std::runtime_error(str.str());
+        }
+      else
+        {
+          for(int i = 0; i < num_axis; ++i)
+            std::cout << "Axis: " << i << " -> " << (int)axismap[i] << std::endl;
+        }
+
+      // Button Mapping
+      uint16_t btnmap[KEY_MAX - BTN_MISC + 1];
+      if (ioctl(fd, JSIOCGBTNMAP, btnmap) < 0)
+        {
+          std::ostringstream str;
+          str << filename << ": " << strerror(errno);
+          throw std::runtime_error(str.str());
+        }
+      else
+        {
+          for(int i = 0; i < num_button; ++i)
+            std::cout << "Button: " << i << " -> " << (int)btnmap[i] << std::endl;
+        }
+
+      int axis_count;
+      int button_count;
+
+      if (1)
+        { // reverse button mapping
+          uint16_t new_btnmap[KEY_MAX - BTN_MISC + 1];
+          for(int i = 0; i < num_button; ++i)
+            new_btnmap[i] = 0; //btnmap[num_button - i - 1];
+          ioctl(fd, JSIOCSBTNMAP, new_btnmap);
+        }
+    }
+  
   Glib::signal_io().connect(sigc::mem_fun(this, &Joystick::on_in), fd, Glib::IO_IN);
 }
 
@@ -75,11 +133,13 @@ Joystick::update()
     { // ok
       if (event.type & JS_EVENT_AXIS)
         {
-          std::cout << "Axis: " << event.number << " -> " << event.value << std::endl;
+          //std::cout << "Axis: " << (int)event.number << " -> " << (int)event.value << std::endl;
+          axis_move(event.number, event.value);
         }
       else if (event.type & JS_EVENT_BUTTON)
         {
-          std::cout << "Button: " << event.number << " -> " << event.value << std::endl;
+          //std::cout << "Button: " << (int)event.number << " -> " << (int)event.value << std::endl;
+          button_move(event.number, event.value);
         }
     }
   else

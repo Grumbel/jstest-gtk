@@ -21,9 +21,12 @@
 
 #include <gtkmm/box.h>
 #include <gtkmm/frame.h>
+#include <gtkmm/progressbar.h>
 #include <gtkmm/table.h>
+
+class Joystick;
 
-class JoystickDeviceTestTab : public Gtk::VBox
+class JoystickTestWidget : public Gtk::VBox
 {
 private:
   Gtk::Frame axis_frame;
@@ -31,12 +34,21 @@ private:
   Gtk::Table axis_table;
   Gtk::Table button_table;
 
+  std::vector<Gtk::ProgressBar*> axes;
+  std::vector<Gtk::Image*>       buttons;
+
+  Glib::RefPtr<Gdk::Pixbuf> button_on;
+  Glib::RefPtr<Gdk::Pixbuf> button_off;
+
 public:
-  JoystickDeviceTestTab(int axis_count, int button_count);
+  JoystickTestWidget(Joystick& joystick);
+
+  void axis_move(int number, int value);
+  void button_move(int number, bool value);
 
 private:
-  JoystickDeviceTestTab(const JoystickDeviceTestTab&);
-  JoystickDeviceTestTab& operator=(const JoystickDeviceTestTab&);
+  JoystickTestWidget(const JoystickTestWidget&);
+  JoystickTestWidget& operator=(const JoystickTestWidget&);
 };
 
 #endif

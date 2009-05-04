@@ -20,9 +20,9 @@
 
 #include "device_property_dialog.hpp"
 
-DevicePropertyDialog::DevicePropertyDialog(const std::string& name)
-  : label(name, Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER),
-    test_tab(6, 8)
+DevicePropertyDialog::DevicePropertyDialog(Joystick& joystick)
+  : label(joystick.get_name(), Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER),
+    test_tab(joystick)
 {
   label.set_use_markup(true);
   set_has_separator(false);
@@ -33,6 +33,8 @@ DevicePropertyDialog::DevicePropertyDialog(const std::string& name)
 
   notebook.set_border_width(5);
   notebook.append_page(test_tab, "Joystick Test");
+  notebook.append_page(btnmap_tab,  "Button Mapping");
+  notebook.append_page(axismap_tab, "Axis Mapping");
   get_vbox()->add(notebook);
 
   add_button(Gtk::Stock::CLOSE, 0);

@@ -18,19 +18,34 @@
 
 #ifndef HEADER_JSTEST_GTK_JOYSTICK_HPP
 #define HEADER_JSTEST_GTK_JOYSTICK_HPP
+
+#include <sigc++/signal.h>
 
 class Joystick
 {
 private:
-  std::string filename;
   int fd;
-  
+
+  std::string filename;
+  std::string name;
+  int axis_count;
+  int button_count;
+
 public:
   Joystick(const std::string& filename);
   ~Joystick();
 
+  int get_fd() const { return fd; }
+
   void update();
   bool on_in(Glib::IOCondition cond);
+
+  std::string get_name() const { return name; }
+  int get_axis_count() const   { return axis_count; }
+  int get_button_count() const { return button_count; }
+
+  sigc::signal<void, int, int>  axis_move;
+  sigc::signal<void, int, bool> button_move;
 
 private:
   Joystick(const Joystick&);

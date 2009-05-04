@@ -17,53 +17,53 @@
 */
 
 #include <sstream>
+#include <iostream>
 #include <gtkmm/label.h>
 #include <gtkmm/image.h>
-#include <gtkmm/progressbar.h>
 
+#include "joystick.hpp"
 #include "joystick_test_widget.hpp"
 
-JoystickDeviceTestTab::JoystickDeviceTestTab(int axis_count, int button_count)
+JoystickTestWidget::JoystickTestWidget(Joystick& joystick)
   : axis_frame("Axis"),
     button_frame("Button"),
-    axis_table(axis_count, 2),
-    button_table(button_count % 8 + 1, button_count / 8 + 1)
+    axis_table(joystick.get_axis_count(), 2),
+    button_table(joystick.get_button_count() / 8 + 1, 8)
 {
+  button_on  = Gdk::Pixbuf::create_from_file("data/button_on.png");
+  button_off = Gdk::Pixbuf::create_from_file("data/button_off.png");
+
   axis_frame.set_border_width(5);
   axis_table.set_border_width(5);
   axis_table.set_spacings(5);
 
   button_frame.set_border_width(5);
 
-  for(int i = 0; i < axis_count; ++i)
+  for(int i = 0; i < joystick.get_axis_count(); ++i)
     {
       std::ostringstream str;
       str << "Axis " << i << ": ";
       Gtk::Label& label = *Gtk::manage(new Gtk::Label(str.str()));
       axis_table.attach(label, 0, 1, i, i+1, Gtk::SHRINK, Gtk::FILL);
 
-      if (0)
-        {
-          Gtk::Image& image = *Gtk::manage(new Gtk::Image(Gdk::Pixbuf::create_from_file("data/axis.png")));
-          axis_table.attach(image, 1, 2, i, i+1, Gtk::SHRINK);
-        }
-      else
-        {
-          Gtk::ProgressBar& progressbar = *Gtk::manage(new Gtk::ProgressBar());
-          progressbar.set_fraction(0.5);
-          axis_table.attach(progressbar, 1, 2, i, i+1, Gtk::FILL|Gtk::EXPAND, Gtk::EXPAND);
-        }
+      Gtk::ProgressBar& progressbar = *Gtk::manage(new Gtk::ProgressBar());
+      progressbar.set_fraction(0.5);
+      axis_table.attach(progressbar, 1, 2, i, i+1, Gtk::FILL|Gtk::EXPAND, Gtk::EXPAND);
+
+      axes.push_back(&progressbar);
     }
 
   button_table.set_homogeneous();
 
-  for(int i = 0; i < button_count; ++i)
+  for(int i = 0; i < joystick.get_button_count(); ++i)
     {
       int x = i % 8;
       int y = i / 8;
 
       Gtk::Image& image = *Gtk::manage(new Gtk::Image(Gdk::Pixbuf::create_from_file("data/button_off.png")));
       button_table.attach(image, x, x+1, y, y+1);
+
+      buttons.push_back(&image);
     }
 
   pack_start(axis_frame,   Gtk::PACK_EXPAND_WIDGET);
@@ -71,6 +71,28 @@ JoystickDeviceTestTab::JoystickDeviceTestTab(int axis_count, int button_count)
 
   axis_frame.add(axis_table);
   button_frame.add(button_table);
+
+  joystick.axis_move.connect(sigc::mem_fun(this, &JoystickTestWidget::axis_move));
+  joystick.button_move.connect(sigc::mem_fun(this, &JoystickTestWidget::button_move));
+}
+
+void
+JoystickTestWidget::axis_move(int number, int value)
+{
+  axes.at(number)->set_fraction((value + 32767) / (double)(2*32767));
+
+  std::ostringstream str;
+  str << value;
+  axes.at(number)->set_text(str.str());
+}
+
+void
+JoystickTestWidget::button_move(int number, bool value)
+{
+  if (value)
+    buttons.at(number)->set(button_on);
+  else
+    buttons.at(number)->set(button_off);
 }
 
 /* EOF */

@@ -28,7 +28,9 @@
 #include <gtkmm/notebook.h>
 #include <gtkmm/frame.h>
 
+#include "joystick.hpp"
 #include "joystick_test_widget.hpp"
+#include "joystick_map_widget.hpp"
 
 class DevicePropertyDialog : public Gtk::Dialog
 {
@@ -37,10 +39,12 @@ private:
   Gtk::Label label;
 
   Gtk::Notebook notebook;
-  JoystickDeviceTestTab test_tab;
+  JoystickTestWidget test_tab;
+  JoystickMapWidget  btnmap_tab;
+  JoystickMapWidget  axismap_tab;
   
 public:
-  DevicePropertyDialog(const std::string& name);
+  DevicePropertyDialog(Joystick& joystick);
 
   void on_response(int response_id);
 

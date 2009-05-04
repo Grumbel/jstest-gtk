@@ -16,32 +16,17 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef HEADER_JSTEST_GTK_MAIN_HPP
-#define HEADER_JSTEST_GTK_MAIN_HPP
+#include <gtkmm/stock.h>
 
-#include <vector>
-
-#include "joystick.hpp"
+#include "joystick_map_widget.hpp"
 
-class Main
+JoystickMapWidget::JoystickMapWidget()
+  : up_button(Gtk::Stock::GO_UP),
+    down_button(Gtk::Stock::GO_DOWN)
 {
-private:
-  static Main* current_;
-public:
-  static Main* current() { return current_; }
-
-private:
-  std::vector<Joystick*> joystick;
-
-public:
-  Main();
-  ~Main();
-
-  void show_device_list_dialog();
-  void show_device_property_dialog(const std::string& filename);
-  int main(int argc, char** argv);
-};
+  buttonbox.add(up_button);
+  buttonbox.add(down_button);
+  add(buttonbox);
+}
 
-#endif
-
 /* EOF */

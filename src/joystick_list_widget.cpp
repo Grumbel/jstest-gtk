@@ -18,6 +18,7 @@
 
 #include <gtkmm/stock.h>
 
+#include "main.hpp"
 #include "device_property_dialog.hpp"
 #include "joystick_list_widget.hpp"
 
@@ -106,10 +107,7 @@ JoystickListWidget::on_refresh()
 void
 JoystickListWidget::on_properties()
 {
-  // FIXME: We need to cleanup this memleak
-  DevicePropertyDialog* properties = new DevicePropertyDialog("<b>THRUSTMASTER FireStorm Dual Power 2</b>\n"
-                                                              "    Bus: 0x3\n    Vendor: 0x44f\n    Product: 0xb304\n    Version: 0x110");
-  properties->show_all();
+  Main::current()->show_device_property_dialog("/dev/input/js0");
 }
 
 /* EOF */
