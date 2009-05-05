@@ -32,11 +32,6 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick)
     stick1_widget(128,128),
     stick2_widget(128,128)
 {
-  stick_hbox.pack_start(stick1_widget, Gtk::PACK_EXPAND_PADDING);
-  stick_hbox.pack_start(stick2_widget, Gtk::PACK_EXPAND_PADDING);
-  stick_hbox.set_border_width(5);
-  pack_start(stick_hbox, Gtk::PACK_SHRINK);
-
   button_on  = Gdk::Pixbuf::create_from_file("data/button_on.png");
   button_off = Gdk::Pixbuf::create_from_file("data/button_off.png");
 
@@ -76,7 +71,14 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick)
   pack_start(axis_frame,   Gtk::PACK_EXPAND_WIDGET);
   pack_start(button_frame, Gtk::PACK_EXPAND_WIDGET);
 
-  axis_frame.add(axis_table);
+  stick_hbox.set_border_width(5);
+  stick_hbox.pack_start(stick1_widget, Gtk::PACK_EXPAND_PADDING);
+  stick_hbox.pack_start(stick2_widget, Gtk::PACK_EXPAND_PADDING);
+
+  axis_vbox.add(stick_hbox);
+  axis_vbox.add(axis_table);
+  axis_frame.add(axis_vbox);
+
   button_frame.add(button_table);
 
   joystick.axis_move.connect(sigc::mem_fun(this, &JoystickTestWidget::axis_move));

@@ -16,6 +16,7 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <algorithm>
 #include <iostream>
 #include <stdexcept>
 #include <string.h>
@@ -93,7 +94,7 @@ Joystick::Joystick(const std::string& filename_)
       int axis_count;
       int button_count;
 
-      if (1)
+      if (0)
         { // reverse button mapping
           uint16_t new_btnmap[KEY_MAX - BTN_MISC + 1];
           for(int i = 0; i < num_button; ++i)
@@ -221,6 +222,47 @@ Joystick::clear_calibration()
     }
 
   set_calibration(data);
+}
+
+std::vector<int>
+Joystick::get_button_mapping()
+{
+  uint16_t btnmap[KEY_MAX - BTN_MISC + 1];
+  if (ioctl(fd, JSIOCGBTNMAP, btnmap) < 0)
+    {
+      std::ostringstream str;
+      str << filename << ": " << strerror(errno);
+      throw std::runtime_error(str.str());
+    }
+  else
+    {
+      for(int i = 0; i < button_count; ++i)
+        {
+          std::cout << "MAP: " << i << " -> " << (int)btnmap[i] << std::endl;
+        }
+
+      std::vector<int> mapping;
+      std::copy(btnmap, btnmap + button_count, std::back_inserter(mapping));
+      return mapping;
+    }
+}
+
+std::vector<int>
+Joystick::get_axis_mapping()
+{
+  uint8_t axismap[ABS_MAX + 1];
+  if (ioctl(fd, JSIOCGAXMAP, axismap) < 0)
+    {
+      std::ostringstream str;
+      str << filename << ": " << strerror(errno);
+      throw std::runtime_error(str.str());
+    }
+  else
+    {
+      std::vector<int> mapping;
+      std::copy(axismap, axismap + axis_count, std::back_inserter(mapping));
+      return mapping;
+    }
 }
 
 /* EOF */

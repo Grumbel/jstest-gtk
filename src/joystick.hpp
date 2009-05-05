@@ -65,6 +65,9 @@ public:
       input values, not values scaled to -32767/32767 */
   void clear_calibration();
 
+  std::vector<int> get_button_mapping();
+  std::vector<int> get_axis_mapping();
+
 private:
   Joystick(const Joystick&);
   Joystick& operator=(const Joystick&);

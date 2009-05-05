@@ -26,6 +26,7 @@ env.Program('jstest-gtk', [
     'src/joystick_map_widget.cpp',
     'src/device_property_dialog.cpp',
     'src/joystick.cpp',
+    'src/remap_widget.cpp',
     'src/evdev_helper.cpp',
     'src/main.cpp'
     ])

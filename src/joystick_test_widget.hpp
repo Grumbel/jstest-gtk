@@ -32,6 +32,7 @@ class JoystickTestWidget : public Gtk::VBox
 {
 private:
   Gtk::Frame axis_frame;
+  Gtk::VBox axis_vbox;
   Gtk::Frame button_frame;
   Gtk::Table axis_table;
   Gtk::Table button_table;

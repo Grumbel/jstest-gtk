@@ -16,32 +16,31 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef HEADER_JOYSTICK_MAP_WIDGET_HPP
-#define HEADER_JOYSTICK_MAP_WIDGET_HPP
+#ifndef HEADER_JSTEST_GTK_REMAP_WIDGET_HPP
+#define HEADER_JSTEST_GTK_REMAP_WIDGET_HPP
 
 #include <gtkmm/box.h>
-#include <gtkmm/buttonbox.h>
 #include <gtkmm/button.h>
-#include <gtkmm/label.h>
-
-#include "remap_widget.hpp"
-
-class Joystick;
+#include <gtkmm/buttonbox.h>
+#include <gtkmm/liststore.h>
+#include <gtkmm/treeview.h>
 
-class JoystickMapWidget : public Gtk::VBox
+class RemapWidget : public Gtk::VBox
 {
 private:
-  Gtk::Label label;
-  Gtk::HBox  hbox;
-  RemapWidget axis_map;
-  RemapWidget button_map;
+  Gtk::HButtonBox buttonbox;
+  Gtk::Button refresh_button;
+  Gtk::TreeView treeview;
+  Glib::RefPtr<Gtk::ListStore> map_list;
 
 public:
-  JoystickMapWidget(Joystick& joystick);
+  RemapWidget(const std::string& name);
+
+  void add(const std::string& str);
 
 private:
-  JoystickMapWidget(const JoystickMapWidget&);
-  JoystickMapWidget& operator=(const JoystickMapWidget&);
+  RemapWidget(const RemapWidget&);
+  RemapWidget& operator=(const RemapWidget&);
 };
 
 #endif

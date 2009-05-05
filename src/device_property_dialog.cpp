@@ -25,6 +25,7 @@ DevicePropertyDialog::DevicePropertyDialog(Joystick& joystick)
     label("<b>" + joystick.get_name() + "</b>\nDevice: " + joystick.get_filename() , 
           Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER),
     test_tab(joystick),
+    cfg_tab(joystick),
     calibration_tab(joystick)
 {
   label.set_use_markup(true);
