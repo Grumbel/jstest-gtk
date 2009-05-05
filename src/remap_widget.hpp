@@ -29,14 +29,16 @@ class RemapWidget : public Gtk::VBox
 {
 private:
   Gtk::HButtonBox buttonbox;
-  Gtk::Button refresh_button;
+  Gtk::Button clear_button;
+  Gtk::Button apply_button;
   Gtk::TreeView treeview;
   Glib::RefPtr<Gtk::ListStore> map_list;
 
 public:
   RemapWidget(const std::string& name);
 
-  void add(const std::string& str);
+  void add(int id, const std::string& str);
+  void on_clear();
 
 private:
   RemapWidget(const RemapWidget&);

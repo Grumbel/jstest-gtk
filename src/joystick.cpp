@@ -28,6 +28,7 @@
 #include <sstream>
 #include <linux/joystick.h>
 #include <glibmm/main.h>
+#include <glibmm/convert.h>
 
 #include "joystick.hpp"
 
@@ -60,7 +61,11 @@ Joystick::Joystick(const std::string& filename_)
         }
       else
         {
-          name = name_c_str;
+          try {
+            name = Glib::convert_with_fallback(name_c_str, "UTF-8", "ISO-8859-1");
+          } catch(Glib::ConvertError& err) {
+            std::cout << err.what() << std::endl;
+          }
         }
 
       // Axis Mapping

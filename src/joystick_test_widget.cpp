@@ -29,8 +29,8 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick)
     button_frame("Button"),
     axis_table(joystick.get_axis_count(), 2),
     button_table(joystick.get_button_count() / 8 + 1, 8),
-    stick1_widget(128,128),
-    stick2_widget(128,128)
+    stick1_widget(96, 96),
+    stick2_widget(96, 96)
 {
   button_on  = Gdk::Pixbuf::create_from_file("data/button_on.png");
   button_off = Gdk::Pixbuf::create_from_file("data/button_off.png");
@@ -75,7 +75,7 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick)
   stick_hbox.pack_start(stick1_widget, Gtk::PACK_EXPAND_PADDING);
   stick_hbox.pack_start(stick2_widget, Gtk::PACK_EXPAND_PADDING);
 
-  axis_vbox.add(stick_hbox);
+  axis_vbox.pack_start(stick_hbox, Gtk::PACK_SHRINK);
   axis_vbox.add(axis_table);
   axis_frame.add(axis_vbox);
 

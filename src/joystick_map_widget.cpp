@@ -41,13 +41,13 @@ JoystickMapWidget::JoystickMapWidget(Joystick& joystick)
   const std::vector<int>& button_mapping = joystick.get_button_mapping();
   for(std::vector<int>::const_iterator i = button_mapping.begin(); i != button_mapping.end(); ++i)
     {
-      button_map.add(btn2str(*i));
+      button_map.add(*i, btn2str(*i));
     }
 
   const std::vector<int>& axis_mapping = joystick.get_axis_mapping();
   for(std::vector<int>::const_iterator i = axis_mapping.begin(); i != axis_mapping.end(); ++i)
     {
-      axis_map.add(abs2str(*i));
+      axis_map.add(*i, abs2str(*i));
     }
 }
 

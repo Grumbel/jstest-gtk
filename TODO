@@ -1,9 +1,23 @@
+* axis names very buggy:
+  - ABS_RZ instead of ABS_RUDDER (Sidewinder2)
+  - ABS_RZ,ABS_THROTTLE instead of ABS_RX,ABS_RY (Thrustmaster gamepad)
+  - BTN_TL2,BTN_TR2 instead of BTN_START, BTN_MODE (Sidewinder gamepad)
+  - ...
+
+* Joystick name is (iManufacturer + iProduct), but thats ugly:
+
+  idVendor           0x045e Microsoft Corp.
+  idProduct          0x0007 SideWinder Game Pad
+  bcdDevice            1.05
+  iManufacturer           1 Microsoft<AE>
+  iProduct                2 Microsoft<AE> SideWinder<AE> Game Pad USB
+
+* use proper jsdev, instead of just /dev/input/js0  when clicking on "Properties"
+
 * use Table for calibration widget:
    Center Min/Max   Range Min/Max
    [    ]  [    ]    [   ]  [  ]
    ...
-
-* remove modal'ness of the dialog
 
 * provide additional support for SDL and evdev devices
 

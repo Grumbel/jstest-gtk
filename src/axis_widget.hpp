@@ -16,8 +16,8 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef HEADER_AXIS_WIDGET_HPP
-#define HEADER_AXIS_WIDGET_HPP
+#ifndef HEADER_JSTEST_GTK_AXIS_WIDGET_HPP
+#define HEADER_JSTEST_GTK_AXIS_WIDGET_HPP
 
 #include <gtkmm/drawingarea.h>
 
@@ -30,7 +30,7 @@ private:
 public:
   AxisWidget(int width, int height);
 
-  virtual bool on_expose_event(GdkEventExpose* event);
+  bool on_expose_event(GdkEventExpose* event);
 
   void set_x_axis(double x);
   void set_y_axis(double x);

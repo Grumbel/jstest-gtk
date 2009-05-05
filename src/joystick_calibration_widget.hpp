@@ -22,6 +22,7 @@
 #include <gtkmm/box.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/label.h>
+#include <gtkmm/table.h>
 #include <gtkmm/buttonbox.h>
 
 class Joystick;
@@ -33,7 +34,7 @@ private:
 
   Gtk::Label label;
   Gtk::Frame axis_frame;
-  Gtk::VBox  axis_vbox;
+  Gtk::Table  axis_table;
   Gtk::HButtonBox buttonbox;
   Gtk::Button refresh_button;
   Gtk::Button raw_button;

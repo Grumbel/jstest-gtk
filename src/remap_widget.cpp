@@ -32,10 +32,12 @@ public:
       return *(instance_ = new RemapWidgetColumns());
   }
 
+  Gtk::TreeModelColumn<int> id;
   Gtk::TreeModelColumn<Glib::ustring> name;
 
 private:
   RemapWidgetColumns() {
+    add(id);
     add(name);
   }
 };
@@ -43,7 +45,8 @@ private:
 RemapWidgetColumns* RemapWidgetColumns::instance_ = 0;
 
 RemapWidget::RemapWidget(const std::string& name)
-  : refresh_button(Gtk::Stock::CLEAR)
+  : clear_button(Gtk::Stock::CLEAR),
+    apply_button(Gtk::Stock::APPLY)
 {
   map_list = Gtk::ListStore::create(RemapWidgetColumns::instance());
   treeview.set_model(map_list);
@@ -52,19 +55,29 @@ RemapWidget::RemapWidget(const std::string& name)
   set_border_width(5);
   treeview.set_border_width(5);
 
-  buttonbox.add(refresh_button);
+  buttonbox.add(clear_button);
+  buttonbox.add(apply_button);
 
-  pack_start(treeview, Gtk::PACK_EXPAND_WIDGET);
+  pack_start(treeview,  Gtk::PACK_EXPAND_WIDGET);
   pack_start(buttonbox, Gtk::PACK_SHRINK);
 
   treeview.set_reorderable();
+
+  clear_button.signal_clicked().connect(sigc::mem_fun(this, &RemapWidget::on_clear));
 }
 
 void
-RemapWidget::add(const std::string& str)
+RemapWidget::add(int id, const std::string& str)
 {
   Gtk::ListStore::iterator it = map_list->append();
+  (*it)[RemapWidgetColumns::instance().id] = id;
   (*it)[RemapWidgetColumns::instance().name] = str;
+}
+
+void
+RemapWidget::on_clear()
+{
+  // resort the list
 }
 
 /* EOF */

@@ -22,6 +22,7 @@
 #include <sigc++/signal.h>
 #include <sigc++/connection.h>
 #include <glibmm/main.h>
+#include <glibmm/ustring.h>
 #include <linux/joystick.h>
 #include "joystick_description.hpp"
 
@@ -31,7 +32,7 @@ private:
   int fd;
 
   std::string filename;
-  std::string name;
+  Glib::ustring name;
   int axis_count;
   int button_count;
 
@@ -49,7 +50,7 @@ public:
   bool on_in(Glib::IOCondition cond);
 
   std::string get_filename() const { return filename; }
-  std::string get_name() const { return name; }
+  Glib::ustring get_name() const { return name; }
   int get_axis_count() const   { return axis_count; }
   int get_button_count() const { return button_count; }
 

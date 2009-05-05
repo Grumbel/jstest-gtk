@@ -27,6 +27,7 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
     label("The <i>center</i> values are the minimum and the maximum values of the deadzone. "
           "The <i>min</i> and <i>max</i> values refer to the outer values."),
     axis_frame("Axis"),
+    axis_table(joystick.get_axis_count() + 1, 5),
     refresh_button(Gtk::Stock::REFRESH),
     raw_button(Gtk::Stock::CLEAR),
     calibration_button(Gtk::Stock::PROPERTIES),
@@ -34,37 +35,37 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
 {
   set_border_width(5);
   axis_frame.set_border_width(5);
+  axis_table.set_border_width(5);
+
   label.set_use_markup(true);
   label.set_line_wrap();
   pack_start(label, Gtk::PACK_SHRINK);
 
+  axis_table.attach(*Gtk::manage(new Gtk::Label("Axis")), 0, 1, 0, 1);
+
+  axis_table.attach(*Gtk::manage(new Gtk::Label("Center Min")), 1, 2, 0, 1);
+  axis_table.attach(*Gtk::manage(new Gtk::Label("Center Max")), 2, 3, 0, 1);
+  
+  axis_table.attach(*Gtk::manage(new Gtk::Label("Range Min")), 3, 4, 0, 1);
+  axis_table.attach(*Gtk::manage(new Gtk::Label("Range Max")), 4, 5, 0, 1);
+  
+  axis_table.set_col_spacing(2, 8);
   for(int i = 0; i < joystick.get_axis_count(); ++i)
     {
-      Gtk::HBox* hbox = Gtk::manage(new Gtk::HBox());
-      hbox->set_border_width(5);
- 
       Gtk::SpinButton& center_min = *Gtk::manage(new Gtk::SpinButton(*Gtk::manage(new Gtk::Adjustment(0, -32768, 32767))));
       Gtk::SpinButton& center_max = *Gtk::manage(new Gtk::SpinButton(*Gtk::manage(new Gtk::Adjustment(0, -32768, 32767))));
       Gtk::SpinButton& outer_min  = *Gtk::manage(new Gtk::SpinButton(*Gtk::manage(new Gtk::Adjustment(0, -32768, 32767))));
       Gtk::SpinButton& outer_max  = *Gtk::manage(new Gtk::SpinButton(*Gtk::manage(new Gtk::Adjustment(0, -32768, 32767))));
 
       std::ostringstream str;
-      str << i << ": ";
-      hbox->add(*Gtk::manage(new Gtk::Label(str.str())));
+      str << i;
+      axis_table.attach(*Gtk::manage(new Gtk::Label(str.str())), 0, 1, i+1, i+2);
 
-      hbox->add(*Gtk::manage(new Gtk::Label(" C: ")));
-      hbox->add(center_min);
+      axis_table.attach(center_min, 1, 2, i+1, i+2);
+      axis_table.attach(center_max, 2, 3, i+1, i+2);
 
-      //hbox->add(*Gtk::manage(new Gtk::Label(" cmax: ")));
-      hbox->add(center_max);
-
-      hbox->add(*Gtk::manage(new Gtk::Label(" R: ")));
-      hbox->add(outer_min);
-
-      //hbox->add(*Gtk::manage(new Gtk::Label(" max: ")));
-      hbox->add(outer_max);
-      
-      axis_vbox.add(*hbox);
+      axis_table.attach(outer_min, 3, 4, i+1, i+2);
+      axis_table.attach(outer_max, 4, 5, i+1, i+2);
     }
 
   buttonbox.add(refresh_button);
@@ -72,7 +73,7 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
   //buttonbox.add(calibration_button);
   buttonbox.add(apply_button);
 
-  axis_frame.add(axis_vbox);
+  axis_frame.add(axis_table);
 
   pack_start(axis_frame, Gtk::PACK_EXPAND_WIDGET);
   pack_start(buttonbox, Gtk::PACK_SHRINK);
