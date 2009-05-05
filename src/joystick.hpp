@@ -20,7 +20,9 @@
 #define HEADER_JSTEST_GTK_JOYSTICK_HPP
 
 #include <sigc++/signal.h>
-
+#include <sigc++/connection.h>
+#include <glibmm/main.h>
+#include <linux/joystick.h>
 #include "joystick_description.hpp"
 
 class Joystick
@@ -36,6 +38,8 @@ private:
   sigc::connection connection;
 
 public:
+  typedef struct js_corr CalibrationData; 
+
   Joystick(const std::string& filename);
   ~Joystick();
 
@@ -53,6 +57,13 @@ public:
   sigc::signal<void, int, bool> button_move;
 
   static std::vector<JoystickDescription> get_joysticks();
+
+  std::vector<CalibrationData> get_calibration();
+  void set_calibration(const std::vector<CalibrationData>& data);
+
+  /** Clears all calibration data, note that this will mean raw USB
+      input values, not values scaled to -32767/32767 */
+  void clear_calibration();
 
 private:
   Joystick(const Joystick&);

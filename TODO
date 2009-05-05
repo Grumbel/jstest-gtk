@@ -1,3 +1,8 @@
+* use Table for calibration widget:
+   Center Min/Max   Range Min/Max
+   [    ]  [    ]    [   ]  [  ]
+   ...
+
 * remove modal'ness of the dialog
 
 * provide additional support for SDL and evdev devices
@@ -6,4 +11,94 @@
   how a user can automatically submit his joystick profile, to ease
   the database generation
 
+* jscal:
+
+# Remove any calibration and report raw USB data
+jsscal -s 6,0,0,0,0,0,0,0,0,0,0,0,0 /dev/input/js0 
+
+jscal -s
+6, // number of axes
+
+.--- type (0: raw, 1: "broken line")
+|  .--- prec (seems to be read only, taken for evdev's absfuzz)
+|  |    .---.- coef[0], coef[1], ...
+v  v    v   v
+1, 0, -15,  15, 5534751,   5534751, ???
+1, 0, -15,  15, 5534751,   5534751,
+1, 0, -15,  15, 5534751,   5534751,
+1, 0, 112, 142, 5534751,   5534751,
+1, 0,   0,   0, 536870912, 536870912, (1<<29)
+1, 0,   0,   0, 536870912, 536870912
+
+type == 0 -> none of coef used
+type == 1 -> coef[0:4] used
+
+type == 0 -> "none (raw)"
+type == 1 -> "broken line"
+
+coef[0] = 
+coef[1] = 
+coef[2] = 
+coef[3] =  
+
+# Original
+jscal -s 6,1,0,-15,15,5534751,5534751,1,0,-15,15,5534751,5534751,1,0,-15,15,5534751,5534751,1,0,112,142,5534751,5534751,1,0,0,0,536870912,536870912,1,0,0,0,536870912,536870912 /dev/input/js0
+
+# No Dead
+jscal -s 6,1,0,0,0,5534751,5534751,1,0,0,0,5534751,5534751,1,0,0,0,5534751,5534751,1,0,112,142,5534751,5534751,1,0,0,0,536870912,536870912,1,0,0,0,536870912,536870912 /dev/input/js0
+
+
+int solve_broken(int *results /* coef[4] */, struct correction_data inputs)
+{
+  results[0] = inputs.cmin[CENTER];
+  results[1] = inputs.cmax[CENTER];
+  results[2] = (32767.0 / (inputs.cmin[CENTER]  - inputs.cmax[MINIMUM])) * 16384.0;
+  results[3] = (32767.0 / (inputs.cmin[MAXIMUM] - inputs.cmax[CENTER]))  * 16384.0;
+
+  results[2] = (32767 * 16384) / left_range
+  results[3] = (32767 * 16384) / left_range
+
+  // in float terms:
+  // [2] = 1.0f / left_range;
+  // [3] = 1.0f / right_range;
+
+  return 1;
+}
+
+Apply coef:
+===========
+
+  if (value > corr->coef[0])
+    { 
+      if (value < corr->coef[1])
+        {
+          value = 0;
+        }
+      else
+        {
+          value = (corr->coef[3] * (value - corr->coef[1])) / 16384; 
+        }
+    }
+  else
+    {
+      value = (corr->coef[2] * (value - corr->coef[0])) / 16384;
+    }
+
+  return value < -32767 ? -32767 : (value > 32767 ? 32767 : value);
+
+Set coef:
+=========
+
+  joydev->corr[i].type = JS_CORR_BROKEN;
+  joydev->corr[i].prec = dev->absfuzz[j];
+  joydev->corr[i].coef[0] = (dev->absmax[j] + dev->absmin[j]) / 2 - dev->absflat[j];
+  joydev->corr[i].coef[1] = (dev->absmax[j] + dev->absmin[j]) / 2 + dev->absflat[j];
+
+  t = (dev->absmax[j] - dev->absmin[j]) / 2 - 2 * dev->absflat[j];
+  if (t)
+    {
+      joydev->corr[i].coef[2] = (1 << 29) / t;
+      joydev->corr[i].coef[3] = (1 << 29) / t;
+    }
+
 # EOF #

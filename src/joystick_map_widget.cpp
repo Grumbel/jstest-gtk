@@ -22,7 +22,8 @@
 
 JoystickMapWidget::JoystickMapWidget()
   : label("Change the order of axis and button. The order applies directly to the "
-          "joystick kernel driver, so it will work in any game."),
+          "joystick kernel driver, so it will work in any game, it is however not "
+          "persistant across reboots."),
     up_button(Gtk::Stock::GO_UP),
     down_button(Gtk::Stock::GO_DOWN)
 {

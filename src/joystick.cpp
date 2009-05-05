@@ -18,6 +18,7 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <string.h>
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -174,6 +175,52 @@ Joystick::get_joysticks()
     }
 
   return joysticks;
+}
+
+std::vector<Joystick::CalibrationData>
+Joystick::get_calibration()
+{
+  std::vector<CalibrationData> data(get_axis_count());
+  if (ioctl(fd, JSIOCGCORR, &*data.begin()) < 0)
+    {
+      std::ostringstream str;
+      str << filename << ": " << strerror(errno);
+      throw std::runtime_error(str.str());
+    }
+  else
+    {
+      return data;
+    }
+}
+
+void
+Joystick::set_calibration(const std::vector<CalibrationData>& data)
+{
+  if (ioctl(fd, JSIOCSCORR, &*data.begin()) < 0)
+    {
+      std::ostringstream str;
+      str << filename << ": " << strerror(errno);
+      throw std::runtime_error(str.str());
+    }
+}
+
+void
+Joystick::clear_calibration()
+{
+  std::vector<CalibrationData> data;
+  
+  for(int i = 0; i < get_axis_count(); ++i)
+    {
+      CalibrationData cal;
+
+      cal.type = 0;
+      cal.prec = 0;
+      memset(cal.coef, 0, sizeof(cal.coef));
+     
+      data.push_back(cal);
+    }
+
+  set_calibration(data);
 }
 
 /* EOF */

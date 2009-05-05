@@ -20,16 +20,34 @@
 #define HEADER_JOYSTICK_CALIBRATION_WIDGET_HPP
 
 #include <gtkmm/box.h>
+#include <gtkmm/frame.h>
 #include <gtkmm/label.h>
+#include <gtkmm/buttonbox.h>
+
+class Joystick;
 
 class JoystickCalibrationWidget : public Gtk::VBox
 {
 private:
+  Joystick& joystick;
+
   Gtk::Label label;
+  Gtk::Frame axis_frame;
+  Gtk::VBox  axis_vbox;
+  Gtk::HButtonBox buttonbox;
+  Gtk::Button refresh_button;
+  Gtk::Button raw_button;
+  Gtk::Button calibration_button;
+  Gtk::Button apply_button;
 
 public:
-  JoystickCalibrationWidget();
+  JoystickCalibrationWidget(Joystick& joystick);
 
+  void on_clear();
+  void on_apply();
+  void on_refresh();
+  void on_calibrate();
+  
 private:
   JoystickCalibrationWidget(const JoystickCalibrationWidget&);
   JoystickCalibrationWidget& operator=(const JoystickCalibrationWidget&);

@@ -24,7 +24,8 @@ DevicePropertyDialog::DevicePropertyDialog(Joystick& joystick)
   : Gtk::Dialog("jstest-gtk: " + joystick.get_filename()),
     label("<b>" + joystick.get_name() + "</b>\nDevice: " + joystick.get_filename() , 
           Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER),
-    test_tab(joystick)
+    test_tab(joystick),
+    calibration_tab(joystick)
 {
   label.set_use_markup(true);
   set_has_separator(false);

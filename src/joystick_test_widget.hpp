@@ -24,6 +24,8 @@
 #include <gtkmm/progressbar.h>
 #include <gtkmm/table.h>
 
+#include "axis_widget.hpp"
+
 class Joystick;
 
 class JoystickTestWidget : public Gtk::VBox
@@ -33,7 +35,10 @@ private:
   Gtk::Frame button_frame;
   Gtk::Table axis_table;
   Gtk::Table button_table;
-
+  Gtk::HBox  stick_hbox;
+  AxisWidget stick1_widget;
+  AxisWidget stick2_widget;
+  
   std::vector<Gtk::ProgressBar*> axes;
   std::vector<Gtk::Image*>       buttons;
 

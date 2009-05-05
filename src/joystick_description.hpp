@@ -18,6 +18,8 @@
 
 #ifndef HEADER_JSTEST_GTK_JOYSTICK_DESCRIPTION_HPP
 #define HEADER_JSTEST_GTK_JOYSTICK_DESCRIPTION_HPP
+
+#include <string>
 
 class JoystickDescription
 {
