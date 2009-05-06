@@ -47,8 +47,6 @@ Main::show_device_list_dialog()
 void
 Main::show_device_property_dialog(const std::string& filename)
 {
-  std::cout << "Main::show_device_property_dialog: " << filename << std::endl;
-
   Joystick* joystick = new Joystick(filename);
   DevicePropertyDialog* prop = new DevicePropertyDialog(*joystick);
   prop->signal_hide().connect(sigc::bind(sigc::mem_fun(this, &Main::on_dialog_hide), prop));

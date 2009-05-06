@@ -183,11 +183,37 @@ Joystick::get_joysticks()
   return joysticks;
 }
 
+Joystick::CalibrationData corr2cal(const struct js_corr& corr)
+{
+  Joystick::CalibrationData data;
+
+  if (corr.type)
+    {
+      data.calibrate = true;
+      data.center_min = corr.coef[0];
+      data.center_max = corr.coef[1];
+
+      data.range_min = data.center_min - ((32767 * 16384) / corr.coef[2]);
+      data.range_max = (32767 * 16384) / corr.coef[3] + data.center_max;
+    }
+  else
+    {
+      data.calibrate  = false;
+      data.center_min = 0;
+      data.center_max = 0;
+      data.range_min  = 0;
+      data.range_max  = 0;
+    }
+
+  return data;
+}
+
 std::vector<Joystick::CalibrationData>
 Joystick::get_calibration()
 {
-  std::vector<CalibrationData> data(get_axis_count());
-  if (ioctl(fd, JSIOCGCORR, &*data.begin()) < 0)
+  std::vector<struct js_corr> corr(get_axis_count());
+
+  if (ioctl(fd, JSIOCGCORR, &*corr.begin()) < 0)
     {
       std::ostringstream str;
       str << filename << ": " << strerror(errno);
@@ -195,14 +221,43 @@ Joystick::get_calibration()
     }
   else
     {
+      std::vector<CalibrationData> data;
+      std::transform(corr.begin(), corr.end(), std::back_inserter(data), corr2cal);
       return data;
     }
+}
+
+struct js_corr cal2corr(const Joystick::CalibrationData& data)
+{
+  struct js_corr corr;
+
+  if (data.calibrate)
+    {
+      corr.type = 1;
+      corr.prec = 0;
+      corr.coef[0] = data.center_min;
+      corr.coef[1] = data.center_max;
+      corr.coef[2] = (32767 * 16384) / (data.center_min - data.range_min);
+      corr.coef[3] = (32767 * 16384) / (data.range_max  - data.center_max);
+    }
+  else
+    {
+      corr.type = 0;
+      corr.prec = 0;
+      memset(corr.coef, 0, sizeof(corr.coef));
+    }
+
+  return corr;
 }
 
 void
 Joystick::set_calibration(const std::vector<CalibrationData>& data)
 {
-  if (ioctl(fd, JSIOCSCORR, &*data.begin()) < 0)
+  std::vector<struct js_corr> corr;
+
+ std::transform(data.begin(), data.end(), std::back_inserter(corr), cal2corr);
+
+  if (ioctl(fd, JSIOCSCORR, &*corr.begin()) < 0)
     {
       std::ostringstream str;
       str << filename << ": " << strerror(errno);
@@ -219,9 +274,11 @@ Joystick::clear_calibration()
     {
       CalibrationData cal;
 
-      cal.type = 0;
-      cal.prec = 0;
-      memset(cal.coef, 0, sizeof(cal.coef));
+      cal.calibrate  = false;
+      cal.center_min = 0;
+      cal.center_max = 0;
+      cal.range_min  = 0;
+      cal.range_max  = 0;
      
       data.push_back(cal);
     }
@@ -241,11 +298,6 @@ Joystick::get_button_mapping()
     }
   else
     {
-      for(int i = 0; i < button_count; ++i)
-        {
-          std::cout << "MAP: " << i << " -> " << (int)btnmap[i] << std::endl;
-        }
-
       std::vector<int> mapping;
       std::copy(btnmap, btnmap + button_count, std::back_inserter(mapping));
       return mapping;

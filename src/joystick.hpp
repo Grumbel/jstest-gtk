@@ -39,7 +39,13 @@ private:
   sigc::connection connection;
 
 public:
-  typedef struct js_corr CalibrationData; 
+  struct CalibrationData {
+    bool calibrate;
+    int  center_min;
+    int  center_max;
+    int  range_min;
+    int  range_max;
+  };
 
   Joystick(const std::string& filename);
   ~Joystick();
