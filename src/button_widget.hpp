@@ -24,6 +24,8 @@
 class ButtonWidget : public Gtk::DrawingArea
 {
 private:
+  bool down;
+
 public:
   ButtonWidget(int width, int height);
 

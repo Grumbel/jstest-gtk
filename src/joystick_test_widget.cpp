@@ -22,6 +22,7 @@
 #include <gtkmm/image.h>
 
 #include "joystick.hpp"
+#include "button_widget.hpp"
 #include "joystick_test_widget.hpp"
 
 JoystickTestWidget::JoystickTestWidget(Joystick& joystick)
@@ -30,11 +31,10 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick)
     axis_table(joystick.get_axis_count(), 2),
     button_table(joystick.get_button_count() / 8 + 1, 8),
     stick1_widget(96, 96),
-    stick2_widget(96, 96)
+    stick2_widget(96, 96),
+    rudder_widget(96, 16),
+    throttle_widget(16, 96)
 {
-  button_on  = Gdk::Pixbuf::create_from_file("data/button_on.png");
-  button_off = Gdk::Pixbuf::create_from_file("data/button_off.png");
-
   axis_frame.set_border_width(5);
   axis_table.set_border_width(5);
   axis_table.set_spacings(5);
@@ -62,10 +62,9 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick)
       int x = i % 8;
       int y = i / 8;
 
-      Gtk::Image& image = *Gtk::manage(new Gtk::Image(Gdk::Pixbuf::create_from_file("data/button_off.png")));
-      button_table.attach(image, x, x+1, y, y+1);
-
-      buttons.push_back(&image);
+      ButtonWidget& button = *Gtk::manage(new ButtonWidget(24, 24));
+      button_table.attach(button, x, x+1, y, y+1, Gtk::SHRINK, Gtk::SHRINK);
+      buttons.push_back(&button);
     }
 
   pack_start(axis_frame,   Gtk::PACK_EXPAND_WIDGET);
@@ -74,6 +73,8 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick)
   stick_hbox.set_border_width(5);
   stick_hbox.pack_start(stick1_widget, Gtk::PACK_EXPAND_PADDING);
   stick_hbox.pack_start(stick2_widget, Gtk::PACK_EXPAND_PADDING);
+  stick_hbox.pack_start(rudder_widget, Gtk::PACK_EXPAND_PADDING);
+  stick_hbox.pack_start(throttle_widget, Gtk::PACK_EXPAND_PADDING);
 
   axis_vbox.pack_start(stick_hbox, Gtk::PACK_SHRINK);
   axis_vbox.add(axis_table);
@@ -95,22 +96,32 @@ JoystickTestWidget::axis_move(int number, int value)
   axes.at(number)->set_text(str.str());
 
   if (number == 0)
-    stick1_widget.set_x_axis(value / 32767.0);
+    {
+      stick1_widget.set_x_axis(value / 32767.0);
+    }
   else if (number == 1)
-    stick1_widget.set_y_axis(value / 32767.0);
+    {
+      stick1_widget.set_y_axis(value / 32767.0);
+    }
   else if (number == 2)
-    stick2_widget.set_x_axis(value / 32767.0);
+    {
+      stick2_widget.set_x_axis(value / 32767.0);
+      rudder_widget.set_pos(value / 32767.0);
+    }
   else if (number == 3)
-    stick2_widget.set_y_axis(value / 32767.0);
+    {
+      stick2_widget.set_y_axis(value / 32767.0);
+      throttle_widget.set_pos(value / 32767.0);
+    }
 }
 
 void
 JoystickTestWidget::button_move(int number, bool value)
 {
   if (value)
-    buttons.at(number)->set(button_on);
+    buttons.at(number)->set_down(true);
   else
-    buttons.at(number)->set(button_off);
+    buttons.at(number)->set_down(false);
 }
 
 /* EOF */

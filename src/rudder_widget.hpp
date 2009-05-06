@@ -24,10 +24,13 @@
 class RudderWidget : public Gtk::DrawingArea
 {
 private:
+  double pos;
+
 public:
   RudderWidget(int width, int height);
 
   bool on_expose_event(GdkEventExpose* event);
+  void set_pos(double p);
 
 private:
   RudderWidget(const RudderWidget&);

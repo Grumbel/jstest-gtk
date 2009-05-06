@@ -21,12 +21,16 @@
 
 #include <gtkmm/drawingarea.h>
 
-class ThrottleWidget
+class ThrottleWidget : public Gtk::DrawingArea
 {
 private:
+  double pos;
+
 public:
   ThrottleWidget(int width, int height);
+
   bool on_expose_event(GdkEventExpose* event);
+  void set_pos(double p);
 
 private:
   ThrottleWidget(const ThrottleWidget&);

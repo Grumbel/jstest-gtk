@@ -9,11 +9,51 @@ You can find the latest version at:
 
  * http://github.com/Grumbel/jstest-gtk/tree/master
 
+
 [[ Compiling ]]
 ===============
 
 jstest-gtk uses SCons, you can compile it by typing:
 
  $ scons
+
+
+[[ Usage ]]
+===========
+
+Once compiled you can start jstest-gtk with:
+
+ $ ./jstest-gtk
+
+or if you know the device you want to test with:
+
+ $ ./jstest-gtk /dev/input/js0
+
+
+[[ Usage/Test ]]
+================
+
+The Test-Tab provides a simple graphical representation of the
+joystick and displays all the values of the axis and buttons.
+
+
+[[ Usage/Settings ]]
+====================
+
+The Settings-Tab allows you to reorder the buttons and axis. This is
+useful for example when a game expects the dpad to be on axis 0 and 1,
+while in reality it is often on axis 4 and 5 on a dual-analogstick
+gamepad.
+
+
+[[ Usage/Calibration ]]
+=======================
+
+While most modern joysticks do not need to be calibrated, the
+Calibration-Tab can still be useful, as it allows you to manipulate
+some low level details on how the raw axis values are mapped to the
+joystick device. For example you can inverse an axis, disable an axis
+or remove its deadzone, to gain more fine control on small movements.
+
 
 # EOF #

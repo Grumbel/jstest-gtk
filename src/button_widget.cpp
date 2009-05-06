@@ -20,16 +20,33 @@
 
 ButtonWidget::ButtonWidget(int width, int height)
 {
+  set_size_request(width, height);
+  modify_bg(Gtk::STATE_NORMAL , Gdk::Color("white"));
+  modify_fg(Gtk::STATE_NORMAL , Gdk::Color("black"));
 }
 
 bool
 ButtonWidget::on_expose_event(GdkEventExpose* event)
 {
+  if (down)
+    get_window()->draw_rectangle(get_style()->get_fg_gc(get_state()),
+                                 true,
+                                 0, 0,
+                                 get_allocation().get_width(), get_allocation().get_height());
+  else
+    get_window()->draw_rectangle(get_style()->get_fg_gc(get_state()),
+                                 false,
+                                 0, 0,
+                                 get_allocation().get_width()-1, get_allocation().get_height()-1);
+
+  //get_window()->draw_glyphs(get_style()->get_fg_gc(get_state()), get_style()->get_font(), 0, 0, "1");
 }
 
 void
 ButtonWidget::set_down(bool t)
 {
+  down = t;
+  queue_draw();
 }
 
 /* EOF */

@@ -19,13 +19,29 @@
 #include "throttle_widget.hpp"
 
 ThrottleWidget::ThrottleWidget(int width, int height)
+  : pos(0.0)
 {
-  
+  set_size_request(width, height);
+  modify_bg(Gtk::STATE_NORMAL , Gdk::Color("white"));
+  modify_fg(Gtk::STATE_NORMAL , Gdk::Color("black"));
 }
 
 bool
 ThrottleWidget::on_expose_event(GdkEventExpose* event)
 {
+  double p = 1.0 - (pos + 1.0) / 2.0;
+  int h = (get_allocation().get_height() * p);
+  get_window()->draw_rectangle(get_style()->get_fg_gc(get_state()),
+                               true,
+                               0, get_allocation().get_height() - h,
+                               get_allocation().get_width(), h);
+}
+
+void
+ThrottleWidget::set_pos(double p)
+{
+  pos = p;
+  queue_draw();
 }
 
 /* EOF */

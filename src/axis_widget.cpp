@@ -22,7 +22,6 @@ AxisWidget::AxisWidget(int width, int height)
   : x(0), y(0)
 {
   set_size_request(width, height);
-    //set colors
   modify_bg(Gtk::STATE_NORMAL , Gdk::Color("white"));
   modify_fg(Gtk::STATE_NORMAL , Gdk::Color("black"));
 }

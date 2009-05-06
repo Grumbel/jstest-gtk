@@ -19,12 +19,28 @@
 #include "rudder_widget.hpp"
 
 RudderWidget::RudderWidget(int width, int height)
+  : pos(0.0)
 {
+  set_size_request(width, height);
+  modify_bg(Gtk::STATE_NORMAL , Gdk::Color("white"));
+  modify_fg(Gtk::STATE_NORMAL , Gdk::Color("black"));
 }
 
 bool
 RudderWidget::on_expose_event(GdkEventExpose* event)
 {
+  double p = (pos + 1.0)/2.0;
+  get_window()->draw_rectangle(get_style()->get_fg_gc(get_state()),
+                               true,
+                               (get_allocation().get_width() * p) - 4, 0,
+                               9, get_allocation().get_height()-1);
+}
+
+void
+RudderWidget::set_pos(double p)
+{
+  pos = p;
+  queue_draw();
 }
 
 /* EOF */
