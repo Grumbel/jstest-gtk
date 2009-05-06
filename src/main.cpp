@@ -92,6 +92,8 @@ Main::main(int argc, char** argv)
         }
     }
   Gtk::Main::run();
+
+  return 0;
 }
 
 int main(int argc, char** argv)

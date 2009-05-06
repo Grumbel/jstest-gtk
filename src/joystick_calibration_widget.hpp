@@ -41,6 +41,15 @@ private:
   Gtk::Button calibration_button;
   Gtk::Button apply_button;
 
+  struct CalibrationData {
+    Gtk::Adjustment* center_min;
+    Gtk::Adjustment* center_max;
+    Gtk::Adjustment* range_min;
+    Gtk::Adjustment* range_max;
+  };
+
+  std::vector<CalibrationData> calibration_data;
+
 public:
   JoystickCalibrationWidget(Joystick& joystick);
 

@@ -35,6 +35,7 @@ ThrottleWidget::on_expose_event(GdkEventExpose* event)
                                true,
                                0, get_allocation().get_height() - h,
                                get_allocation().get_width(), h);
+  return true;
 }
 
 void

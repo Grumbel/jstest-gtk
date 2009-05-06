@@ -16,6 +16,7 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <math.h>
 #include <algorithm>
 #include <iostream>
 #include <stdexcept>
@@ -94,17 +95,6 @@ Joystick::Joystick(const std::string& filename_)
         {
           //for(int i = 0; i < num_button; ++i)
           //std::cout << "Button: " << i << " -> " << (int)btnmap[i] << std::endl;
-        }
-
-      int axis_count;
-      int button_count;
-
-      if (0)
-        { // reverse button mapping
-          uint16_t new_btnmap[KEY_MAX - BTN_MISC + 1];
-          for(int i = 0; i < num_button; ++i)
-            new_btnmap[i] = 0; //btnmap[num_button - i - 1];
-          ioctl(fd, JSIOCSBTNMAP, new_btnmap);
         }
     }
   
@@ -193,8 +183,10 @@ Joystick::CalibrationData corr2cal(const struct js_corr& corr)
       data.center_min = corr.coef[0];
       data.center_max = corr.coef[1];
 
-      data.range_min = data.center_min - ((32767 * 16384) / corr.coef[2]);
-      data.range_max = (32767 * 16384) / corr.coef[3] + data.center_max;
+      // Need to use double and rint(), since calculation doesn't end
+      // up on clean integer positions (i.e. 0.9999 can happen)
+      data.range_min = rint(data.center_min - ((32767.0 * 16384) / corr.coef[2]));
+      data.range_max = rint((32767.0 * 16384) / corr.coef[3] + data.center_max);
     }
   else
     {
@@ -237,6 +229,7 @@ struct js_corr cal2corr(const Joystick::CalibrationData& data)
       corr.prec = 0;
       corr.coef[0] = data.center_min;
       corr.coef[1] = data.center_max;
+
       corr.coef[2] = (32767 * 16384) / (data.center_min - data.range_min);
       corr.coef[3] = (32767 * 16384) / (data.range_max  - data.center_max);
     }

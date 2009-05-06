@@ -34,6 +34,7 @@ RudderWidget::on_expose_event(GdkEventExpose* event)
                                true,
                                (get_allocation().get_width() * p) - 4, 0,
                                9, get_allocation().get_height()-1);
+  return true;
 }
 
 void

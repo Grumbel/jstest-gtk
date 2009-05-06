@@ -40,6 +40,7 @@ ButtonWidget::on_expose_event(GdkEventExpose* event)
                                  get_allocation().get_width()-1, get_allocation().get_height()-1);
 
   //get_window()->draw_glyphs(get_style()->get_fg_gc(get_state()), get_style()->get_font(), 0, 0, "1");
+  return true;
 }
 
 void
