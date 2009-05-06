@@ -29,17 +29,18 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick)
   : axis_frame("Axis"),
     button_frame("Button"),
     axis_table(joystick.get_axis_count(), 2),
-    button_table(joystick.get_button_count() / 8 + 1, 8),
+    button_table((joystick.get_button_count()-1) / 8 + 1, 8),
     stick1_widget(96, 96),
     stick2_widget(96, 96),
+    stick3_widget(96, 96),
     rudder_widget(96, 16),
     throttle_widget(16, 96)
 {
   axis_frame.set_border_width(5);
   axis_table.set_border_width(5);
   axis_table.set_spacings(5);
-
   button_frame.set_border_width(5);
+  button_table.set_border_width(5);
 
   for(int i = 0; i < joystick.get_axis_count(); ++i)
     {
@@ -55,15 +56,13 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick)
       axes.push_back(&progressbar);
     }
 
-  button_table.set_homogeneous();
-
   for(int i = 0; i < joystick.get_button_count(); ++i)
     {
       int x = i % 8;
       int y = i / 8;
 
       ButtonWidget& button = *Gtk::manage(new ButtonWidget(24, 24));
-      button_table.attach(button, x, x+1, y, y+1, Gtk::SHRINK, Gtk::SHRINK);
+      button_table.attach(button, x, x+1, y, y+1, Gtk::EXPAND, Gtk::EXPAND);
       buttons.push_back(&button);
     }
 
@@ -71,10 +70,23 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick)
   pack_start(button_frame, Gtk::PACK_EXPAND_WIDGET);
 
   stick_hbox.set_border_width(5);
-  stick_hbox.pack_start(stick1_widget, Gtk::PACK_EXPAND_PADDING);
-  stick_hbox.pack_start(stick2_widget, Gtk::PACK_EXPAND_PADDING);
-  stick_hbox.pack_start(rudder_widget, Gtk::PACK_EXPAND_PADDING);
-  stick_hbox.pack_start(throttle_widget, Gtk::PACK_EXPAND_PADDING);
+  if (0)
+    {
+      Gtk::Table& table = *Gtk::manage(new Gtk::Table(2, 2));
+      
+      table.attach(stick1_widget, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+      table.attach(rudder_widget,   0, 1, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
+      table.attach(throttle_widget, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+
+      stick_hbox.pack_start(table);
+      stick_hbox.pack_start(stick2_widget, Gtk::PACK_EXPAND_PADDING);
+    }
+  else
+    {
+      stick_hbox.pack_start(stick1_widget, Gtk::PACK_EXPAND_PADDING);
+      stick_hbox.pack_start(stick2_widget, Gtk::PACK_EXPAND_PADDING);
+      stick_hbox.pack_start(stick3_widget, Gtk::PACK_EXPAND_PADDING);
+    }
 
   axis_vbox.pack_start(stick_hbox, Gtk::PACK_SHRINK);
   axis_vbox.add(axis_table);
@@ -112,6 +124,14 @@ JoystickTestWidget::axis_move(int number, int value)
     {
       stick2_widget.set_y_axis(value / 32767.0);
       throttle_widget.set_pos(value / 32767.0);
+    }
+  else if (number == 4)
+    {
+      stick3_widget.set_x_axis(value / 32767.0);
+    }
+  else if (number == 5)
+    {
+      stick3_widget.set_y_axis(value / 32767.0);
     }
 }
 

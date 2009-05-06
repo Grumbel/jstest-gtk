@@ -43,6 +43,8 @@ private:
 
   AxisWidget stick1_widget;
   AxisWidget stick2_widget;
+  AxisWidget stick3_widget;
+
   RudderWidget   rudder_widget;
   ThrottleWidget throttle_widget;
   
