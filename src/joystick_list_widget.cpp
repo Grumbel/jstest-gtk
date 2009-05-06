@@ -36,7 +36,7 @@ public:
   }
 
   Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > icon;
-  Gtk::TreeModelColumn<Glib::ustring> path;
+  Gtk::TreeModelColumn<std::string>   path;
   Gtk::TreeModelColumn<Glib::ustring> name;
 
 private:
@@ -104,12 +104,19 @@ JoystickListWidget::on_refresh()
       (*it)[DeviceListColumns::instance().path] = i->filename;
       (*it)[DeviceListColumns::instance().name] = "\n  " + i->name + "\n    Device: " + i->filename + "\n";
     }
+
+  if (!joysticks.empty())
+    treeview.get_selection()->select(device_list->children().begin());
 }
 
 void
 JoystickListWidget::on_properties()
 {
-  Main::current()->show_device_property_dialog("/dev/input/js0");
+  Gtk::TreeModel::iterator it = treeview.get_selection()->get_selected();
+  if (it)
+    {
+      Main::current()->show_device_property_dialog((*it)[DeviceListColumns::instance().path]);
+    }
 }
 
 /* EOF */

@@ -12,8 +12,6 @@
   iManufacturer           1 Microsoft<AE>
   iProduct                2 Microsoft<AE> SideWinder<AE> Game Pad USB
 
-* use proper jsdev, instead of just /dev/input/js0  when clicking on "Properties"
-
 * use Table for calibration widget:
    Center Min/Max   Range Min/Max
    [    ]  [    ]    [   ]  [  ]
