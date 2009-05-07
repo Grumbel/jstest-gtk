@@ -24,16 +24,18 @@
 #include "joystick.hpp"
 #include "joystick_calibration_widget.hpp"
 
-JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick, Gtk::Window& parent)
-  : Gtk::Dialog("Calibration: " + joystick.get_name(), parent),
+JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
+  : Gtk::Dialog("Calibration: " + joystick.get_name()),
     joystick(joystick),
     label("The <i>center</i> values are the minimum and the maximum values of the deadzone. "
           "The <i>min</i> and <i>max</i> values refer to the outer values. You have to unplug "
           "your joystick or reboot to reset the values to their original default."),
-    axis_frame("Axis"),
+    axis_frame("Axes"),
     axis_table(joystick.get_axis_count() + 1, 5),
     calibration_button(Gtk::Stock::PROPERTIES)
 {
+  set_has_separator(false);
+
   orig_calibration_data = joystick.get_calibration();
 
   set_border_width(5);
@@ -44,7 +46,7 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick, Gtk::Wi
   label.set_line_wrap();
   get_vbox()->pack_start(label, Gtk::PACK_SHRINK);
 
-  axis_table.attach(*Gtk::manage(new Gtk::Label("Axis")), 0, 1, 0, 1);
+  axis_table.attach(*Gtk::manage(new Gtk::Label("Axes")), 0, 1, 0, 1);
 
   axis_table.attach(*Gtk::manage(new Gtk::Label("CenterMin")), 1, 2, 0, 1);
   axis_table.attach(*Gtk::manage(new Gtk::Label("CenterMax")), 2, 3, 0, 1);
@@ -92,7 +94,8 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick, Gtk::Wi
     }
 
   add_button(Gtk::Stock::REVERT_TO_SAVED,  2);
-  add_button(Gtk::Stock::CLEAR,  1);
+  add_button(Gtk::Stock::CLEAR, 1);
+  add_button(Gtk::Stock::CLOSE, 0);
   
   axis_frame.add(axis_table);
 

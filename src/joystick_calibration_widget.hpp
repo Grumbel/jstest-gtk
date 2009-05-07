@@ -49,7 +49,7 @@ private:
   std::vector<Joystick::CalibrationData> orig_calibration_data;
 
 public:
-  JoystickCalibrationWidget(Joystick& joystick, Gtk::Window& parent);
+  JoystickCalibrationWidget(Joystick& joystick);
 
   void update_with(const std::vector<Joystick::CalibrationData>& data);
 

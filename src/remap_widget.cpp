@@ -55,9 +55,9 @@ RemapWidget::RemapWidget(Joystick& joystick_, Mode mode_)
   map_list = Gtk::ListStore::create(RemapWidgetColumns::instance());
   treeview.set_model(map_list);
   if (mode == REMAP_AXIS)
-    treeview.append_column("Axis", RemapWidgetColumns::instance().name);
+    treeview.append_column("Axes", RemapWidgetColumns::instance().name);
   else
-    treeview.append_column("Button", RemapWidgetColumns::instance().name);
+    treeview.append_column("Buttons", RemapWidgetColumns::instance().name);
 
   set_border_width(5);
   treeview.set_border_width(5);

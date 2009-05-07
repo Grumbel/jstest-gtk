@@ -19,7 +19,8 @@
 #include <gtkmm/stock.h>
 
 #include "main.hpp"
-#include "device_property_dialog.hpp"
+#include "joystick.hpp"
+#include "joystick_description.hpp"
 #include "joystick_list_widget.hpp"
 
 class DeviceListColumns : public Gtk::TreeModel::ColumnRecord

@@ -25,6 +25,7 @@
 #include <gtkmm/table.h>
 #include <gtkmm/buttonbox.h>
 #include <gtkmm/button.h>
+#include <gtkmm/alignment.h>
 
 #include "throttle_widget.hpp"
 #include "rudder_widget.hpp"
@@ -33,10 +34,12 @@
 class Joystick;
 class ButtonWidget;
 
-class JoystickTestWidget : public Gtk::VBox
+class JoystickTestWidget : public Gtk::Dialog
 {
 private:
   Joystick& joystick;
+  Gtk::Alignment alignment;
+  Gtk::Label label;
   Gtk::Frame axis_frame;
   Gtk::VBox axis_vbox;
   Gtk::Frame button_frame;
@@ -69,6 +72,7 @@ public:
 
   void on_calibrate();
   void on_mapping();
+  void on_response(int v);
 
 private:
   JoystickTestWidget(const JoystickTestWidget&);

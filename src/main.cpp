@@ -20,7 +20,7 @@
 #include <gtkmm/main.h>
 
 #include "device_list_dialog.hpp"
-#include "device_property_dialog.hpp"
+#include "joystick_test_widget.hpp"
 #include "joystick.hpp"
 #include "main.hpp"
 
@@ -48,11 +48,11 @@ void
 Main::show_device_property_dialog(const std::string& filename)
 {
   Joystick* joystick = new Joystick(filename);
-  DevicePropertyDialog* prop = new DevicePropertyDialog(*joystick);
-  prop->signal_hide().connect(sigc::bind(sigc::mem_fun(this, &Main::on_dialog_hide), prop));
-  prop->show_all();
+  JoystickTestWidget* dialog = new JoystickTestWidget(*joystick);
+  dialog->signal_hide().connect(sigc::bind(sigc::mem_fun(this, &Main::on_dialog_hide), dialog));
+  dialog->show_all();
   joysticks.push_back(joystick);
-  dialogs.push_back(prop);
+  dialogs.push_back(dialog);
 }
 
 void

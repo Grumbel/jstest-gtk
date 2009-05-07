@@ -31,8 +31,10 @@
 
 JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
   : joystick(joystick_),
-    axis_frame("Axis"),
-    button_frame("Button"),
+    label("<b>" + joystick.get_name() + "</b>\nDevice: " + joystick.get_filename() , 
+          Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER),
+    axis_frame("Axes"),
+    button_frame("Buttons"),
     axis_table(joystick.get_axis_count(), 2),
     button_table((joystick.get_button_count()-1) / 8 + 1, 8),
     mapping_button(Gtk::Stock::PROPERTIES),
@@ -44,6 +46,8 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
     rudder_widget(96, 16),
     throttle_widget(16, 96)
 {
+  label.set_use_markup(true);
+
   axis_frame.set_border_width(5);
   axis_table.set_border_width(5);
   axis_table.set_spacings(5);
@@ -75,13 +79,17 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
       button_table.attach(button, x, x+1, y, y+1, Gtk::EXPAND, Gtk::EXPAND);
       buttons.push_back(&button);
     }
+  
+  alignment.set_padding(8, 8, 8, 8);
+  alignment.add(label);
+  get_vbox()->pack_start(alignment, Gtk::PACK_SHRINK);
 
   buttonbox.add(mapping_button);
   buttonbox.add(calibration_button);
 
-  pack_start(axis_frame,   Gtk::PACK_EXPAND_WIDGET);
-  pack_start(button_frame, Gtk::PACK_EXPAND_WIDGET);
-  pack_start(buttonbox, Gtk::PACK_SHRINK);
+  get_vbox()->pack_start(axis_frame,   Gtk::PACK_EXPAND_WIDGET);
+  get_vbox()->pack_start(button_frame, Gtk::PACK_EXPAND_WIDGET);
+  get_vbox()->pack_start(buttonbox, Gtk::PACK_SHRINK);
 
   stick_hbox.set_border_width(5);
   if (0)
@@ -107,6 +115,10 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
   axis_frame.add(axis_vbox);
 
   button_frame.add(button_table);
+
+  add_button(Gtk::Stock::CLOSE, 0);
+
+  signal_response().connect(sigc::mem_fun(this, &JoystickTestWidget::on_response));
 
   joystick.axis_move.connect(sigc::mem_fun(this, &JoystickTestWidget::axis_move));
   joystick.button_move.connect(sigc::mem_fun(this, &JoystickTestWidget::button_move));
@@ -165,8 +177,7 @@ void
 JoystickTestWidget::on_calibrate()
 {
   // FIXME: Memleak
-  JoystickCalibrationWidget& dialog = *Gtk::manage(new JoystickCalibrationWidget(joystick, *this));
-  dialog.add_button(Gtk::Stock::CLOSE, 0);
+  JoystickCalibrationWidget& dialog = *Gtk::manage(new JoystickCalibrationWidget(joystick));
   dialog.show_all();
 }
 
@@ -174,11 +185,14 @@ void
 JoystickTestWidget::on_mapping()
 {
   // FIXME: Memleak
-  Gtk::Dialog dialog("Mapping: " + joystick.get_name());
-  dialog.get_vbox()->add(*(new JoystickMapWidget(joystick)));
-  dialog.add_button(Gtk::Stock::CLOSE, 0);
+  JoystickMapWidget& dialog = *Gtk::manage(new JoystickMapWidget(joystick));
   dialog.show_all();
-  dialog.run();
+}
+
+void
+JoystickTestWidget::on_response(int v)
+{
+  hide();
 }
 
 /* EOF */

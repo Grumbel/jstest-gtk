@@ -20,6 +20,7 @@
 #define HEADER_JOYSTICK_MAP_WIDGET_HPP
 
 #include <gtkmm/box.h>
+#include <gtkmm/dialog.h>
 #include <gtkmm/buttonbox.h>
 #include <gtkmm/button.h>
 #include <gtkmm/label.h>
@@ -28,7 +29,7 @@
 
 class Joystick;
 
-class JoystickMapWidget : public Gtk::VBox
+class JoystickMapWidget : public Gtk::Dialog
 {
 private:
   Gtk::Label label;
@@ -38,6 +39,8 @@ private:
 
 public:
   JoystickMapWidget(Joystick& joystick);
+
+  void on_response(int v);
 
 private:
   JoystickMapWidget(const JoystickMapWidget&);

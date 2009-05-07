@@ -23,20 +23,24 @@
 #include "joystick_map_widget.hpp"
 
 JoystickMapWidget::JoystickMapWidget(Joystick& joystick)
-  : label("Change the order of axis and button. The order applies directly to the "
+  : Gtk::Dialog("Mapping: " + joystick.get_name()),
+    label("Change the order of axis and button. The order applies directly to the "
           "joystick kernel driver, so it will work in any game, it is however not "
           "persistant across reboots."),
     axis_map(joystick, RemapWidget::REMAP_AXIS),
     button_map(joystick, RemapWidget::REMAP_BUTTON)
 {
+  set_has_separator(false);
   set_border_width(5);
   label.set_line_wrap();
 
   hbox.add(axis_map);
   hbox.add(button_map);
 
-  pack_start(label, Gtk::PACK_SHRINK);
-  pack_start(hbox, Gtk::PACK_EXPAND_WIDGET);
+  get_vbox()->pack_start(label, Gtk::PACK_SHRINK);
+  get_vbox()->pack_start(hbox, Gtk::PACK_EXPAND_WIDGET);
+
+  add_button(Gtk::Stock::CLOSE, 0);
 
   const std::vector<int>& button_mapping = joystick.get_button_mapping();
   for(std::vector<int>::const_iterator i = button_mapping.begin(); i != button_mapping.end(); ++i)
@@ -49,6 +53,14 @@ JoystickMapWidget::JoystickMapWidget(Joystick& joystick)
     {
       axis_map.add_entry(*i, abs2str(*i));
     }
+
+  signal_response().connect(sigc::mem_fun(this, &JoystickMapWidget::on_response));
+}
+
+void
+JoystickMapWidget::on_response(int v)
+{
+  hide();
 }
 
 /* EOF */
