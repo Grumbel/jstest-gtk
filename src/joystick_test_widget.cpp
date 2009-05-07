@@ -45,8 +45,8 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
     stick1_widget(96, 96),
     stick2_widget(96, 96),
     stick3_widget(96, 96),
-    rudder_widget(96, 16),
-    throttle_widget(16, 96)
+    rudder_widget(96, 22),
+    throttle_widget(22, 96)
 {
   label.set_use_markup(true);
 
@@ -94,7 +94,7 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
   get_vbox()->pack_start(buttonbox, Gtk::PACK_SHRINK);
 
   stick_hbox.set_border_width(5);
-  if (0)
+  if (1)
     {
       Gtk::Table& table = *Gtk::manage(new Gtk::Table(2, 2));
       
@@ -102,8 +102,8 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
       table.attach(rudder_widget,   0, 1, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
       table.attach(throttle_widget, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 
-      stick_hbox.pack_start(table);
-      stick_hbox.pack_start(stick2_widget, Gtk::PACK_EXPAND_PADDING);
+      stick_hbox.pack_start(table, Gtk::PACK_EXPAND_PADDING);
+      stick_hbox.pack_start(stick3_widget, Gtk::PACK_EXPAND_PADDING);
     }
   else
     {

@@ -41,16 +41,19 @@ AxisWidget::on_expose_event(GdkEventExpose* event)
                             event->area.width, event->area.height);
               cr->clip();
             }
-          cr->set_source_rgb(0.0, 0.0, 0.0);
-          cr->set_line_width(2.0);
-          cr->rectangle(event->area.x, event->area.y,
-                        event->area.width, event->area.height);
-          cr->stroke();
 
-          int px = get_allocation().get_width()/2  + (get_allocation().get_width()/2  * x);
-          int py = get_allocation().get_height()/2 + (get_allocation().get_height()/2 * y);
-          int w  = get_allocation().get_width();
-          int h  = get_allocation().get_height();
+          int w  = get_allocation().get_width()  - 10;
+          int h  = get_allocation().get_height() - 10;
+          int px = w/2 + (w/2  * x);
+          int py = h/2 + (h/2 * y);
+
+          cr->translate(5, 5);
+
+          // Outer Rectangle
+          cr->set_source_rgb(0.0, 0.0, 0.0);
+          cr->set_line_width(1.0);
+          cr->rectangle(0, 0, w, h);
+          cr->stroke();
 
           // BG Circle
           cr->arc(w/2, h/2, w/2, 0.0, 2.0 * M_PI);
