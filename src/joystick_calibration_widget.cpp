@@ -87,7 +87,7 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
       axis_table.attach(range_min, 3, 4, i+1, i+2);
       axis_table.attach(range_max, 4, 5, i+1, i+2);
 
-      axis_table.attach(invert, 5, 6, i+1, i+2);
+      axis_table.attach(invert, 5, 6, i+1, i+2, Gtk::SHRINK, Gtk::SHRINK);
     }
 
   buttonbox.add(refresh_button);

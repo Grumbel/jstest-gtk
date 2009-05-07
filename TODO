@@ -6,8 +6,6 @@
 
 * swapping axis must also swap calibration data
 
-* figure out a way to center the Calibration/Invert Checkbutton
-
 * provide additional support for SDL and evdev devices
 
 
