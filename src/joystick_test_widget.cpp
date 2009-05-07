@@ -126,6 +126,8 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
       axis_callbacks[1].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_y_axis));
       axis_callbacks[2].connect(sigc::mem_fun(rudder_widget, &RudderWidget::set_pos));
       axis_callbacks[3].connect(sigc::mem_fun(throttle_widget, &ThrottleWidget::set_pos));
+      axis_callbacks[4].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_x_axis));
+      axis_callbacks[5].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_y_axis));
     }
   else if (joystick.get_axis_count() == 6) // Dual Analog Gamepad
     {

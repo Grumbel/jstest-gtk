@@ -2,8 +2,10 @@
 [[ TODO ]]
 ==========
 
+* center font in ButtonWidget
+
 * Axes display should use ABS_X/Y and friends instead of raw axis
-  numbers
+  numbers to guess which layout is correct
 
 * add better command line support
 

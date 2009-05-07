@@ -18,6 +18,7 @@
 
 #include <iostream>
 #include <gtkmm/main.h>
+#include <string.h>
 
 #include "joystick_test_widget.hpp"
 #include "joystick_list_widget.hpp"
@@ -95,7 +96,16 @@ Main::main(int argc, char** argv)
 
   for(int i = 1; i < argc; ++i)
     {
-      device_files.push_back(argv[i]);
+      if (strcmp("--help", argv[i]) == 0 ||
+          strcmp("-h", argv[i]) == 0)
+        {
+          std::cout << "Usage: " << argv[0] << " [DEVICE]..." << std::endl;
+          return 0;
+        }
+      else
+        {
+          device_files.push_back(argv[i]);
+        }
     }
 
   Gtk::Main kit(&argc, &argv);
