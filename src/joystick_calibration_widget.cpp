@@ -94,7 +94,7 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
     }
 
   add_button(Gtk::Stock::REVERT_TO_SAVED,  2);
-  add_button(Gtk::Stock::CLEAR, 1);
+  add_button("Raw Events", 1);
   add_button(Gtk::Stock::CLOSE, 0);
   
   axis_frame.add(axis_table);

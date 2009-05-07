@@ -23,6 +23,7 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/image.h>
 
+#include "main.hpp"
 #include "joystick.hpp"
 #include "button_widget.hpp"
 #include "joystick_map_widget.hpp"
@@ -38,8 +39,8 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
     button_frame("Buttons"),
     axis_table(joystick.get_axis_count(), 2),
     button_table((joystick.get_button_count()-1) / 8 + 1, 8),
-    mapping_button(Gtk::Stock::PROPERTIES),
-    calibration_button(Gtk::Stock::PROPERTIES),
+    mapping_button("Mapping"),
+    calibration_button("Calibration"),
     buttonbox(Gtk::BUTTONBOX_SPREAD),
     stick1_widget(96, 96),
     stick2_widget(96, 96),
@@ -177,17 +178,13 @@ JoystickTestWidget::button_move(int number, bool value)
 void
 JoystickTestWidget::on_calibrate()
 {
-  // FIXME: Memleak
-  JoystickCalibrationWidget& dialog = *Gtk::manage(new JoystickCalibrationWidget(joystick));
-  dialog.show_all();
+  Main::current()->show_calibration_dialog(joystick);
 }
 
 void
 JoystickTestWidget::on_mapping()
 {
-  // FIXME: Memleak
-  JoystickMapWidget& dialog = *Gtk::manage(new JoystickMapWidget(joystick));
-  dialog.show_all();
+  Main::current()->show_mapping_dialog(joystick);
 }
 
 void

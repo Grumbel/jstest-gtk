@@ -21,6 +21,8 @@
 
 #include "device_list_dialog.hpp"
 #include "joystick_test_widget.hpp"
+#include "joystick_map_widget.hpp"
+#include "joystick_calibration_widget.hpp"
 #include "joystick.hpp"
 #include "main.hpp"
 
@@ -52,6 +54,24 @@ Main::show_device_property_dialog(const std::string& filename)
   dialog->signal_hide().connect(sigc::bind(sigc::mem_fun(this, &Main::on_dialog_hide), dialog));
   dialog->show_all();
   joysticks.push_back(joystick);
+  dialogs.push_back(dialog);
+}
+
+void
+Main::show_calibration_dialog(Joystick& joystick)
+{
+  JoystickCalibrationWidget* dialog = new JoystickCalibrationWidget(joystick);
+  dialog->signal_hide().connect(sigc::bind(sigc::mem_fun(this, &Main::on_dialog_hide), dialog));
+  dialog->show_all();
+  dialogs.push_back(dialog);
+}
+
+void
+Main::show_mapping_dialog(Joystick& joystick)
+{
+  JoystickMapWidget* dialog = new JoystickMapWidget(joystick);
+  dialog->signal_hide().connect(sigc::bind(sigc::mem_fun(this, &Main::on_dialog_hide), dialog));
+  dialog->show_all();
   dialogs.push_back(dialog);
 }
 

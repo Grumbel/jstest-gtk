@@ -2,11 +2,10 @@
 [[ TODO ]]
 ==========
 
-* make calibration changes auto-apply
-* add a revert button to calibration (restorting settings before the dialog was opened)
+* add better command line support
 
-* make button/axis order changes auto-apply
-* move buttons from RemapWidget to JoystickCalibrationWidget
+* add some more checks to catch invalid button/axis mappings supplied
+  to the joydev interface
 
 * make AxisWidget, ThrottleWidget and friends look good
 
@@ -15,9 +14,13 @@
 * provide additional support for SDL and evdev devices
 
 
-===================
-[[ Hard Problems ]]
-===================
+=================================
+[[ Possible Future Improvments ]]
+=================================
+
+* draw calibration icon
+
+* draw mapping icon
 
 * Joystick name of a joydev is taken from USB and build up of
   (iManufacturer + iProduct), but thats ugly, (idVendor + idProduct)

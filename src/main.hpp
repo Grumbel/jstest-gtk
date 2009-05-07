@@ -43,6 +43,9 @@ public:
 
   void show_device_list_dialog();
   void show_device_property_dialog(const std::string& filename);
+  void show_calibration_dialog(Joystick& joystick);
+  void show_mapping_dialog(Joystick& joystick);
+
   int main(int argc, char** argv);
 };
 
