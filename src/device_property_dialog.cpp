@@ -21,12 +21,10 @@
 #include "device_property_dialog.hpp"
 
 DevicePropertyDialog::DevicePropertyDialog(Joystick& joystick)
-  : Gtk::Dialog("jstest-gtk: " + joystick.get_filename()),
+  : Gtk::Dialog(joystick.get_name()),
     label("<b>" + joystick.get_name() + "</b>\nDevice: " + joystick.get_filename() , 
           Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER),
-    test_tab(joystick),
-    cfg_tab(joystick),
-    calibration_tab(joystick)
+    test_tab(joystick)
 {
   label.set_use_markup(true);
   set_has_separator(false);
@@ -35,11 +33,7 @@ DevicePropertyDialog::DevicePropertyDialog(Joystick& joystick)
   alignment.add(label);
   get_vbox()->pack_start(alignment, Gtk::PACK_SHRINK);
 
-  notebook.set_border_width(5);
-  notebook.append_page(test_tab, "Test");
-  notebook.append_page(cfg_tab, "Settings");
-  notebook.append_page(calibration_tab, "Calibration");
-  get_vbox()->add(notebook);
+  get_vbox()->add(test_tab);
 
   add_button(Gtk::Stock::CLOSE, 0);
 }

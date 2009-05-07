@@ -28,15 +28,14 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
   : joystick(joystick),
     label("The <i>center</i> values are the minimum and the maximum values of the deadzone. "
           "The <i>min</i> and <i>max</i> values refer to the outer values. You have to unplug "
-          "or reboot to reset the values to their original default."),
+          "your joystick or reboot to reset the values to their original default."),
     axis_frame("Axis"),
     axis_table(joystick.get_axis_count() + 1, 5),
-    refresh_button(Gtk::Stock::REFRESH),
+    buttonbox(Gtk::BUTTONBOX_SPREAD),
     raw_button(Gtk::Stock::CLEAR),
     calibration_button(Gtk::Stock::PROPERTIES),
     apply_button(Gtk::Stock::APPLY)
 {
-  refresh_button.set_tooltip_text("Load the current settings from the joydev device");
   apply_button.set_tooltip_text("Apply the current configuration to the joydev device");
   raw_button.set_tooltip_text("Clear all calibration data and report raw device events");
   calibration_button.set_tooltip_text("Run the calibration wizard");
@@ -90,7 +89,6 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
       axis_table.attach(invert, 5, 6, i+1, i+2, Gtk::SHRINK, Gtk::SHRINK);
     }
 
-  buttonbox.add(refresh_button);
   buttonbox.add(raw_button);
   //buttonbox.add(calibration_button);
   buttonbox.add(apply_button);
@@ -101,8 +99,9 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
   pack_start(buttonbox, Gtk::PACK_SHRINK);
 
   raw_button.signal_clicked().connect(sigc::mem_fun(this, &JoystickCalibrationWidget::on_clear));
-  refresh_button.signal_clicked().connect(sigc::mem_fun(this, &JoystickCalibrationWidget::on_refresh));
   apply_button.signal_clicked().connect(sigc::mem_fun(this, &JoystickCalibrationWidget::on_calibrate));
+
+  on_refresh();
 }
 
 void

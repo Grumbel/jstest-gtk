@@ -49,7 +49,7 @@ RemapWidgetColumns* RemapWidgetColumns::instance_ = 0;
 RemapWidget::RemapWidget(Joystick& joystick_, Mode mode_)
   : joystick(joystick_),
     mode(mode_),
-    clear_button(Gtk::Stock::CLEAR),
+    clear_button(Gtk::Stock::REVERT_TO_SAVED),
     apply_button(Gtk::Stock::APPLY)
 {
   map_list = Gtk::ListStore::create(RemapWidgetColumns::instance());

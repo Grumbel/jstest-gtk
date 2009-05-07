@@ -39,10 +39,7 @@ private:
   Gtk::Alignment alignment;
   Gtk::Label label;
 
-  Gtk::Notebook notebook;
   JoystickTestWidget test_tab;
-  JoystickMapWidget  cfg_tab;
-  JoystickCalibrationWidget calibration_tab;
   
 public:
   DevicePropertyDialog(Joystick& joystick);

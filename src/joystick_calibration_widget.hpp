@@ -36,7 +36,6 @@ private:
   Gtk::Frame axis_frame;
   Gtk::Table  axis_table;
   Gtk::HButtonBox buttonbox;
-  Gtk::Button refresh_button;
   Gtk::Button raw_button;
   Gtk::Button calibration_button;
   Gtk::Button apply_button;

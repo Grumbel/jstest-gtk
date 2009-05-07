@@ -23,6 +23,8 @@
 #include <gtkmm/frame.h>
 #include <gtkmm/progressbar.h>
 #include <gtkmm/table.h>
+#include <gtkmm/buttonbox.h>
+#include <gtkmm/button.h>
 
 #include "throttle_widget.hpp"
 #include "rudder_widget.hpp"
@@ -34,6 +36,7 @@ class ButtonWidget;
 class JoystickTestWidget : public Gtk::VBox
 {
 private:
+  Joystick& joystick;
   Gtk::Frame axis_frame;
   Gtk::VBox axis_vbox;
   Gtk::Frame button_frame;
@@ -41,6 +44,10 @@ private:
   Gtk::Table button_table;
   Gtk::HBox  stick_hbox;
 
+  Gtk::Button mapping_button;
+  Gtk::Button calibration_button;
+  Gtk::HButtonBox buttonbox;
+  
   AxisWidget stick1_widget;
   AxisWidget stick2_widget;
   AxisWidget stick3_widget;
@@ -59,6 +66,9 @@ public:
 
   void axis_move(int number, int value);
   void button_move(int number, bool value);
+
+  void on_calibrate();
+  void on_mapping();
 
 private:
   JoystickTestWidget(const JoystickTestWidget&);

@@ -19,17 +19,25 @@
 #include <sstream>
 #include <iostream>
 #include <gtkmm/label.h>
+#include <gtkmm/stock.h>
+#include <gtkmm/dialog.h>
 #include <gtkmm/image.h>
 
 #include "joystick.hpp"
 #include "button_widget.hpp"
+#include "joystick_map_widget.hpp"
+#include "joystick_calibration_widget.hpp"
 #include "joystick_test_widget.hpp"
 
-JoystickTestWidget::JoystickTestWidget(Joystick& joystick)
-  : axis_frame("Axis"),
+JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
+  : joystick(joystick_),
+    axis_frame("Axis"),
     button_frame("Button"),
     axis_table(joystick.get_axis_count(), 2),
     button_table((joystick.get_button_count()-1) / 8 + 1, 8),
+    mapping_button(Gtk::Stock::PROPERTIES),
+    calibration_button(Gtk::Stock::PROPERTIES),
+    buttonbox(Gtk::BUTTONBOX_SPREAD),
     stick1_widget(96, 96),
     stick2_widget(96, 96),
     stick3_widget(96, 96),
@@ -41,6 +49,8 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick)
   axis_table.set_spacings(5);
   button_frame.set_border_width(5);
   button_table.set_border_width(5);
+  button_table.set_spacings(8);
+  buttonbox.set_border_width(5);
 
   for(int i = 0; i < joystick.get_axis_count(); ++i)
     {
@@ -66,8 +76,12 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick)
       buttons.push_back(&button);
     }
 
+  buttonbox.add(mapping_button);
+  buttonbox.add(calibration_button);
+
   pack_start(axis_frame,   Gtk::PACK_EXPAND_WIDGET);
   pack_start(button_frame, Gtk::PACK_EXPAND_WIDGET);
+  pack_start(buttonbox, Gtk::PACK_SHRINK);
 
   stick_hbox.set_border_width(5);
   if (0)
@@ -96,6 +110,9 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick)
 
   joystick.axis_move.connect(sigc::mem_fun(this, &JoystickTestWidget::axis_move));
   joystick.button_move.connect(sigc::mem_fun(this, &JoystickTestWidget::button_move));
+
+  calibration_button.signal_clicked().connect(sigc::mem_fun(this, &JoystickTestWidget::on_calibrate));
+  mapping_button.signal_clicked().connect(sigc::mem_fun(this, &JoystickTestWidget::on_mapping));
 }
 
 void
@@ -142,6 +159,26 @@ JoystickTestWidget::button_move(int number, bool value)
     buttons.at(number)->set_down(true);
   else
     buttons.at(number)->set_down(false);
+}
+
+void
+JoystickTestWidget::on_calibrate()
+{
+  Gtk::Dialog dialog("Calibration: " + joystick.get_name());
+  dialog.get_vbox()->add(*Gtk::manage(new JoystickCalibrationWidget(joystick)));
+  dialog.add_button(Gtk::Stock::CLOSE, 0);
+  dialog.show_all();
+  dialog.run();
+}
+
+void
+JoystickTestWidget::on_mapping()
+{
+  Gtk::Dialog dialog("Mapping: " + joystick.get_name());
+  dialog.get_vbox()->add(*Gtk::manage(new JoystickMapWidget(joystick)));
+  dialog.add_button(Gtk::Stock::CLOSE, 0);
+  dialog.show_all();
+  dialog.run();
 }
 
 /* EOF */

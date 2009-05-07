@@ -102,7 +102,13 @@ JoystickListWidget::on_refresh()
       Gtk::ListStore::iterator it = device_list->append();
       (*it)[DeviceListColumns::instance().icon] = Gdk::Pixbuf::create_from_file("data/xbox360_small.png");
       (*it)[DeviceListColumns::instance().path] = i->filename;
-      (*it)[DeviceListColumns::instance().name] = "\n  " + i->name + "\n    Device: " + i->filename + "\n";
+
+      std::ostringstream out;
+      out << i->name << "\n"
+          << "Device: " << i->filename << "\n"
+          << "Axes: " << i->axis_count << "\n"
+          << "Buttons: " << i->button_count;
+      (*it)[DeviceListColumns::instance().name] = out.str();
     }
 
   if (!joysticks.empty())

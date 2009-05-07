@@ -2,6 +2,12 @@
 [[ TODO ]]
 ==========
 
+* make calibration changes auto-apply
+* add a revert button to calibration (restorting settings before the dialog was opened)
+
+* make button/axis order changes auto-apply
+* move buttons from RemapWidget to JoystickCalibrationWidget
+
 * make AxisWidget, ThrottleWidget and friends look good
 
 * swapping axis must also swap calibration data
@@ -13,15 +19,19 @@
 [[ Hard Problems ]]
 ===================
 
-* Joystick name of a joydev is taken form USB and build up of
+* Joystick name of a joydev is taken from USB and build up of
   (iManufacturer + iProduct), but thats ugly, (idVendor + idProduct)
-  would give much prettier name:
+  or just idProduct would give much prettier name:
 
   idVendor           0x045e Microsoft Corp.
   idProduct          0x0007 SideWinder Game Pad
   bcdDevice            1.05
   iManufacturer           1 Microsoft<AE>
   iProduct                2 Microsoft<AE> SideWinder<AE> Game Pad USB
+
+* the joystick name seems to be the only way to link from a joydev to
+  a evdev, hack some code together to accomplish that as it would
+  allow proper reset of calibration data
 
 * axis names very buggy:
   - ABS_RZ instead of ABS_RUDDER (Sidewinder2)
