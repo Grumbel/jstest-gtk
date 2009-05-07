@@ -20,6 +20,7 @@
 #include "device_list_dialog.hpp"
 
 DeviceListDialog::DeviceListDialog()
+  : Gtk::Dialog("Joystick Preferences")
 {
   set_has_separator(false);
   set_default_size(400, 400);

@@ -30,7 +30,8 @@
 #include "joystick_test_widget.hpp"
 
 JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
-  : joystick(joystick_),
+  : Gtk::Dialog(joystick_.get_name()),
+    joystick(joystick_),
     label("<b>" + joystick.get_name() + "</b>\nDevice: " + joystick.get_filename() , 
           Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER),
     axis_frame("Axes"),

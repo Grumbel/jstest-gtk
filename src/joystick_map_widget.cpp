@@ -40,6 +40,7 @@ JoystickMapWidget::JoystickMapWidget(Joystick& joystick)
   get_vbox()->pack_start(label, Gtk::PACK_SHRINK);
   get_vbox()->pack_start(hbox, Gtk::PACK_EXPAND_WIDGET);
 
+  add_button(Gtk::Stock::REVERT_TO_SAVED, 1);
   add_button(Gtk::Stock::CLOSE, 0);
 
   const std::vector<int>& button_mapping = joystick.get_button_mapping();
@@ -60,7 +61,15 @@ JoystickMapWidget::JoystickMapWidget(Joystick& joystick)
 void
 JoystickMapWidget::on_response(int v)
 {
-  hide();
+  if (v == 0)
+    {
+      hide();
+    }
+  else if (v == 1)
+    {
+      button_map.on_clear();
+      axis_map.on_clear();
+    }
 }
 
 /* EOF */

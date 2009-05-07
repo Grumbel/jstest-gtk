@@ -16,6 +16,7 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <assert.h>
 #include <math.h>
 #include <algorithm>
 #include <iostream>
@@ -337,9 +338,17 @@ Joystick::get_axis_mapping()
 void
 Joystick::set_button_mapping(const std::vector<int>& mapping)
 {
-  uint16_t btnmap[KEY_MAX - BTN_MISC + 1];
+  assert((int)mapping.size() == button_count);
 
+  uint16_t btnmap[KEY_MAX - BTN_MISC + 1];
+  memset(btnmap, 0, sizeof(btnmap));
   std::copy(mapping.begin(), mapping.end(), btnmap);
+
+  if (0)
+    for(int i = 0; i < button_count; ++i)
+      {
+        std::cout << i << " -> " << btnmap[i] << std::endl;
+      }
 
   if (ioctl(fd, JSIOCSBTNMAP, btnmap) < 0)
     {
@@ -352,6 +361,8 @@ Joystick::set_button_mapping(const std::vector<int>& mapping)
 void
 Joystick::set_axis_mapping(const std::vector<int>& mapping)
 {
+  assert((int)mapping.size() == axis_count);
+
   uint8_t axismap[ABS_MAX + 1];
 
   std::copy(mapping.begin(), mapping.end(), axismap);

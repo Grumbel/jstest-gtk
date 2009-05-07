@@ -24,6 +24,7 @@
 #include <gtkmm/buttonbox.h>
 #include <gtkmm/liststore.h>
 #include <gtkmm/treeview.h>
+#include <gtkmm/treemodel.h>
 
 class Joystick;
 
@@ -36,9 +37,6 @@ private:
   Joystick& joystick;
   Mode mode;
 
-  Gtk::HButtonBox buttonbox;
-  Gtk::Button clear_button;
-  Gtk::Button apply_button;
   Gtk::TreeView treeview;
   Glib::RefPtr<Gtk::ListStore> map_list;
 
@@ -48,7 +46,10 @@ public:
   void add_entry(int id, const std::string& str);
   void on_clear();
   void on_apply();
-
+  void on_my_row_inserted(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter); 
+  void on_my_row_deleted(const Gtk::TreeModel::Path& path); 
+  void on_my_rows_reordered(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter, int* new_order);
+                         
 private:
   RemapWidget(const RemapWidget&);
   RemapWidget& operator=(const RemapWidget&);

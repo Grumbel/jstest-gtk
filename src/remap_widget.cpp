@@ -16,6 +16,7 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <iostream>
 #include <gtkmm/stock.h>
 
 #include "joystick.hpp"
@@ -48,9 +49,7 @@ RemapWidgetColumns* RemapWidgetColumns::instance_ = 0;
 
 RemapWidget::RemapWidget(Joystick& joystick_, Mode mode_)
   : joystick(joystick_),
-    mode(mode_),
-    clear_button(Gtk::Stock::REVERT_TO_SAVED),
-    apply_button(Gtk::Stock::APPLY)
+    mode(mode_)
 {
   map_list = Gtk::ListStore::create(RemapWidgetColumns::instance());
   treeview.set_model(map_list);
@@ -62,16 +61,13 @@ RemapWidget::RemapWidget(Joystick& joystick_, Mode mode_)
   set_border_width(5);
   treeview.set_border_width(5);
 
-  buttonbox.add(clear_button);
-  buttonbox.add(apply_button);
-
   pack_start(treeview,  Gtk::PACK_EXPAND_WIDGET);
-  pack_start(buttonbox, Gtk::PACK_SHRINK);
-
+  
   treeview.set_reorderable();
-
-  apply_button.signal_clicked().connect(sigc::mem_fun(this, &RemapWidget::on_apply));
-  clear_button.signal_clicked().connect(sigc::mem_fun(this, &RemapWidget::on_clear));
+  
+  map_list->signal_row_inserted().connect(sigc::mem_fun(this, &RemapWidget::on_my_row_inserted));
+  map_list->signal_row_deleted().connect(sigc::mem_fun(this, &RemapWidget::on_my_row_deleted));
+  map_list->signal_rows_reordered().connect(sigc::mem_fun(this, &RemapWidget::on_my_rows_reordered));
 }
 
 void
@@ -135,6 +131,39 @@ RemapWidget::on_apply()
   else if (mode == REMAP_BUTTON)
     {
       joystick.set_button_mapping(mapping);
+    }
+}
+
+void
+RemapWidget::on_my_rows_reordered(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter, int* new_order)
+{
+  // std::cout << "on_my_rows_reordered" << std::endl;
+}                         
+
+void
+RemapWidget::on_my_row_inserted(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter)
+{
+  // std::cout << "on_my_rows_inserted" << std::endl;
+}
+
+void
+RemapWidget::on_my_row_deleted(const Gtk::TreeModel::Path& path)
+{
+  // std::cout << "on_my_rows_deleted" << std::endl;
+  
+  if (mode == REMAP_AXIS)
+    {
+      if (joystick.get_axis_count() == (int)map_list->children().size())
+        {
+          on_apply();
+        }
+    }
+  else if (mode == REMAP_BUTTON)
+    {
+      if (joystick.get_button_count() == (int)map_list->children().size())
+        {
+          on_apply();
+        }
     }
 }
 
