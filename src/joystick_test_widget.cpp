@@ -42,11 +42,11 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
     mapping_button("Mapping"),
     calibration_button("Calibration"),
     buttonbox(Gtk::BUTTONBOX_SPREAD),
-    stick1_widget(96, 96),
-    stick2_widget(96, 96),
-    stick3_widget(96, 96),
-    rudder_widget(96, 22),
-    throttle_widget(22, 96)
+    stick1_widget(128, 128),
+    stick2_widget(128, 128),
+    stick3_widget(128, 128),
+    rudder_widget(128, 32),
+    throttle_widget(32, 128)
 {
   label.set_use_markup(true);
 

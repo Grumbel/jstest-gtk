@@ -20,17 +20,19 @@
 #define HEADER_JSTEST_GTK_AXIS_WIDGET_HPP
 
 #include <gtkmm/drawingarea.h>
+#include <gtkmm/alignment.h>
 
-class AxisWidget : public Gtk::DrawingArea
+class AxisWidget : public Gtk::Alignment
 {
 private:
+  Gtk::DrawingArea drawingarea;
   double x;
   double y;
 
 public:
   AxisWidget(int width, int height);
 
-  bool on_expose_event(GdkEventExpose* event);
+  bool on_my_expose_event(GdkEventExpose* event);
 
   void set_x_axis(double x);
   void set_y_axis(double x);

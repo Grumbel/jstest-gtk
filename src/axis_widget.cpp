@@ -19,98 +19,67 @@
 #include "axis_widget.hpp"
 
 AxisWidget::AxisWidget(int width, int height)
-  : x(0), y(0)
+  : Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_TOP, 0.0f, 0.0f),
+    x(0), y(0)
 {
-  set_size_request(width, height);
   //modify_bg(Gtk::STATE_NORMAL , Gdk::Color("white"));
   //modify_fg(Gtk::STATE_NORMAL , Gdk::Color("black"));
+  add(drawingarea);
+  drawingarea.signal_expose_event().connect(sigc::mem_fun(this, &AxisWidget::on_my_expose_event));
+  drawingarea.set_size_request(width, height);
 }
 
 bool
-AxisWidget::on_expose_event(GdkEventExpose* event)
+AxisWidget::on_my_expose_event(GdkEventExpose* event)
 {
-  Glib::RefPtr<Gdk::Window> window = get_window();
+  Glib::RefPtr<Gdk::Window> window = drawingarea.get_window();
   if(window)
     {
-      if (1) 
+      Cairo::RefPtr<Cairo::Context> cr = window->create_cairo_context();
+      if (0)
         {
-          Cairo::RefPtr<Cairo::Context> cr = window->create_cairo_context();
-          if (0)
-            {
-              cr->rectangle(event->area.x, event->area.y,
-                            event->area.width, event->area.height);
-              cr->clip();
-            }
-
-          int w  = get_allocation().get_width()  - 10;
-          int h  = get_allocation().get_height() - 10;
-          int px = w/2 + (w/2  * x);
-          int py = h/2 + (h/2 * y);
-
-          cr->translate(5, 5);
-
-          // Outer Rectangle
-          cr->set_source_rgb(0.0, 0.0, 0.0);
-          cr->set_line_width(1.0);
-          cr->rectangle(0, 0, w, h);
-          cr->stroke();
-
-          // BG Circle
-          cr->arc(w/2, h/2, w/2, 0.0, 2.0 * M_PI);
-          cr->set_source_rgba(0.0, 0.0, 0.0, 0.1);
-          cr->fill();
-
-          // Cross
-          cr->set_line_width(0.5);
-          cr->set_source_rgba(0.0, 0.0, 0.0, 0.5);
-          cr->move_to(w/2, 0);
-          cr->line_to(w/2, h);
-
-          cr->set_source_rgba(0.0, 0.0, 0.0, 0.5);
-          cr->move_to(0, h/2);
-          cr->line_to(h, h/2);
-          cr->stroke();
-
-          // Cursor
-          cr->set_source_rgb(0.0, 0.0, 0.0);
-          cr->set_line_width(2.0);
-          cr->move_to(px, py-5);          
-          cr->line_to(px, py+5);
-          cr->move_to(px-5, py);          
-          cr->line_to(px+5, py);
-          cr->stroke();
+          cr->rectangle(event->area.x, event->area.y,
+                        event->area.width, event->area.height);
+          cr->clip();
         }
-      else
-        {
-          get_window()->draw_rectangle(get_style()->get_fg_gc(get_state()),
-                                       false,
-                                       0, 0,
-                                       get_allocation().get_width()-1, get_allocation().get_height()-1);
 
-          int cx = get_allocation().get_width()/2;
-          int cy = get_allocation().get_height()/2;
+      int w  = drawingarea.get_allocation().get_width()  - 10;
+      int h  = drawingarea.get_allocation().get_height() - 10;
+      int px = w/2 + (w/2  * x);
+      int py = h/2 + (h/2 * y);
 
-          get_window()->draw_arc(get_style()->get_fg_gc(get_state()),
-                                 false,
-                                 0, 0,
-                                 get_allocation().get_width()-1, get_allocation().get_height()-1,
-                                 0, 64 * 360);
+      cr->translate(5, 5);
 
-          get_window()->draw_arc(get_style()->get_fg_gc(get_state()),
-                                 false,
-                                 cx-4, cy-4,
-                                 9, 9,
-                                 0, 64 * 360);
+      // Outer Rectangle
+      cr->set_source_rgb(0.0, 0.0, 0.0);
+      cr->set_line_width(1.0);
+      cr->rectangle(0, 0, w, h);
+      cr->stroke();
 
-          int px = get_allocation().get_width()/2  + (get_allocation().get_width()/2  * x);
-          int py = get_allocation().get_height()/2 + (get_allocation().get_height()/2 * y);
+      // BG Circle
+      cr->arc(w/2, h/2, w/2, 0.0, 2.0 * M_PI);
+      cr->set_source_rgba(0.0, 0.0, 0.0, 0.1);
+      cr->fill();
 
-          get_window()->draw_arc(get_style()->get_fg_gc(get_state()),
-                                 true,
-                                 px-5, py-5,
-                                 11, 11,
-                                 0, 64 * 360);
-        }
+      // Cross
+      cr->set_line_width(0.5);
+      cr->set_source_rgba(0.0, 0.0, 0.0, 0.5);
+      cr->move_to(w/2, 0);
+      cr->line_to(w/2, h);
+
+      cr->set_source_rgba(0.0, 0.0, 0.0, 0.5);
+      cr->move_to(0, h/2);
+      cr->line_to(w, h/2);
+      cr->stroke();
+
+      // Cursor
+      cr->set_source_rgb(0.0, 0.0, 0.0);
+      cr->set_line_width(2.0);
+      cr->move_to(px, py-5);          
+      cr->line_to(px, py+5);
+      cr->move_to(px-5, py);          
+      cr->line_to(px+5, py);
+      cr->stroke();
     }
   
   return true;
