@@ -20,11 +20,13 @@
 #define HEADER_JSTEST_GTK_JOYSTICK_TEST_WIDGET_HPP
 
 #include <gtkmm/box.h>
+#include <gtkmm/label.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/progressbar.h>
 #include <gtkmm/table.h>
 #include <gtkmm/buttonbox.h>
 #include <gtkmm/button.h>
+#include <gtkmm/dialog.h>
 #include <gtkmm/alignment.h>
 
 #include "throttle_widget.hpp"

@@ -19,8 +19,8 @@
 #include <iostream>
 #include <gtkmm/main.h>
 
-#include "device_list_dialog.hpp"
 #include "joystick_test_widget.hpp"
+#include "joystick_list_widget.hpp"
 #include "joystick_map_widget.hpp"
 #include "joystick_calibration_widget.hpp"
 #include "joystick.hpp"
@@ -40,7 +40,7 @@ Main::~Main()
 void
 Main::show_device_list_dialog()
 {
-  DeviceListDialog* dialog = new DeviceListDialog();
+  JoystickListWidget* dialog = new JoystickListWidget();
   dialogs.push_back(dialog);
   dialog->show_all();
   dialog->signal_hide().connect(sigc::bind(sigc::mem_fun(this, &Main::on_dialog_hide), dialog));

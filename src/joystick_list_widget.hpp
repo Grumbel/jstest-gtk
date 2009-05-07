@@ -28,7 +28,7 @@
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/liststore.h>
 
-class JoystickListWidget : public Gtk::VBox
+class JoystickListWidget : public Gtk::Dialog
 {
 private:
   Gtk::Label label;
@@ -48,6 +48,8 @@ public:
 
   void on_refresh();
   void on_properties();
+  void on_response(int v);
+  void on_row_activated(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column);
 
 private:
   JoystickListWidget(const JoystickListWidget&);
