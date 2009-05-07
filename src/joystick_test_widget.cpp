@@ -46,7 +46,9 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
     stick2_widget(128, 128),
     stick3_widget(128, 128),
     rudder_widget(128, 32),
-    throttle_widget(32, 128)
+    throttle_widget(32, 128),
+    left_trigger_widget(32, 128, true),
+    right_trigger_widget(32, 128, true)
 {
   label.set_use_markup(true);
 
@@ -77,7 +79,7 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
       int x = i % 8;
       int y = i / 8;
 
-      ButtonWidget& button = *Gtk::manage(new ButtonWidget(24, 24));
+      ButtonWidget& button = *Gtk::manage(new ButtonWidget(32, 32));
       button_table.attach(button, x, x+1, y, y+1, Gtk::EXPAND, Gtk::EXPAND);
       buttons.push_back(&button);
     }
@@ -94,7 +96,20 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
   get_vbox()->pack_start(buttonbox, Gtk::PACK_SHRINK);
 
   stick_hbox.set_border_width(5);
-  if (1)
+
+  axis_callbacks.clear();
+  // Using manual loop instead of resize, as else all the signals
+  // would be clones of each other, instead of individual signals
+  for(int i = 0; i < (int)joystick.get_axis_count(); ++i)
+    axis_callbacks.push_back(sigc::signal<void, double>());
+
+  if (joystick.get_axis_count() == 2) // Simple stick
+    {
+      stick_hbox.pack_start(stick1_widget, Gtk::PACK_EXPAND_PADDING);
+      axis_callbacks[0].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_x_axis));
+      axis_callbacks[1].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_y_axis));
+    }
+  else if (joystick.get_axis_count() == 6) // Flightstick
     {
       Gtk::Table& table = *Gtk::manage(new Gtk::Table(2, 2));
       
@@ -104,12 +119,44 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
 
       stick_hbox.pack_start(table, Gtk::PACK_EXPAND_PADDING);
       stick_hbox.pack_start(stick3_widget, Gtk::PACK_EXPAND_PADDING);
+
+      axis_callbacks[0].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_x_axis));
+      axis_callbacks[1].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_y_axis));
+      axis_callbacks[2].connect(sigc::mem_fun(rudder_widget, &RudderWidget::set_pos));
+      axis_callbacks[3].connect(sigc::mem_fun(throttle_widget, &ThrottleWidget::set_pos));
     }
-  else
+  else if (joystick.get_axis_count() == 6) // Dual Analog Gamepad
     {
       stick_hbox.pack_start(stick1_widget, Gtk::PACK_EXPAND_PADDING);
       stick_hbox.pack_start(stick2_widget, Gtk::PACK_EXPAND_PADDING);
       stick_hbox.pack_start(stick3_widget, Gtk::PACK_EXPAND_PADDING);
+
+      axis_callbacks[0].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_x_axis));
+      axis_callbacks[1].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_y_axis));
+      axis_callbacks[2].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_x_axis));
+      axis_callbacks[3].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_y_axis));
+      axis_callbacks[4].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_x_axis));
+      axis_callbacks[5].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_y_axis));
+    }
+  else if (joystick.get_axis_count() == 8) // Dual Analog Gamepad + Analog Trigger
+    {
+      stick_hbox.pack_start(stick1_widget, Gtk::PACK_EXPAND_PADDING);
+      stick_hbox.pack_start(stick2_widget, Gtk::PACK_EXPAND_PADDING);
+      stick_hbox.pack_start(stick3_widget, Gtk::PACK_EXPAND_PADDING);
+      stick_hbox.pack_start(left_trigger_widget, Gtk::PACK_EXPAND_PADDING);
+      stick_hbox.pack_start(right_trigger_widget, Gtk::PACK_EXPAND_PADDING);
+
+      axis_callbacks[0].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_x_axis));
+      axis_callbacks[1].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_y_axis));
+      axis_callbacks[2].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_x_axis));
+      axis_callbacks[3].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_y_axis));
+      axis_callbacks[6].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_x_axis));
+      axis_callbacks[7].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_y_axis));
+      axis_callbacks[4].connect(sigc::mem_fun(left_trigger_widget, &ThrottleWidget::set_pos));
+      axis_callbacks[5].connect(sigc::mem_fun(right_trigger_widget, &ThrottleWidget::set_pos));
+    }
+  else
+    {
     }
 
   axis_vbox.pack_start(stick_hbox, Gtk::PACK_SHRINK);
@@ -137,33 +184,7 @@ JoystickTestWidget::axis_move(int number, int value)
   std::ostringstream str;
   str << value;
   axes.at(number)->set_text(str.str());
-
-  if (number == 0)
-    {
-      stick1_widget.set_x_axis(value / 32767.0);
-    }
-  else if (number == 1)
-    {
-      stick1_widget.set_y_axis(value / 32767.0);
-    }
-  else if (number == 2)
-    {
-      stick2_widget.set_x_axis(value / 32767.0);
-      rudder_widget.set_pos(value / 32767.0);
-    }
-  else if (number == 3)
-    {
-      stick2_widget.set_y_axis(value / 32767.0);
-      throttle_widget.set_pos(value / 32767.0);
-    }
-  else if (number == 4)
-    {
-      stick3_widget.set_x_axis(value / 32767.0);
-    }
-  else if (number == 5)
-    {
-      stick3_widget.set_y_axis(value / 32767.0);
-    }
+  axis_callbacks[number](value / 32767.0);
 }
 
 void

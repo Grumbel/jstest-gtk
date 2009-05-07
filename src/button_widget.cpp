@@ -21,25 +21,31 @@
 ButtonWidget::ButtonWidget(int width, int height)
 {
   set_size_request(width, height);
-  modify_bg(Gtk::STATE_NORMAL , Gdk::Color("white"));
-  modify_fg(Gtk::STATE_NORMAL , Gdk::Color("black"));
 }
 
 bool
 ButtonWidget::on_expose_event(GdkEventExpose* event)
 {
-  if (down)
-    get_window()->draw_rectangle(get_style()->get_fg_gc(get_state()),
-                                 true,
-                                 0, 0,
-                                 get_allocation().get_width(), get_allocation().get_height());
-  else
-    get_window()->draw_rectangle(get_style()->get_fg_gc(get_state()),
-                                 false,
-                                 0, 0,
-                                 get_allocation().get_width()-1, get_allocation().get_height()-1);
+  Gtk::DrawingArea::on_expose_event(event);
+  Glib::RefPtr<Gdk::Window> window = get_window();
+  if(window)
+    {
+      Cairo::RefPtr<Cairo::Context> cr = window->create_cairo_context();
 
-  //get_window()->draw_glyphs(get_style()->get_fg_gc(get_state()), get_style()->get_font(), 0, 0, "1");
+      int w  = get_allocation().get_width()  - 10;
+      int h  = get_allocation().get_height() - 10;
+
+      cr->set_source_rgb(0.0, 0.0, 0.0);
+      cr->set_line_width(1.0);
+      cr->translate(5, 5);
+      cr->rectangle(0, 0, w, h);
+
+      if (down)
+        cr->fill_preserve();
+
+      cr->stroke();
+    }
+
   return true;
 }
 

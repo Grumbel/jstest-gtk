@@ -59,12 +59,17 @@ private:
 
   RudderWidget   rudder_widget;
   ThrottleWidget throttle_widget;
+
+  ThrottleWidget left_trigger_widget;
+  ThrottleWidget right_trigger_widget;
   
   std::vector<Gtk::ProgressBar*> axes;
   std::vector<ButtonWidget*>     buttons;
 
   Glib::RefPtr<Gdk::Pixbuf> button_on;
   Glib::RefPtr<Gdk::Pixbuf> button_off;
+
+  std::vector<sigc::signal<void, double> > axis_callbacks;
 
 public:
   JoystickTestWidget(Joystick& joystick);

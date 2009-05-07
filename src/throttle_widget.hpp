@@ -24,10 +24,11 @@
 class ThrottleWidget : public Gtk::DrawingArea
 {
 private:
+  bool invert;
   double pos;
 
 public:
-  ThrottleWidget(int width, int height);
+  ThrottleWidget(int width, int height, bool invert = false);
 
   bool on_expose_event(GdkEventExpose* event);
   void set_pos(double p);
