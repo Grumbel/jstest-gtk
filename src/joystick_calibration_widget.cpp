@@ -24,21 +24,17 @@
 #include "joystick.hpp"
 #include "joystick_calibration_widget.hpp"
 
-JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
-  : joystick(joystick),
+JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick, Gtk::Window& parent)
+  : Gtk::Dialog("Calibration: " + joystick.get_name(), parent),
+    joystick(joystick),
     label("The <i>center</i> values are the minimum and the maximum values of the deadzone. "
           "The <i>min</i> and <i>max</i> values refer to the outer values. You have to unplug "
           "your joystick or reboot to reset the values to their original default."),
     axis_frame("Axis"),
     axis_table(joystick.get_axis_count() + 1, 5),
-    buttonbox(Gtk::BUTTONBOX_SPREAD),
-    raw_button(Gtk::Stock::CLEAR),
-    calibration_button(Gtk::Stock::PROPERTIES),
-    apply_button(Gtk::Stock::APPLY)
+    calibration_button(Gtk::Stock::PROPERTIES)
 {
-  apply_button.set_tooltip_text("Apply the current configuration to the joydev device");
-  raw_button.set_tooltip_text("Clear all calibration data and report raw device events");
-  calibration_button.set_tooltip_text("Run the calibration wizard");
+  orig_calibration_data = joystick.get_calibration();
 
   set_border_width(5);
   axis_frame.set_border_width(5);
@@ -46,7 +42,7 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
 
   label.set_use_markup(true);
   label.set_line_wrap();
-  pack_start(label, Gtk::PACK_SHRINK);
+  get_vbox()->pack_start(label, Gtk::PACK_SHRINK);
 
   axis_table.attach(*Gtk::manage(new Gtk::Label("Axis")), 0, 1, 0, 1);
 
@@ -69,6 +65,12 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
       Gtk::SpinButton&  range_max  = *Gtk::manage(new Gtk::SpinButton(*Gtk::manage(data.range_max  = new Gtk::Adjustment(0, -32768, 32767))));
       Gtk::CheckButton& invert     = *(data.invert = Gtk::manage(new Gtk::CheckButton()));
 
+      center_min.signal_value_changed().connect(sigc::mem_fun(this, &JoystickCalibrationWidget::on_apply));
+      center_max.signal_value_changed().connect(sigc::mem_fun(this, &JoystickCalibrationWidget::on_apply));
+      range_min.signal_value_changed().connect(sigc::mem_fun(this, &JoystickCalibrationWidget::on_apply));
+      range_max.signal_value_changed().connect(sigc::mem_fun(this, &JoystickCalibrationWidget::on_apply));
+      invert.signal_clicked().connect(sigc::mem_fun(this, &JoystickCalibrationWidget::on_apply));
+
       center_min.set_tooltip_text("The minimal value of the dead zone");
       center_max.set_tooltip_text("The maximum value of the dead zone");
       range_min.set_tooltip_text("The minimal position reachable");
@@ -89,31 +91,28 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
       axis_table.attach(invert, 5, 6, i+1, i+2, Gtk::SHRINK, Gtk::SHRINK);
     }
 
-  buttonbox.add(raw_button);
-  //buttonbox.add(calibration_button);
-  buttonbox.add(apply_button);
-
+  add_button(Gtk::Stock::REVERT_TO_SAVED,  2);
+  add_button(Gtk::Stock::CLEAR,  1);
+  
   axis_frame.add(axis_table);
 
-  pack_start(axis_frame, Gtk::PACK_EXPAND_WIDGET);
-  pack_start(buttonbox, Gtk::PACK_SHRINK);
+  get_vbox()->pack_start(axis_frame, Gtk::PACK_EXPAND_WIDGET);
+  
+  signal_response().connect(sigc::mem_fun(this, &JoystickCalibrationWidget::on_response));
 
-  raw_button.signal_clicked().connect(sigc::mem_fun(this, &JoystickCalibrationWidget::on_clear));
-  apply_button.signal_clicked().connect(sigc::mem_fun(this, &JoystickCalibrationWidget::on_calibrate));
-
-  on_refresh();
+  update_with(orig_calibration_data);
 }
 
 void
 JoystickCalibrationWidget::on_clear()
 {
   joystick.clear_calibration();  
+  update_with(joystick.get_calibration());
 }
 
 void
-JoystickCalibrationWidget::on_refresh()
+JoystickCalibrationWidget::update_with(const std::vector<Joystick::CalibrationData>& data)
 {
-  const std::vector<Joystick::CalibrationData>& data = joystick.get_calibration();
   assert(data.size() == calibration_data.size());
   
   for(int i = 0; i < (int)data.size(); ++i)
@@ -127,7 +126,7 @@ JoystickCalibrationWidget::on_refresh()
 }
 
 void
-JoystickCalibrationWidget::on_calibrate()
+JoystickCalibrationWidget::on_apply()
 {
   std::vector<Joystick::CalibrationData> data(calibration_data.size());
   
@@ -142,6 +141,23 @@ JoystickCalibrationWidget::on_calibrate()
     }
 
   joystick.set_calibration(data);
+}
+
+void
+JoystickCalibrationWidget::on_response(int i)
+{
+  if (i == 0)
+    {
+      hide();
+    }
+  else if (i == 1)
+    {
+      on_clear();
+    }
+  else if (i == 2)
+    {
+      update_with(orig_calibration_data);
+    }
 }
 
 /* EOF */

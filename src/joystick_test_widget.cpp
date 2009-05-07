@@ -164,18 +164,18 @@ JoystickTestWidget::button_move(int number, bool value)
 void
 JoystickTestWidget::on_calibrate()
 {
-  Gtk::Dialog dialog("Calibration: " + joystick.get_name());
-  dialog.get_vbox()->add(*Gtk::manage(new JoystickCalibrationWidget(joystick)));
+  // FIXME: Memleak
+  JoystickCalibrationWidget& dialog = *Gtk::manage(new JoystickCalibrationWidget(joystick, *this));
   dialog.add_button(Gtk::Stock::CLOSE, 0);
   dialog.show_all();
-  dialog.run();
 }
 
 void
 JoystickTestWidget::on_mapping()
 {
+  // FIXME: Memleak
   Gtk::Dialog dialog("Mapping: " + joystick.get_name());
-  dialog.get_vbox()->add(*Gtk::manage(new JoystickMapWidget(joystick)));
+  dialog.get_vbox()->add(*(new JoystickMapWidget(joystick)));
   dialog.add_button(Gtk::Stock::CLOSE, 0);
   dialog.show_all();
   dialog.run();

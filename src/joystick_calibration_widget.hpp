@@ -23,11 +23,11 @@
 #include <gtkmm/frame.h>
 #include <gtkmm/label.h>
 #include <gtkmm/table.h>
-#include <gtkmm/buttonbox.h>
+#include <gtkmm/dialog.h>
 
-class Joystick;
+#include "joystick.hpp"
 
-class JoystickCalibrationWidget : public Gtk::VBox
+class JoystickCalibrationWidget : public Gtk::Dialog
 {
 private:
   Joystick& joystick;
@@ -35,10 +35,7 @@ private:
   Gtk::Label label;
   Gtk::Frame axis_frame;
   Gtk::Table  axis_table;
-  Gtk::HButtonBox buttonbox;
-  Gtk::Button raw_button;
   Gtk::Button calibration_button;
-  Gtk::Button apply_button;
 
   struct CalibrationData {
     Gtk::CheckButton* invert;
@@ -49,15 +46,17 @@ private:
   };
 
   std::vector<CalibrationData> calibration_data;
+  std::vector<Joystick::CalibrationData> orig_calibration_data;
 
 public:
-  JoystickCalibrationWidget(Joystick& joystick);
+  JoystickCalibrationWidget(Joystick& joystick, Gtk::Window& parent);
+
+  void update_with(const std::vector<Joystick::CalibrationData>& data);
 
   void on_clear();
   void on_apply();
-  void on_refresh();
-  void on_calibrate();
-  
+
+  void on_response(int i);
 private:
   JoystickCalibrationWidget(const JoystickCalibrationWidget&);
   JoystickCalibrationWidget& operator=(const JoystickCalibrationWidget&);
