@@ -41,6 +41,7 @@ private:
 public:
   struct CalibrationData {
     bool calibrate;
+    bool invert;
     int  center_min;
     int  center_max;
     int  range_min;

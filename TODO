@@ -1,20 +1,23 @@
+==========
+[[ TODO ]]
+==========
+
+* make AxisWidget, ThrottleWidget and friends look good
+
 * swapping axis must also swap calibration data
 
-* make AxisWidget, ThrottleWidget and friends pretty
+* figure out a way to center the Calibration/Invert Checkbutton
 
-* figure out a way to center Calibration/Invert Checkbutton
+* provide additional support for SDL and evdev devices
 
-* implement axis inversion
+
+===================
+[[ Hard Problems ]]
+===================
 
-* implement Settings/Clear, Settings/Apply
-
-* axis names very buggy:
-  - ABS_RZ instead of ABS_RUDDER (Sidewinder2)
-  - ABS_RZ,ABS_THROTTLE instead of ABS_RX,ABS_RY (Thrustmaster gamepad)
-  - BTN_TL2,BTN_TR2 instead of BTN_START, BTN_MODE (Sidewinder gamepad)
-  - ...
-
-* Joystick name is (iManufacturer + iProduct), but thats ugly:
+* Joystick name of a joydev is taken form USB and build up of
+  (iManufacturer + iProduct), but thats ugly, (idVendor + idProduct)
+  would give much prettier name:
 
   idVendor           0x045e Microsoft Corp.
   idProduct          0x0007 SideWinder Game Pad
@@ -22,11 +25,19 @@
   iManufacturer           1 Microsoft<AE>
   iProduct                2 Microsoft<AE> SideWinder<AE> Game Pad USB
 
-* provide additional support for SDL and evdev devices
+* axis names very buggy:
+  - ABS_RZ instead of ABS_RUDDER (Sidewinder2)
+  - ABS_RZ,ABS_THROTTLE instead of ABS_RX,ABS_RY (Thrustmaster gamepad)
+  - BTN_TL2,BTN_TR2 instead of BTN_START, BTN_MODE (Sidewinder gamepad)
+  - ...
 
 * create a small database with most common joysticks, maybe add a way
   how a user can automatically submit his joystick profile, to ease
   the database generation
+
+==================
+[[ Random Notes ]]
+==================
 
 * jscal:
 
@@ -52,11 +63,6 @@ type == 1 -> coef[0:4] used
 
 type == 0 -> "none (raw)"
 type == 1 -> "broken line"
-
-coef[0] = 
-coef[1] = 
-coef[2] = 
-coef[3] =  
 
 # Original
 jscal -s 6,1,0,-15,15,5534751,5534751,1,0,-15,15,5534751,5534751,1,0,-15,15,5534751,5534751,1,0,112,142,5534751,5534751,1,0,0,0,536870912,536870912,1,0,0,0,536870912,536870912 /dev/input/js0

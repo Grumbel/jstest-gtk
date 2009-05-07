@@ -68,7 +68,7 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
       Gtk::SpinButton&  center_max = *Gtk::manage(new Gtk::SpinButton(*Gtk::manage(data.center_max = new Gtk::Adjustment(0, -32768, 32767))));
       Gtk::SpinButton&  range_min  = *Gtk::manage(new Gtk::SpinButton(*Gtk::manage(data.range_min  = new Gtk::Adjustment(0, -32768, 32767))));
       Gtk::SpinButton&  range_max  = *Gtk::manage(new Gtk::SpinButton(*Gtk::manage(data.range_max  = new Gtk::Adjustment(0, -32768, 32767))));
-      Gtk::CheckButton& invert    = *Gtk::manage(new Gtk::CheckButton());
+      Gtk::CheckButton& invert     = *(data.invert = Gtk::manage(new Gtk::CheckButton()));
 
       center_min.set_tooltip_text("The minimal value of the dead zone");
       center_max.set_tooltip_text("The maximum value of the dead zone");
@@ -117,10 +117,9 @@ JoystickCalibrationWidget::on_refresh()
   const std::vector<Joystick::CalibrationData>& data = joystick.get_calibration();
   assert(data.size() == calibration_data.size());
   
-  std::cout << data.size()<< std::endl;
-
   for(int i = 0; i < (int)data.size(); ++i)
     {
+      calibration_data[i].invert->set_active(data[i].invert);
       calibration_data[i].center_min->set_value(data[i].center_min);
       calibration_data[i].center_max->set_value(data[i].center_max);
       calibration_data[i].range_min->set_value(data[i].range_min);
@@ -136,6 +135,7 @@ JoystickCalibrationWidget::on_calibrate()
   for(int i = 0; i < (int)data.size(); ++i)
     {
       data[i].calibrate  = true;
+      data[i].invert     = calibration_data[i].invert->get_active();
       data[i].center_min = calibration_data[i].center_min->get_value();
       data[i].center_max = calibration_data[i].center_max->get_value();
       data[i].range_min  = calibration_data[i].range_min->get_value();

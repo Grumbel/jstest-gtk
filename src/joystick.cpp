@@ -173,15 +173,24 @@ Joystick::get_joysticks()
   return joysticks;
 }
 
-Joystick::CalibrationData corr2cal(const struct js_corr& corr)
+Joystick::CalibrationData corr2cal(const struct js_corr& corr_)
 {
+  struct js_corr corr = corr_;
+
   Joystick::CalibrationData data;
 
   if (corr.type)
     {
       data.calibrate = true;
+      data.invert    = (corr.coef[2] < 0 && corr.coef[3] < 0);
       data.center_min = corr.coef[0];
       data.center_max = corr.coef[1];
+
+      if (data.invert)
+        {
+          corr.coef[2] = -corr.coef[2];
+          corr.coef[3] = -corr.coef[3];
+        }
 
       // Need to use double and rint(), since calculation doesn't end
       // up on clean integer positions (i.e. 0.9999 can happen)
@@ -191,6 +200,7 @@ Joystick::CalibrationData corr2cal(const struct js_corr& corr)
   else
     {
       data.calibrate  = false;
+      data.invert     = false;
       data.center_min = 0;
       data.center_max = 0;
       data.range_min  = 0;
@@ -234,6 +244,12 @@ struct js_corr cal2corr(const Joystick::CalibrationData& data)
 
       corr.coef[2] = (32767 * 16384) / (data.center_min - data.range_min);
       corr.coef[3] = (32767 * 16384) / (data.range_max  - data.center_max);
+
+      if (data.invert)
+        {
+          corr.coef[2] = -corr.coef[2];
+          corr.coef[3] = -corr.coef[3];
+        }
     }
   else
     {
@@ -270,6 +286,7 @@ Joystick::clear_calibration()
       CalibrationData cal;
 
       cal.calibrate  = false;
+      cal.invert     = false;
       cal.center_min = 0;
       cal.center_max = 0;
       cal.range_min  = 0;

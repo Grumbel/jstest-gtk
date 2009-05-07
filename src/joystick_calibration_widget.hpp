@@ -42,6 +42,7 @@ private:
   Gtk::Button apply_button;
 
   struct CalibrationData {
+    Gtk::CheckButton* invert;
     Gtk::Adjustment* center_min;
     Gtk::Adjustment* center_max;
     Gtk::Adjustment* range_min;
