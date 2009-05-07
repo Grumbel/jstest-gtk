@@ -1,6 +1,12 @@
-* implement Settings/Clear, Settings/Apply
+* swapping axis must also swap calibration data
 
-* implement Calibration/Apply, Calibration/Clear, Calibration/Refresh
+* make AxisWidget, ThrottleWidget and friends pretty
+
+* figure out a way to center Calibration/Invert Checkbutton
+
+* implement axis inversion
+
+* implement Settings/Clear, Settings/Apply
 
 * axis names very buggy:
   - ABS_RZ instead of ABS_RUDDER (Sidewinder2)

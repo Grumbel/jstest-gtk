@@ -26,8 +26,8 @@ JoystickMapWidget::JoystickMapWidget(Joystick& joystick)
   : label("Change the order of axis and button. The order applies directly to the "
           "joystick kernel driver, so it will work in any game, it is however not "
           "persistant across reboots."),
-    axis_map("Axis"),
-    button_map("Button")
+    axis_map(joystick, RemapWidget::REMAP_AXIS),
+    button_map(joystick, RemapWidget::REMAP_BUTTON)
 {
   set_border_width(5);
   label.set_line_wrap();
@@ -41,13 +41,13 @@ JoystickMapWidget::JoystickMapWidget(Joystick& joystick)
   const std::vector<int>& button_mapping = joystick.get_button_mapping();
   for(std::vector<int>::const_iterator i = button_mapping.begin(); i != button_mapping.end(); ++i)
     {
-      button_map.add(*i, btn2str(*i));
+      button_map.add_entry(*i, btn2str(*i));
     }
 
   const std::vector<int>& axis_mapping = joystick.get_axis_mapping();
   for(std::vector<int>::const_iterator i = axis_mapping.begin(); i != axis_mapping.end(); ++i)
     {
-      axis_map.add(*i, abs2str(*i));
+      axis_map.add_entry(*i, abs2str(*i));
     }
 }
 

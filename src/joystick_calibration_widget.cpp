@@ -27,7 +27,8 @@
 JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
   : joystick(joystick),
     label("The <i>center</i> values are the minimum and the maximum values of the deadzone. "
-          "The <i>min</i> and <i>max</i> values refer to the outer values."),
+          "The <i>min</i> and <i>max</i> values refer to the outer values. You have to unplug "
+          "or reboot to reset the values to their original default."),
     axis_frame("Axis"),
     axis_table(joystick.get_axis_count() + 1, 5),
     refresh_button(Gtk::Stock::REFRESH),
@@ -35,6 +36,11 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
     calibration_button(Gtk::Stock::PROPERTIES),
     apply_button(Gtk::Stock::APPLY)
 {
+  refresh_button.set_tooltip_text("Load the current settings from the joydev device");
+  apply_button.set_tooltip_text("Apply the current configuration to the joydev device");
+  raw_button.set_tooltip_text("Clear all calibration data and report raw device events");
+  calibration_button.set_tooltip_text("Run the calibration wizard");
+
   set_border_width(5);
   axis_frame.set_border_width(5);
   axis_table.set_border_width(5);
@@ -45,21 +51,29 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
 
   axis_table.attach(*Gtk::manage(new Gtk::Label("Axis")), 0, 1, 0, 1);
 
-  axis_table.attach(*Gtk::manage(new Gtk::Label("Center Min")), 1, 2, 0, 1);
-  axis_table.attach(*Gtk::manage(new Gtk::Label("Center Max")), 2, 3, 0, 1);
+  axis_table.attach(*Gtk::manage(new Gtk::Label("CenterMin")), 1, 2, 0, 1);
+  axis_table.attach(*Gtk::manage(new Gtk::Label("CenterMax")), 2, 3, 0, 1);
   
-  axis_table.attach(*Gtk::manage(new Gtk::Label("Range Min")), 3, 4, 0, 1);
-  axis_table.attach(*Gtk::manage(new Gtk::Label("Range Max")), 4, 5, 0, 1);
+  axis_table.attach(*Gtk::manage(new Gtk::Label("RangeMin")), 3, 4, 0, 1);
+  axis_table.attach(*Gtk::manage(new Gtk::Label("RangeMax")), 4, 5, 0, 1);
+
+  axis_table.attach(*Gtk::manage(new Gtk::Label("Invert")), 5, 6, 0, 1);
   
   axis_table.set_col_spacing(2, 8);
   for(int i = 0; i < joystick.get_axis_count(); ++i)
     {
       CalibrationData data;
       
-      Gtk::SpinButton& center_min = *Gtk::manage(new Gtk::SpinButton(*Gtk::manage(data.center_min = new Gtk::Adjustment(0, -32768, 32767))));
-      Gtk::SpinButton& center_max = *Gtk::manage(new Gtk::SpinButton(*Gtk::manage(data.center_max = new Gtk::Adjustment(0, -32768, 32767))));
-      Gtk::SpinButton& outer_min  = *Gtk::manage(new Gtk::SpinButton(*Gtk::manage(data.range_min  = new Gtk::Adjustment(0, -32768, 32767))));
-      Gtk::SpinButton& outer_max  = *Gtk::manage(new Gtk::SpinButton(*Gtk::manage(data.range_max  = new Gtk::Adjustment(0, -32768, 32767))));
+      Gtk::SpinButton&  center_min = *Gtk::manage(new Gtk::SpinButton(*Gtk::manage(data.center_min = new Gtk::Adjustment(0, -32768, 32767))));
+      Gtk::SpinButton&  center_max = *Gtk::manage(new Gtk::SpinButton(*Gtk::manage(data.center_max = new Gtk::Adjustment(0, -32768, 32767))));
+      Gtk::SpinButton&  range_min  = *Gtk::manage(new Gtk::SpinButton(*Gtk::manage(data.range_min  = new Gtk::Adjustment(0, -32768, 32767))));
+      Gtk::SpinButton&  range_max  = *Gtk::manage(new Gtk::SpinButton(*Gtk::manage(data.range_max  = new Gtk::Adjustment(0, -32768, 32767))));
+      Gtk::CheckButton& invert    = *Gtk::manage(new Gtk::CheckButton());
+
+      center_min.set_tooltip_text("The minimal value of the dead zone");
+      center_max.set_tooltip_text("The maximum value of the dead zone");
+      range_min.set_tooltip_text("The minimal position reachable");
+      range_max.set_tooltip_text("The maximum position reachable");
 
       calibration_data.push_back(data);
 
@@ -70,8 +84,10 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
       axis_table.attach(center_min, 1, 2, i+1, i+2);
       axis_table.attach(center_max, 2, 3, i+1, i+2);
 
-      axis_table.attach(outer_min, 3, 4, i+1, i+2);
-      axis_table.attach(outer_max, 4, 5, i+1, i+2);
+      axis_table.attach(range_min, 3, 4, i+1, i+2);
+      axis_table.attach(range_max, 4, 5, i+1, i+2);
+
+      axis_table.attach(invert, 5, 6, i+1, i+2);
     }
 
   buttonbox.add(refresh_button);

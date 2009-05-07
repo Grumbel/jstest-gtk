@@ -223,7 +223,9 @@ struct js_corr cal2corr(const Joystick::CalibrationData& data)
 {
   struct js_corr corr;
 
-  if (data.calibrate)
+  if (data.calibrate &&
+      (data.center_min - data.range_min)  != 0 &&
+      (data.range_max  - data.center_max) != 0)
     {
       corr.type = 1;
       corr.prec = 0;
@@ -312,6 +314,36 @@ Joystick::get_axis_mapping()
       std::vector<int> mapping;
       std::copy(axismap, axismap + axis_count, std::back_inserter(mapping));
       return mapping;
+    }
+}
+
+void
+Joystick::set_button_mapping(const std::vector<int>& mapping)
+{
+  uint16_t btnmap[KEY_MAX - BTN_MISC + 1];
+
+  std::copy(mapping.begin(), mapping.end(), btnmap);
+
+  if (ioctl(fd, JSIOCSBTNMAP, btnmap) < 0)
+    {
+      std::ostringstream str;
+      str << filename << ": " << strerror(errno);
+      throw std::runtime_error(str.str());
+    }
+}
+
+void
+Joystick::set_axis_mapping(const std::vector<int>& mapping)
+{
+  uint8_t axismap[ABS_MAX + 1];
+
+  std::copy(mapping.begin(), mapping.end(), axismap);
+  
+  if (ioctl(fd, JSIOCSAXMAP, axismap) < 0)
+    {
+      std::ostringstream str;
+      str << filename << ": " << strerror(errno);
+      throw std::runtime_error(str.str());
     }
 }
 
