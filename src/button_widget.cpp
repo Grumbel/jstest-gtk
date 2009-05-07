@@ -18,7 +18,8 @@
 
 #include "button_widget.hpp"
 
-ButtonWidget::ButtonWidget(int width, int height)
+ButtonWidget::ButtonWidget(int width, int height, const std::string& name_)
+  : name(name_)
 {
   set_size_request(width, height);
 }
@@ -39,11 +40,16 @@ ButtonWidget::on_expose_event(GdkEventExpose* event)
       cr->set_line_width(1.0);
       cr->translate(5, 5);
       cr->rectangle(0, 0, w, h);
-
+      
       if (down)
         cr->fill_preserve();
 
       cr->stroke();
+
+      if (down)
+        cr->set_source_rgb(1.0, 1.0, 1.0);
+      cr->move_to(w/2-4, h/2+3);
+      cr->show_text(name);
     }
 
   return true;

@@ -24,10 +24,11 @@
 class ButtonWidget : public Gtk::DrawingArea
 {
 private:
+  std::string name;
   bool down;
 
 public:
-  ButtonWidget(int width, int height);
+  ButtonWidget(int width, int height, const std::string& name);
 
   bool on_expose_event(GdkEventExpose* event);
   void set_down(bool t);

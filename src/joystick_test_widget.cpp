@@ -79,7 +79,9 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
       int x = i % 8;
       int y = i / 8;
 
-      ButtonWidget& button = *Gtk::manage(new ButtonWidget(32, 32));
+      std::ostringstream str;
+      str << i;
+      ButtonWidget& button = *Gtk::manage(new ButtonWidget(32, 32, str.str()));
       button_table.attach(button, x, x+1, y, y+1, Gtk::EXPAND, Gtk::EXPAND);
       buttons.push_back(&button);
     }

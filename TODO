@@ -2,12 +2,13 @@
 [[ TODO ]]
 ==========
 
+* Axes display should use ABS_X/Y and friends instead of raw axis
+  numbers
+
 * add better command line support
 
 * add some more checks to catch invalid button/axis mappings supplied
   to the joydev interface
-
-* make AxisWidget, ThrottleWidget and friends look good
 
 * swapping axis must also swap calibration data
 
