@@ -98,6 +98,8 @@ Joystick::Joystick(const std::string& filename_)
           //std::cout << "Button: " << i << " -> " << (int)btnmap[i] << std::endl;
         }
     }
+
+  orig_calibration_data = get_calibration();
   
   connection = Glib::signal_io().connect(sigc::mem_fun(this, &Joystick::on_in), fd, Glib::IO_IN);
 }
@@ -297,6 +299,12 @@ Joystick::clear_calibration()
     }
 
   set_calibration(data);
+}
+
+void
+Joystick::reset_calibration()
+{
+  set_calibration(orig_calibration_data);
 }
 
 std::vector<int>

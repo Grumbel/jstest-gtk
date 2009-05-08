@@ -48,7 +48,12 @@ ButtonWidget::on_expose_event(GdkEventExpose* event)
 
       if (down)
         cr->set_source_rgb(1.0, 1.0, 1.0);
-      cr->move_to(w/2-4, h/2+3);
+
+      // FIXME: There are better ways to center text
+      if (name.size() == 2)
+        cr->move_to(w/2-6, h/2+3);
+      else
+        cr->move_to(w/2-4, h/2+3);
       cr->show_text(name);
     }
 

@@ -19,6 +19,7 @@
 #include <iostream>
 #include <gtkmm/main.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "joystick_test_widget.hpp"
 #include "joystick_list_widget.hpp"
@@ -99,8 +100,26 @@ Main::main(int argc, char** argv)
       if (strcmp("--help", argv[i]) == 0 ||
           strcmp("-h", argv[i]) == 0)
         {
-          std::cout << "Usage: " << argv[0] << " [DEVICE]..." << std::endl;
+          std::cout << "Usage: " << argv[0] << " [OPTIONS]... [DEVICE]...\n"
+                    << "A graphical joystick tester.\n"
+                    << "\n"
+                    << "Options:\n"
+                    << "  -h, --help     Display this help and exit\n"
+                    << "  -v, --version  Display version information and exit\n"
+                    << "\n"
+                    << "Report bugs to Ingo Ruhnke <grumbel@gmx.de>.\n";
           return 0;
+        }
+      else if (strcmp("--version", argv[i]) == 0 ||
+               strcmp("-v", argv[i]) == 0)
+        {
+          std::cout << "jstest-gtk 0.1.0" << std::endl;
+          return 0;
+        }
+      else if (argv[i][0] == '-')
+        {
+          std::cout << "Error: " << argv[0] << ": unrecognized option '" << argv[i] << "'" << std::endl;
+          return EXIT_FAILURE;
         }
       else
         {
@@ -128,8 +147,16 @@ Main::main(int argc, char** argv)
 
 int main(int argc, char** argv)
 {
-  Main app;
-  return app.main(argc, argv);
+  try 
+    {
+      Main app;
+      return app.main(argc, argv);
+    } 
+  catch(std::exception& err) 
+    {
+      std::cout << "Error: " << err.what() << std::endl;
+      return EXIT_FAILURE;
+    }
 }
 
 /* EOF */

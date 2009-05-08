@@ -1,13 +1,24 @@
+Pre Release Testing:
+====================
+
+* check the version number
+
+VERSION="0.4.6"
+TAG="v${VERSION}"
+git tag -s  "${TAG}" -m "jstest-gtk ${TAG}" 
+git-archive --format=tar --prefix="jstest-gtk-${VERSION}/" ${TAG} | bzip2 -c > /tmp/jstest-gtk-${VERSION}.tar.bz2
+git push --tags
+
 ==========
 [[ TODO ]]
 ==========
 
-* center font in ButtonWidget
+* fix copyright header
 
-* Axes display should use ABS_X/Y and friends instead of raw axis
+* center font in ButtonWidget (current way is a dirty hack)
+
+* AxesDisplay should use ABS_X/Y and friends instead of raw axis
   numbers to guess which layout is correct
-
-* add better command line support
 
 * add some more checks to catch invalid button/axis mappings supplied
   to the joydev interface

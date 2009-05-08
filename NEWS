@@ -1,0 +1,11 @@
+jstest-gtk 0.1.0 (2009-05-08)
+=============================
+
+* initial release
+* displays list of available joysticks
+* displays current button and axis state
+* manual joystick calibration
+* remapping of axis
+* remapping of buttons
+
+# EOF #

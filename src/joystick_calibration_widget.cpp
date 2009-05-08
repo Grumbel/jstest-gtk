@@ -36,8 +36,6 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
 {
   set_has_separator(false);
 
-  orig_calibration_data = joystick.get_calibration();
-
   set_border_width(5);
   axis_frame.set_border_width(5);
   axis_table.set_border_width(5);
@@ -103,7 +101,7 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
   
   signal_response().connect(sigc::mem_fun(this, &JoystickCalibrationWidget::on_response));
 
-  update_with(orig_calibration_data);
+  update_with(joystick.get_calibration());
 }
 
 void
@@ -159,7 +157,7 @@ JoystickCalibrationWidget::on_response(int i)
     }
   else if (i == 2)
     {
-      update_with(orig_calibration_data);
+      joystick.reset_calibration();
     }
 }
 

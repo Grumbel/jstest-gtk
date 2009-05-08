@@ -28,16 +28,6 @@
 
 class Joystick
 {
-private:
-  int fd;
-
-  std::string filename;
-  Glib::ustring name;
-  int axis_count;
-  int button_count;
-
-  sigc::connection connection;
-
 public:
   struct CalibrationData {
     bool calibrate;
@@ -48,6 +38,19 @@ public:
     int  range_max;
   };
 
+private:
+  int fd;
+
+  std::string filename;
+  Glib::ustring name;
+  int axis_count;
+  int button_count;
+
+  std::vector<CalibrationData> orig_calibration_data;
+
+  sigc::connection connection;
+
+public:
   Joystick(const std::string& filename);
   ~Joystick();
 
@@ -68,6 +71,7 @@ public:
 
   std::vector<CalibrationData> get_calibration();
   void set_calibration(const std::vector<CalibrationData>& data);
+  void reset_calibration();
 
   /** Clears all calibration data, note that this will mean raw USB
       input values, not values scaled to -32767/32767 */

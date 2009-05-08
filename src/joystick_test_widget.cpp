@@ -161,6 +161,7 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
     }
   else
     {
+      std::cout << "Warning: unknown joystick, not displaying graphical representation." << std::endl;
     }
 
   axis_vbox.pack_start(stick_hbox, Gtk::PACK_SHRINK);

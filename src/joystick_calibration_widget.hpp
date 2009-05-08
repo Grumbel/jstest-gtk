@@ -46,7 +46,6 @@ private:
   };
 
   std::vector<CalibrationData> calibration_data;
-  std::vector<Joystick::CalibrationData> orig_calibration_data;
 
 public:
   JoystickCalibrationWidget(Joystick& joystick);
