@@ -2,8 +2,9 @@
 ================
 
 jstest-gtk is a simple joystick tester based on Gtk+. It provides you
-with a list of attached joysticks as well as the ability to display
-which buttons and axis are pressed.
+with a list of attached joysticks, a way to display which buttons and
+axis are pressed, a way to remap axis and buttons and a way to
+calibrate your joystick.
 
 You can find the latest version at:
 
@@ -17,9 +18,11 @@ Questions, comments and bug reporst can be given to:
 [[ Compiling ]]
 ===============
 
-Make sure you have the following pieces of software installed:
+Make sure you have the following pieces of software installed (they
+are part of most distributions):
 
  * scons
+ * sigc++
  * gtkmm
 
 You can compile it by typing:
@@ -47,10 +50,13 @@ useful for example when a game expects the dpad to be on axis 0 and 1,
 while in reality it is often on axis 4 and 5 on a dual-analogstick
 gamepad.
 
-While most modern joysticks do not need to be calibrated, the
-calibration dialog can still be useful, as it allows you to manipulate
-some low level details on how the raw axis values are mapped to the
-joystick device. For example you can inverse an axis, disable an axis
-or remove its deadzone, to gain more fine control on small movements.
+The calibration dialog allows you to manipulate some low level details
+on how the raw axis values are mapped to the joystick device. For
+example you can inverse an axis, disable an axis or remove its
+deadzone, to gain more fine control on small movements. This is
+especially useful as the default calibration values for most joysticks
+give it a far bigger deadzone then needed, thus reducing your ability
+for fine movements.
+
 
 # EOF #
