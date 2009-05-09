@@ -18,7 +18,6 @@
 
 #include <X11/Xlib.h>
 #include <linux/input.h>
-#include <boost/lexical_cast.hpp>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
@@ -686,8 +685,12 @@ bool str2event(const std::string& name, int& type, int& code)
     }
   else if (name.compare(0, 2, "JS") == 0)
     {
+      int int_value = 0;
+      std::istringstream(name.substr(3)) >> int_value;
+
       type = EV_KEY;
-      code = BTN_JOYSTICK + boost::lexical_cast<int>(name.substr(3));
+      code = BTN_JOYSTICK + int_value;
+
       return true;
     }
   else if (name.compare(0, 3, "KEY") == 0 ||

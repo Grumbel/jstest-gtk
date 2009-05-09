@@ -1,3 +1,9 @@
+jstest-gtk 0.1.1 (2009-05-??)
+=============================
+
+* removed accidental boost dependency
+
+
 jstest-gtk 0.1.0 (2009-05-08)
 =============================
 
@@ -7,5 +13,6 @@ jstest-gtk 0.1.0 (2009-05-08)
 * manual joystick calibration
 * remapping of axis
 * remapping of buttons
+
 
 # EOF #
