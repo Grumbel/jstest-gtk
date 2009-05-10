@@ -50,9 +50,19 @@ public:
     typename std::map<std::string, Enum>::const_iterator i = string2enum.find(str);
     if (i == string2enum.end())
       {
-        std::ostringstream out;
-        out << "Couldn't convert '" << str << "' to enum " << name << std::endl;
-        throw std::runtime_error(out.str());
+        std::istringstream in(str);
+        Enum tmp;
+        in >> tmp;
+        if (in.fail())
+          {
+            std::ostringstream out;
+            out << "Couldn't convert '" << str << "' to enum " << name << std::endl;
+            throw std::runtime_error(out.str());
+          }
+        else
+          {
+            return tmp;
+          }
       }
     else
       {
@@ -64,9 +74,11 @@ public:
     typename std::map<Enum, std::string>::const_iterator i = enum2string.find(v);
     if (i == enum2string.end())
       {
+        // If we can't convert symbolic, just convert the integer to a
+        // string
         std::ostringstream out;
-        out << "Couldn't convert '" << v << "' to string" << std::endl;
-        throw std::runtime_error(out.str());
+        out << v;
+        return out.str();
       }
     else
       {

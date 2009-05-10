@@ -46,13 +46,17 @@ JoystickMapWidget::JoystickMapWidget(Joystick& joystick)
   const std::vector<int>& button_mapping = joystick.get_button_mapping();
   for(std::vector<int>::const_iterator i = button_mapping.begin(); i != button_mapping.end(); ++i)
     {
-      button_map.add_entry(*i, btn2str(*i));
+      std::ostringstream s;
+      s << (i - button_mapping.begin()) << ": " << btn2str(*i);
+      button_map.add_entry(*i, s.str());
     }
 
   const std::vector<int>& axis_mapping = joystick.get_axis_mapping();
   for(std::vector<int>::const_iterator i = axis_mapping.begin(); i != axis_mapping.end(); ++i)
     {
-      axis_map.add_entry(*i, abs2str(*i));
+      std::ostringstream s;
+      s << (i - axis_mapping.begin()) << ": " << abs2str(*i);
+      axis_map.add_entry(*i, s.str());
     }
 
   signal_response().connect(sigc::mem_fun(this, &JoystickMapWidget::on_response));

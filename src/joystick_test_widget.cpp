@@ -37,7 +37,6 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
           Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER),
     axis_frame("Axes"),
     button_frame("Buttons"),
-    axis_table(joystick.get_axis_count(), 2),
     button_table((joystick.get_button_count()-1) / 8 + 1, 8),
     mapping_button("Mapping"),
     calibration_button("Calibration"),
@@ -60,16 +59,35 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
   button_table.set_spacings(8);
   buttonbox.set_border_width(5);
 
+  // Use two columns for large number of axes
+  if (joystick.get_axis_count() > 15)
+    axis_table.resize((joystick.get_axis_count()+1)/2, 4);
+  else
+    axis_table.resize(joystick.get_axis_count(), 2);
+      
   for(int i = 0; i < joystick.get_axis_count(); ++i)
     {
       std::ostringstream str;
       str << "Axis " << i << ": ";
       Gtk::Label& label = *Gtk::manage(new Gtk::Label(str.str()));
-      axis_table.attach(label, 0, 1, i, i+1, Gtk::SHRINK, Gtk::FILL);
 
       Gtk::ProgressBar& progressbar = *Gtk::manage(new Gtk::ProgressBar());
       progressbar.set_fraction(0.5);
-      axis_table.attach(progressbar, 1, 2, i, i+1, Gtk::FILL|Gtk::EXPAND, Gtk::EXPAND);
+
+      if (i >= (int)axis_table.property_n_rows())
+        {
+          axis_table.attach(label, 2, 3, 
+                            i - axis_table.property_n_rows(), i+1 - axis_table.property_n_rows(),     
+                            Gtk::SHRINK, Gtk::FILL);
+          axis_table.attach(progressbar, 3, 4,
+                            i - axis_table.property_n_rows(), i+1 - axis_table.property_n_rows(), 
+                            Gtk::FILL|Gtk::EXPAND, Gtk::EXPAND);
+        }
+      else
+        {
+          axis_table.attach(label, 0, 1, i, i+1, Gtk::SHRINK, Gtk::FILL);
+          axis_table.attach(progressbar, 1, 2, i, i+1, Gtk::FILL|Gtk::EXPAND, Gtk::EXPAND);
+        }
 
       axes.push_back(&progressbar);
     }
@@ -158,6 +176,24 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
       axis_callbacks[7].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_y_axis));
       axis_callbacks[4].connect(sigc::mem_fun(left_trigger_widget, &ThrottleWidget::set_pos));
       axis_callbacks[5].connect(sigc::mem_fun(right_trigger_widget, &ThrottleWidget::set_pos));
+    }
+  else if (joystick.get_axis_count() == 28) // Playstation 3 Controller
+    {
+      stick_hbox.pack_start(stick1_widget, Gtk::PACK_EXPAND_PADDING);
+      stick_hbox.pack_start(stick2_widget, Gtk::PACK_EXPAND_PADDING);
+      // Not using stick3 for now, as the dpad is 4 axis on the PS3, not 2 (one for each direction)
+      //stick_hbox.pack_start(stick3_widget, Gtk::PACK_EXPAND_PADDING);
+      stick_hbox.pack_start(left_trigger_widget, Gtk::PACK_EXPAND_PADDING);
+      stick_hbox.pack_start(right_trigger_widget, Gtk::PACK_EXPAND_PADDING);
+
+      axis_callbacks[0].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_x_axis));
+      axis_callbacks[1].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_y_axis));
+      axis_callbacks[2].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_x_axis));
+      axis_callbacks[3].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_y_axis));
+      //axis_callbacks[6].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_x_axis));
+      //axis_callbacks[7].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_y_axis));
+      axis_callbacks[12].connect(sigc::mem_fun(left_trigger_widget, &ThrottleWidget::set_pos));
+      axis_callbacks[13].connect(sigc::mem_fun(right_trigger_widget, &ThrottleWidget::set_pos));
     }
   else
     {
