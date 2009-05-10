@@ -13,6 +13,8 @@ git push --tags
 [[ TODO ]]
 ==========
 
+* use while loop in Joystick::update
+
 * don't pop up new dialogs when old ones are still present
 
 * [FEATURE] A simple authomatic calibration method

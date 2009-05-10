@@ -28,13 +28,17 @@ class CalibrateMaximumDialog : public Gtk::Dialog
 {
 private:
   Joystick& joystick;
+  std::vector<Joystick::CalibrationData> orig_data;
   Gtk::Label label;
   sigc::connection connection;
+  std::vector<bool> is_init_axis_state;
+  std::vector<int> min_axis_state;
+  std::vector<int> max_axis_state;
 
 public:
   CalibrateMaximumDialog(Joystick& joystick);
 
-  void on_response();
+  void on_response(int v);
   void on_axis_move(int id, int value);
 
 private:

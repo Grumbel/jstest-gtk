@@ -46,6 +46,7 @@ private:
   int axis_count;
   int button_count;
 
+  std::vector<int> axis_state;
   std::vector<CalibrationData> orig_calibration_data;
 
   sigc::connection connection;
@@ -66,6 +67,8 @@ public:
 
   sigc::signal<void, int, int>  axis_move;
   sigc::signal<void, int, bool> button_move;
+
+  int get_axis_state(int id);
 
   static std::vector<JoystickDescription> get_joysticks();
 

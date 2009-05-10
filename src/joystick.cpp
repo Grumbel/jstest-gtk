@@ -70,33 +70,7 @@ Joystick::Joystick(const std::string& filename_)
           }
         }
 
-      // Axis Mapping
-      uint8_t  axismap[ABS_MAX + 1];
-      if (ioctl(fd, JSIOCGAXMAP, axismap) < 0)
-        {
-          std::ostringstream str;
-          str << filename << ": " << strerror(errno);
-          throw std::runtime_error(str.str());
-        }
-      else
-        {
-          //for(int i = 0; i < num_axis; ++i)
-          // std::cout << "Axis: " << i << " -> " << (int)axismap[i] << std::endl;
-        }
-
-      // Button Mapping
-      uint16_t btnmap[KEY_MAX - BTN_MISC + 1];
-      if (ioctl(fd, JSIOCGBTNMAP, btnmap) < 0)
-        {
-          std::ostringstream str;
-          str << filename << ": " << strerror(errno);
-          throw std::runtime_error(str.str());
-        }
-      else
-        {
-          //for(int i = 0; i < num_button; ++i)
-          //std::cout << "Button: " << i << " -> " << (int)btnmap[i] << std::endl;
-        }
+      axis_state.resize(axis_count);
     }
 
   orig_calibration_data = get_calibration();
@@ -135,6 +109,7 @@ Joystick::update()
       if (event.type & JS_EVENT_AXIS)
         {
           //std::cout << "Axis: " << (int)event.number << " -> " << (int)event.value << std::endl;
+          axis_state[event.number] = event.value;
           axis_move(event.number, event.value);
         }
       else if (event.type & JS_EVENT_BUTTON)
@@ -364,6 +339,15 @@ Joystick::set_button_mapping(const std::vector<int>& mapping)
       str << filename << ": " << strerror(errno);
       throw std::runtime_error(str.str());
     }
+}
+
+int
+Joystick::get_axis_state(int id)
+{
+  if (id >= 0 && id < (int)axis_state.size())
+    return axis_state[id];
+  else
+    return 0;
 }
 
 void

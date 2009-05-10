@@ -22,7 +22,6 @@
 #include <gtkmm/stock.h>
 
 #include "joystick.hpp"
-#include "calibrate_center_dialog.hpp"
 #include "calibrate_maximum_dialog.hpp"
 #include "joystick_calibration_widget.hpp"
 
@@ -33,12 +32,11 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
           "The <i>min</i> and <i>max</i> values refer to the outer values. You have to unplug "
           "your joystick or reboot to reset the values to their original default.\n"
           "\n"
-          "To automatically calibrate your joystick you can press the two buttons below:"),
+          "To run the calibration wizard, press the <i>Calibrate</i> button."),
     axis_frame("Axes"),
     axis_table(joystick.get_axis_count() + 1, 5),
     buttonbox(Gtk::BUTTONBOX_SPREAD),
-    min_calibration_button("Calibrate Center"),
-    max_calibration_button("Calibrate Maximum")
+    calibration_button("Start Calibration")
 {
   set_has_separator(false);
 
@@ -50,12 +48,10 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
   label.set_line_wrap();
   get_vbox()->pack_start(label, Gtk::PACK_SHRINK);
 
-  min_calibration_button.signal_clicked().connect(sigc::mem_fun(this, &JoystickCalibrationWidget::calibrate_center));
-  max_calibration_button.signal_clicked().connect(sigc::mem_fun(this, &JoystickCalibrationWidget::calibrate_max));
-
+  calibration_button.signal_clicked().connect(sigc::mem_fun(this, &JoystickCalibrationWidget::on_calibrate));
+  
   buttonbox.set_border_width(5);
-  buttonbox.add(min_calibration_button);
-  buttonbox.add(max_calibration_button);
+  buttonbox.add(calibration_button);
   get_vbox()->pack_start(buttonbox, Gtk::PACK_SHRINK);
 
   axis_table.attach(*Gtk::manage(new Gtk::Label("Axes")), 0, 1, 0, 1);
@@ -159,16 +155,7 @@ JoystickCalibrationWidget::on_apply()
 }
 
 void
-JoystickCalibrationWidget::calibrate_center()
-{
-  CalibrateCenterDialog dialog(joystick);
-  dialog.show_all();
-  dialog.run();
-  update_with(joystick.get_calibration());
-}
-
-void
-JoystickCalibrationWidget::calibrate_max()
+JoystickCalibrationWidget::on_calibrate()
 {
   CalibrateMaximumDialog dialog(joystick);
   dialog.show_all();
