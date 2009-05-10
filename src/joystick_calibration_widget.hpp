@@ -35,7 +35,9 @@ private:
   Gtk::Label label;
   Gtk::Frame axis_frame;
   Gtk::Table  axis_table;
-  Gtk::Button calibration_button;
+  Gtk::HButtonBox buttonbox;
+  Gtk::Button min_calibration_button;
+  Gtk::Button max_calibration_button;
 
   struct CalibrationData {
     Gtk::CheckButton* invert;
@@ -56,6 +58,10 @@ public:
   void on_apply();
 
   void on_response(int i);
+
+  void calibrate_center();
+  void calibrate_max();
+
 private:
   JoystickCalibrationWidget(const JoystickCalibrationWidget&);
   JoystickCalibrationWidget& operator=(const JoystickCalibrationWidget&);

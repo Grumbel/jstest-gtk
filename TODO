@@ -13,6 +13,8 @@ git push --tags
 [[ TODO ]]
 ==========
 
+* don't pop up new dialogs when old ones are still present
+
 * [FEATURE] A simple authomatic calibration method
 
 * [FEATURE] Possibility of activate noise reduction in joystick axis
@@ -42,6 +44,15 @@ git push --tags
 =================================
 [[ Possible Future Improvments ]]
 =================================
+
+* Joystick Database, base it on evdev, not joydev:
+
+<joystick>
+  <name>Sony PLAYSTATION(R)3 Controller</name>
+  <image>playstotion3.svg</image>
+  <axis-count>28</axis-count>
+  <button-count>18</button-count> 
+</joystick>
 
 * [FEATURE] Watch teh system, maybe being in systray, to protect the
   device from accidental reconfiguration by another

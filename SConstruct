@@ -27,6 +27,8 @@ env.Program('jstest-gtk', [
     'src/joystick_calibration_widget.cpp',
     'src/joystick_map_widget.cpp',
     'src/joystick.cpp',
+    'src/calibrate_center_dialog.cpp',
+    'src/calibrate_maximum_dialog.cpp',
     'src/remap_widget.cpp',
     'src/evdev_helper.cpp',
     'src/main.cpp'
