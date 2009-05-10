@@ -50,6 +50,7 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
     right_trigger_widget(32, 128, true)
 {
   label.set_use_markup(true);
+  label.set_selectable();
 
   axis_frame.set_border_width(5);
   axis_table.set_border_width(5);
