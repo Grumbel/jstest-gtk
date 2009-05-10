@@ -37,7 +37,7 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
           Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER),
     axis_frame("Axes"),
     button_frame("Buttons"),
-    button_table((joystick.get_button_count()-1) / 8 + 1, 8),
+    button_table((joystick.get_button_count()-1) / 8 + 1, std::min(joystick.get_button_count(), 8)),
     mapping_button("Mapping"),
     calibration_button("Calibration"),
     buttonbox(Gtk::BUTTONBOX_SPREAD),
