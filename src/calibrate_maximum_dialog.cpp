@@ -86,10 +86,11 @@ void
 CalibrateMaximumDialog::on_axis_move(int id, int value)
 {
   // std::cout << "AxisMove: " << id << " " << value << std::endl;
-  if (is_init_axis_state[id])
+  if (!is_init_axis_state[id])
     {
       min_axis_state[id] = value;
       max_axis_state[id] = value;
+      is_init_axis_state[id] = true;
     }
   else
     {

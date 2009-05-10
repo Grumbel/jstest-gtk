@@ -3,6 +3,7 @@ jstest-gtk 0.1.1 (2009-05-??)
 
 * removed accidental boost dependency
 * improved support for PS3 controller and other with huge axis/button counts
+* implemented calibration wizard
 * added man-page
 
 
