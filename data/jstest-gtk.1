@@ -1,0 +1,42 @@
+.\" Copyright (C) 2009, Miriam Ruiz <little_miry@yahoo.es>
+.\" 
+.\" This document is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
+.TH "jstest-gtk" "1" "May  9, 2009" "" ""
+.SH "NAME"
+jstest\-gtk \- joystick testing and configuration tool
+.SH "SYNOPSIS"
+.B jstest\-gtk
+.RI [ options ] ...
+.RI [ device ] " files" ...
+.SH "DESCRIPTION"
+jstest\-gtk is a simple joystick tester based on Gtk+. It provides a list of attached joysticks, a way to display which buttons and axis are pressed, a way to remap axis and buttons and a way to calibrate your joystick.
+
+Even when your joystick is working mostly fine, you might want to give it a try, as the calibration lets you get rid of overlarge default deadzones that many joysticks use and then is a noticeable problem in some games.
+.SH "USAGE"
+jstest\-gtk is mainly a graphical interface to check that your joysticks and pads work properly. You can find precise information on each axis, you can optionally recalibrate it and also change the mapping. 
+
+If you run the program without parameters, you will get a window showing all the joystick devices in your system (there can be more than one). When you double click on onw of them, you will get a newer window with detailed information about its axis and buttons.
+
+There are two buttons in the detailed window called "Mapping" adn "Calibration", that allows you to reconfigurate the device.
+
+If you run the program with a device as an argument (for example /dev/input/js0), you will get the detailed window for that device directly, without getting the whole list of joysticks in the system.
+
+Calibration of the axis consists in a simple window in which you set the values that go directly into the operative system configuration, without doing any changes on them. They're divided in range and dead zone (or center). In both of them you have to set a minimum and a maximum. You also have a checkbox for inverting the axis.
+
+Values are changed and applied in the same instant that you modify them, there's no need for clicking anywhere or doing anything else for applying the changes.
+.SH "OPTIONS"
+These program follows the usual GNU command line syntax, with long options starting with two dashes (`\-').
+
+.TP 
+.B \-h, \-\-help
+Display help information and exit
+.TP 
+.B \-v, \-\-version
+Display version information and exit
+.SH "SEE ALSO"
+You can find more information if you visit http://pingus.seul.org/~grumbel/jstest\-gtk/
+.SH "AUTHOR"
+jstest\-gtk was written by Ingo Ruhnke <grumbel@gmx.de>.
+.PP 
+This manual page was written by Miriam Ruiz <little_miry@yahoo.es>,
+for the Debian project (and may be used by others).

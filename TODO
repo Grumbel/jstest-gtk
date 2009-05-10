@@ -13,6 +13,18 @@ git push --tags
 [[ TODO ]]
 ==========
 
+- A simple authomatic calibration method
+- Possibility of activate noise reduction in joystick axis
+- Load and save presets in devices, and to load them automatically
+when you connect the device.
+
+* Watch teh syste, maybe bein in systray, to protect the device from
+  accidental reconfiguration by another application. [unlikely, as
+  that would mean polling]
+
+* [CLEANUP] sync evtest_helper.?pp, make sure no boost dependency is
+  present
+
 * [CLEANUP] center font in ButtonWidget (current way is a dirty hack)
 
 * [FEATURE] axis names (ABS_X, ...) should be used instead of raw axis numbers
