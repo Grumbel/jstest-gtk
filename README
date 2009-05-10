@@ -59,4 +59,38 @@ give it a far bigger deadzone then needed, thus reducing your ability
 for fine movements.
 
 
+[[ SDL Notes ]]
+===============
+
+Depending on what version and what compilation flags where used, your
+version of SDL might not use the joystick interface at all, but
+instead use the /dev/input/event* device directly. That means that any
+calibration or button/axis mapping will be ignored, as those apply to
+the joystick interface, not evdev.
+
+To work around that you have to set an environment variable that
+forces SDL to use the joystick device:
+
+ $ SDL_JOYSTICK_DEVICE="/dev/input/js0"
+ $ export SDL_JOYSTICK_DEVICE
+
+When you need two or more joysticks this will not work and you might
+need to recompile SDL and disable the evdev support.
+
+More info can be found at:
+
+ * ftp://ptah.lnf.kth.se/pub/misc/sdl-env-vars
+
+SDL_LINUX_JOYSTICK
+	Special joystick configuration string for linux. The format is
+	"name numaxes numhats numballs"
+	where name is the name string of the joystick (possibly in single
+	quotes), and the rest are the number of axes, hats and balls
+	respectively.
+
+SDL_JOYSTICK_DEVICE
+	Joystick device to use in the linux joystick driver, in addition
+	to the usual: /dev/js*, /dev/input/event*, /dev/input/js*
+
+
 # EOF #
