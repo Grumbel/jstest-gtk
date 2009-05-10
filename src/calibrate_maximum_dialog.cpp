@@ -23,7 +23,8 @@
 #include "calibrate_maximum_dialog.hpp"
 
 CalibrateMaximumDialog::CalibrateMaximumDialog(Joystick& joystick_)
-  : joystick(joystick_),
+  : Gtk::Dialog("CalibrationWizard: " + joystick_.get_name()),
+    joystick(joystick_),
     orig_data(joystick.get_calibration()),
     label("1) Rotate your joystick around to move all axis into their extreme positions at least once\n"
           "2) Move all axis back to the center\n"

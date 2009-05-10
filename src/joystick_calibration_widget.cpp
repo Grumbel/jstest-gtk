@@ -177,6 +177,7 @@ JoystickCalibrationWidget::on_response(int i)
   else if (i == 2)
     {
       joystick.reset_calibration();
+      update_with(joystick.get_calibration());      
     }
 }
 

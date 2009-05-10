@@ -55,9 +55,7 @@ public:
 
   void on_clear();
   void on_apply();
-
   void on_response(int i);
-
   void on_calibrate();
 
 private:
