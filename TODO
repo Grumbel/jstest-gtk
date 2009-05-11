@@ -13,6 +13,15 @@ git push --tags
 [[ TODO ]]
 ==========
 
+* implement command line load/save
+  Syntax:
+
+
+  joystickname
+  calibration
+  buttonmapping
+  axismapping
+
 * use while loop in Joystick::update
 
 * don't pop up new dialogs when old ones are still present
