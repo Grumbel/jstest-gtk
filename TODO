@@ -17,8 +17,6 @@ git push --tags
 
 * don't pop up new dialogs when old ones are still present
 
-* [FEATURE] A simple authomatic calibration method
-
 * [FEATURE] Possibility of activate noise reduction in joystick axis
   (read only field, but can't hurd to have it, in case any app wants
   to play with it)

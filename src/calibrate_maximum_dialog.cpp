@@ -65,10 +65,18 @@ CalibrateMaximumDialog::on_response(int v)
           Joystick::CalibrationData axis;
           axis.calibrate  = true;
           axis.invert     = false;
-          axis.center_min = joystick.get_axis_state(i);
-          axis.center_max = joystick.get_axis_state(i);
+          axis.center_min = axis.center_max = joystick.get_axis_state(i);
           axis.range_min  = min_axis_state[i];
           axis.range_max  = max_axis_state[i];
+
+          // When the center is the same as the outer edge of an axis,
+          // we assume its a throttle control or analog button and
+          // calculate the center on our own
+          if (axis.center_min == axis.range_min ||
+              axis.center_max == axis.range_max)
+            {
+              axis.center_min = axis.center_max = (axis.range_min + axis.range_max)/2;
+            }
           
           data.push_back(axis);
         }
