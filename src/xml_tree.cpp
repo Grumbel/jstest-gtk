@@ -67,9 +67,7 @@ XMLTree::~XMLTree()
 void
 XMLTree::on_start_element(const char* name, const char** attr)
 {
-  //std::cout << "START: " << name << std::endl;
-
-  // space data is ignored, everything else is an error
+  // spaces are ignored, everything else is an error
   for(int i = 0; i < (int)cdata.size(); ++i)
     if (!isspace(cdata[i]))
       raise_error("unexpected character data");
@@ -95,8 +93,6 @@ XMLTree::on_start_element(const char* name, const char** attr)
 void
 XMLTree::on_end_element(const char* el)
 {
-  //std::cout << "END: " << el << std::endl;
-
   if (!node.empty() && !cdata.empty())
     {
       node_stack.back()->children.push_back(new XMLDataNode(node, cdata));
@@ -105,6 +101,7 @@ XMLTree::on_end_element(const char* el)
     }
   else
     {
+      // spaces are ignored, everything else is an error
       for(int i = 0; i < (int)cdata.size(); ++i)
         if (!isspace(cdata[i]))
           raise_error("unexpected character data");
@@ -118,10 +115,6 @@ XMLTree::on_end_element(const char* el)
 void
 XMLTree::on_character_data(const char* s, int len)
 {
-  //std::cout << "CDATA: '";
-  //std::cout.write(s, len);
-  //std::cout << "'" << std::endl;
-
   cdata += std::string(s, len);
 }
 
