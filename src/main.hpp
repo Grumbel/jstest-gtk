@@ -23,6 +23,7 @@
 #include <gtkmm/dialog.h>
 
 class Joystick;
+class JoystickListWidget;
 
 class Main
 {
@@ -32,7 +33,9 @@ public:
   static Main* current() { return current_; }
 
 private:
-  std::vector<Joystick*> joysticks;
+  JoystickListWidget* list_dialog;
+
+  std::vector<Joystick*>    joysticks;
   std::vector<Gtk::Dialog*> dialogs;
 
   void on_dialog_hide(Gtk::Dialog* dialog);

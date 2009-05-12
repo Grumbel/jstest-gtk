@@ -22,29 +22,58 @@
 #include <sstream>
 #include <expat.h>
 
-#include "xml_tree.hpp"
+#include "xml_parser.hpp"
 
-
-XMLTree::XMLTree(const std::string& filename_)
-  : filename(filename_),
-    root_node(0)
+// static C functions that map back to the C++ member functions
+void
+XMLParser::start_element(void* userdata, const char* el, const char** attr)
 {
-  std::cout << "Trying to read: " << filename << std::endl;
+  static_cast<XMLParser*>(userdata)->on_start_element(el, attr);
+}
 
+void
+XMLParser::end_element(void* userdata, const char* el)
+{
+  static_cast<XMLParser*>(userdata)->on_end_element(el);
+}
+
+void
+XMLParser::character_data(void* userdata, const char* s, int len)
+{
+  static_cast<XMLParser*>(userdata)->on_character_data(s, len);
+}
+
+std::auto_ptr<XMLNode>
+XMLParser::parse(const std::string& filename)
+{
+  XMLParser tree(filename);
+  return tree.get_root();
+}
+
+XMLParser::XMLParser(const std::string& filename_)
+  : filename(filename_),
+    parser(0)
+{
   std::vector<char> data;
-  { // Read the file into the vector
+  { // Read the file into the vector data
     std::ifstream in(filename.c_str(), std::ios::binary);
-    in.seekg (0, std::ios::end);
-    data.resize(in.tellg());
-    in.seekg (0, std::ios::beg);
-    in.read(&*data.begin(), data.size());
-    in.close();  
+    if (!in)
+      {
+        throw std::runtime_error("couldn't open: " + filename);
+      }
+    else
+      {
+        in.seekg (0, std::ios::end);
+        data.resize(in.tellg());
+        in.seekg (0, std::ios::beg);
+        in.read(&*data.begin(), data.size());
+      }
   }
 
   parser = XML_ParserCreate(NULL);
   XML_SetUserData(parser, this);
-  XML_SetElementHandler(parser, &XMLTree::start_element, &XMLTree::end_element);
-  XML_SetCharacterDataHandler(parser, &XMLTree::character_data);
+  XML_SetElementHandler(parser, &start_element, &end_element);
+  XML_SetCharacterDataHandler(parser, &character_data);
 
   if (XML_Parse(parser, &*data.begin(), data.size(), 0) == XML_STATUS_ERROR)
     {
@@ -52,21 +81,21 @@ XMLTree::XMLTree(const std::string& filename_)
       out << filename << ":" << XML_GetCurrentLineNumber(parser)
           << ": parse error: " << XML_ErrorString(XML_GetErrorCode(parser));
 
-      XML_ParserFree(parser);
       throw std::runtime_error(out.str());
     }
-    
+}
+
+XMLParser::~XMLParser()
+{
   XML_ParserFree(parser);
 }
 
-XMLTree::~XMLTree()
-{
-  delete root_node;
-}
-
 void
-XMLTree::on_start_element(const char* name, const char** attr)
+XMLParser::on_start_element(const char* name, const char** attr)
 {
+  if (*attr)
+    raise_error("attribute not allowed");
+
   // spaces are ignored, everything else is an error
   for(int i = 0; i < (int)cdata.size(); ++i)
     if (!isspace(cdata[i]))
@@ -76,9 +105,9 @@ XMLTree::on_start_element(const char* name, const char** attr)
   if (!node.empty())
     {
       XMLListNode* new_node = new XMLListNode(node);
-      if (!root_node)
+      if (!root_node.get())
         {
-          root_node = new_node;
+          root_node.reset(new_node);
         }
       else
         {
@@ -91,7 +120,7 @@ XMLTree::on_start_element(const char* name, const char** attr)
 }
 
 void
-XMLTree::on_end_element(const char* el)
+XMLParser::on_end_element(const char* el)
 {
   if (!node.empty() && !cdata.empty())
     {
@@ -113,46 +142,37 @@ XMLTree::on_end_element(const char* el)
 }
 
 void
-XMLTree::on_character_data(const char* s, int len)
+XMLParser::on_character_data(const char* s, int len)
 {
   cdata += std::string(s, len);
 }
 
 void
-XMLTree::raise_error(const std::string& str)
+XMLParser::raise_error(const std::string& str)
 {
   std::ostringstream out;
   out << filename << ":" << XML_GetCurrentLineNumber(parser) << ": " << str;
   throw std::runtime_error(out.str());
 }
 
-void
-XMLTree::start_element(void* userdata, const char* el, const char** attr)
-{
-  static_cast<XMLTree*>(userdata)->on_start_element(el, attr);
-}
-
-void
-XMLTree::end_element(void* userdata, const char* el)
-{
-  static_cast<XMLTree*>(userdata)->on_end_element(el);
-}
-
-void
-XMLTree::character_data(void* userdata, const char* s, int len)
-{
-  static_cast<XMLTree*>(userdata)->on_character_data(s, len);
-}
-
+#ifdef __TEST__
 int main(int argc, char** argv)
 {
-  for(int i = 1; i < argc; ++i)
+  try 
     {
-      XMLTree tree(argv[i]);
-      tree.get_root()->print(std::cout);
+      for(int i = 1; i < argc; ++i)
+        {
+          std::auto_ptr<XMLNode> root = XMLParser::parse(argv[i]);
+          root->print(std::cout);
+        }
+    } 
+  catch(std::exception& err) 
+    {
+      std::cout << "Error: " << err.what() << std::endl;
     }
 
   return 0;
 }
+#endif
 
 /* EOF */

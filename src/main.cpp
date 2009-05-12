@@ -31,6 +31,7 @@
 Main* Main::current_ = 0;
 
 Main::Main()
+  : list_dialog(0)
 {
   current_ = this;
 }
@@ -42,10 +43,15 @@ Main::~Main()
 void
 Main::show_device_list_dialog()
 {
-  JoystickListWidget* dialog = new JoystickListWidget();
-  dialogs.push_back(dialog);
-  dialog->show_all();
-  dialog->signal_hide().connect(sigc::bind(sigc::mem_fun(this, &Main::on_dialog_hide), dialog));
+  if (list_dialog)
+    {
+      list_dialog->show();
+    }
+  else
+    {
+      list_dialog = new JoystickListWidget();
+      list_dialog->show_all();
+    }
 }
 
 void

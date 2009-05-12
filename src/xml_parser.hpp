@@ -20,7 +20,15 @@
 #define HEADER_JSTREE_GTK_XML_TREE_HPP
 
 #include <vector>
+#include <memory>
 #include <iostream>
+
+/*
+ * The code below does not produce a full DOM, but a drastically
+ * simplified one, namely nodes can either contain text or they can
+ * contain child nodes, but not both. Nodes are also not allowed to
+ * have attributes.
+ */
 
 class XMLNode
 {
@@ -28,7 +36,7 @@ public:
   XMLNode() {}
   virtual ~XMLNode() {}
 
-  virtual void print(std::ostream& out) =0;
+  virtual void print(std::ostream& out, int depth = 0) =0;
 };
 
 class XMLListNode : public XMLNode
@@ -50,14 +58,14 @@ public:
       }
   }
 
-  void print(std::ostream& out)
+  void print(std::ostream& out, int depth = 0)
   {
-    std::cout << "<" << name << ">" << std::endl;
+    std::cout << std::string(2*depth, ' ') << "<" << name << ">" << std::endl;
     for(std::vector<XMLNode*>::iterator i = children.begin(); i != children.end(); ++i)
       {
-        (*i)->print(out);
+        (*i)->print(out, depth + 1);
       }
-    std::cout << "</" << name << ">" << std::endl;
+    std::cout << std::string(2*depth, ' ') << "</" << name << ">" << std::endl;
   }
 
 private:
@@ -76,8 +84,9 @@ public:
       data(data_)
   {}
 
-  void print(std::ostream& out) {
-    out << "<" << name << ">" << data << "</" << name << ">" << std::endl;
+  void print(std::ostream& out, int depth = 0)
+  {
+    out << std::string(2*depth, ' ') << "<" << name << ">" << data << "</" << name << ">" << std::endl;
   }
 
 private:
@@ -85,38 +94,38 @@ private:
   XMLDataNode& operator=(const XMLDataNode&);
 };
 
-class XMLTree
+class XMLParser
 {
-private:
-  // static C-like helper functions for expat
-  static void start_element(void* userdata, const char* el, const char** attr);
-  static void end_element(void* userdata, const char* el);
-  static void character_data(void* userdata, const char* s, int len);
+public:
+  static std::auto_ptr<XMLNode> parse(const std::string& filename);
 
 private:
   std::string filename;
   XML_Parser parser;
 
-  XMLNode* root_node;
+  std::auto_ptr<XMLNode> root_node;
   std::vector<XMLListNode*> node_stack;
 
-  XMLListNode* current_node;
   std::string node;
   std::string cdata;
 
-public:
-  XMLTree(const std::string& filename);
-  ~XMLTree();
+  XMLParser(const std::string& filename);
+  ~XMLParser();
 
-  XMLNode* get_root() const { return root_node; }
+  std::auto_ptr<XMLNode> get_root() { return root_node; }
+
   void on_start_element(const char* el, const char** attr);
   void on_end_element(const char* el);
   void on_character_data(const char* s, int len);
   void raise_error(const std::string& str);
 
 private:
-  XMLTree(const XMLTree&);
-  XMLTree& operator=(const XMLTree&);
+  static void start_element(void* userdata, const char* el, const char** attr);
+  static void end_element(void* userdata, const char* el);
+  static void character_data(void* userdata, const char* s, int len);
+
+  XMLParser(const XMLParser&);
+  XMLParser& operator=(const XMLParser&);
 };
 
 #endif

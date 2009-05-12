@@ -86,6 +86,8 @@ public:
   void set_button_mapping(const std::vector<int>& mapping);
   void set_axis_mapping(const std::vector<int>& mapping);
 
+  void save(std::ostream& out);
+
 private:
   Joystick(const Joystick&);
   Joystick& operator=(const Joystick&);

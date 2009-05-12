@@ -366,5 +366,10 @@ Joystick::set_axis_mapping(const std::vector<int>& mapping)
       throw std::runtime_error(str.str());
     }
 }
+
+void
+Joystick::save(std::ostream& out)
+{
+}
 
 /* EOF */

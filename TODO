@@ -14,13 +14,6 @@ git push --tags
 ==========
 
 * implement command line load/save
-  Syntax:
-
-
-  joystickname
-  calibration
-  buttonmapping
-  axismapping
 
 * use while loop in Joystick::update
 
@@ -55,13 +48,6 @@ git push --tags
 =================================
 
 * Joystick Database, base it on evdev, not joydev:
-
-<joystick>
-  <name>Sony PLAYSTATION(R)3 Controller</name>
-  <image>playstotion3.svg</image>
-  <axis-count>28</axis-count>
-  <button-count>18</button-count> 
-</joystick>
 
 * [FEATURE] Watch teh system, maybe being in systray, to protect the
   device from accidental reconfiguration by another
