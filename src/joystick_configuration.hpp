@@ -19,22 +19,32 @@
 #ifndef HEADER_JSTEST_GTK_JOYSTICK_CONFIGURATION_HPP
 #define HEADER_JSTEST_GTK_JOYSTICK_CONFIGURATION_HPP
 
-#include <expat.h>
 #include <string>
 
 class JoystickConfiguration
 {
 private:
+  enum {
+    PARSE_DOCUMENT,                   // initial state
+    PARSE_JSTEST_GTK,                 // inside jstest-gtk
+    PARSE_JOYSTICK_NAME,              // inside joystick/name
+    PARSE_JOYSTICK_DEVICE,            // inside joystick/device
+    PARSE_JOYSTICK_CALIBRATION,       // inside joystick/calibration
+    PARSE_JOYSTICK_CALIBRATION_AXIS,  // inside joystick/calibration/axis
+  };
+
 public:
   JoystickConfiguration(const std::string& filename);
   ~JoystickConfiguration();
 
+  void on_start_element(const char* el, const char** attr);
+  void on_end_element(const char* el);
+  void on_character_data(const char* s, int len);
+  
 private:
-  static void start_element(void *data, const char *el, const char **attr);
-  static void end_element(void *data, const char *el);
-  static void character_data(void *userData,
-                             const XML_Char *s,
-                             int len);
+  static void start_element(void* userdata, const char* el, const char** attr);
+  static void end_element(void* userdata, const char* el);
+  static void character_data(void* userdata, const char* s, int len);
 
 private:
   JoystickConfiguration(const JoystickConfiguration&);

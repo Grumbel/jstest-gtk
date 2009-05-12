@@ -21,6 +21,7 @@
 #include <algorithm>
 #include <fstream>
 #include <iterator>
+#include <expat.h>
 
 #include "joystick_configuration.hpp"
 
@@ -58,8 +59,25 @@ JoystickConfiguration::~JoystickConfiguration()
 }
 
 void
+JoystickConfiguration::on_start_element(const char* el, const char** attr)
+{
+}
+
+void
+JoystickConfiguration::on_end_element(const char* el)
+{
+}
+
+void
+JoystickConfiguration::on_character_data(const char* s, int len)
+{
+}
+
+void
 JoystickConfiguration::start_element(void* userdata, const char* el, const char** attr)
 {
+  static_cast<JoystickConfiguration*>(userdata)->on_start_element(el, attr);
+
   std::cout << "start_element: " << el << std::endl;
   for(const char** p = attr; *p; ++p)
     {
@@ -70,6 +88,8 @@ JoystickConfiguration::start_element(void* userdata, const char* el, const char*
 void
 JoystickConfiguration::end_element(void* userdata, const char* el)
 {
+  static_cast<JoystickConfiguration*>(userdata)->on_end_element(el);
+
   std::cout << "end_element: " << el << std::endl;
 }
 
@@ -85,10 +105,10 @@ int main(int argc, char** argv)
 }
 
 void
-JoystickConfiguration::character_data(void* userdata,
-                                      const XML_Char* s,
-                                      int len)
+JoystickConfiguration::character_data(void* userdata, const char* s, int len)
 {
+  static_cast<JoystickConfiguration*>(userdata)->on_character_data(s, len);
+
   std::cout << "Data: '";
   std::cout.write(s, len);
   std::cout << "'" << std::endl;

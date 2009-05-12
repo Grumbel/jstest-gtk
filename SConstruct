@@ -19,6 +19,7 @@ env = Environment(CXXFLAGS=["-g", "-Wall", "-Werror"],
                   LIBS=["expat"])
 env.ParseConfig('pkg-config --cflags --libs gtkmm-2.4 gtkglextmm-1.2 sigc++-2.0')
 env.Program('jscfg-test', ['src/joystick_configuration.cpp'])
+env.Program('xml-test', ['src/xml_tree.cpp'])
 env.Program('jstest-gtk', [
     'src/axis_widget.cpp',
     'src/button_widget.cpp',
