@@ -36,6 +36,7 @@ public:
   void end_section(const std::string& name);
   void write(const std::string& name, const std::string& value);
   void write(const std::string& name, int value);
+  void write(const std::string& name, bool value);
 
 private:
   XMLWriter(const XMLWriter&);

@@ -25,6 +25,8 @@
 #include <glibmm/ustring.h>
 #include <linux/joystick.h>
 #include "joystick_description.hpp"
+
+class XMLWriter;
 
 class Joystick
 {
@@ -86,7 +88,7 @@ public:
   void set_button_mapping(const std::vector<int>& mapping);
   void set_axis_mapping(const std::vector<int>& mapping);
 
-  void save(std::ostream& out);
+  void write(XMLWriter& out);
 
 private:
   Joystick(const Joystick&);

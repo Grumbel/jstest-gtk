@@ -32,6 +32,8 @@
 #include <glibmm/main.h>
 #include <glibmm/convert.h>
 
+#include "evdev_helper.hpp"
+#include "xml_writer.hpp"
 #include "joystick.hpp"
 
 Joystick::Joystick(const std::string& filename_)
@@ -368,8 +370,52 @@ Joystick::set_axis_mapping(const std::vector<int>& mapping)
 }
 
 void
-Joystick::save(std::ostream& out)
+Joystick::write(XMLWriter& out)
 {
+  out.start_section("joystick");
+  out.write("name",   name);
+  out.write("device", filename);
+  
+  { // write CalibrationData
+    std::vector<CalibrationData> data = get_calibration();
+
+    out.start_section("calibration");
+    for(std::vector<CalibrationData>::iterator i = data.begin(); i != data.end(); ++i)
+      {
+        out.start_section("axis");
+        //out.write("id",         i - data.begin());
+        out.write("calibrate",  i->calibrate);
+        out.write("center-min", i->center_min);
+        out.write("center-max", i->center_max);
+        out.write("range-min",  i->range_min);
+        out.write("range-max",  i->range_max);
+        out.write("invert",     i->invert);
+        out.end_section("axis");
+      }
+    out.end_section("calibration");
+  }
+
+  {
+    std::vector<int> mapping = get_axis_mapping();
+    out.start_section("axis-map");
+    for(std::vector<int>::iterator i = mapping.begin(); i != mapping.end(); ++i)
+      {
+        out.write("axis", abs2str(*i));
+      }
+    out.end_section("axis-map");
+  }
+
+  {
+    std::vector<int> mapping = get_button_mapping();
+    out.start_section("button-map");
+    for(std::vector<int>::iterator i = mapping.begin(); i != mapping.end(); ++i)
+      {
+        out.write("button", btn2str(*i));
+      }   
+    out.end_section("button-map");
+  }
+
+  out.end_section("joystick");
 }
 
 /* EOF */

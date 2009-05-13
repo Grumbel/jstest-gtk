@@ -38,7 +38,7 @@ void
 XMLWriter::indent()
 {
   for(int i = 0; i < depth; ++i)
-    *out << ' ';
+    *out << "  ";
 }
 
 void
@@ -46,11 +46,13 @@ XMLWriter::start_section(const std::string& name)
 {
   indent();
   (*out.get()) << "<" << name << ">" << std::endl;
+  depth += 1;
 }
 
 void
 XMLWriter::end_section(const std::string& name)
 {
+  depth -= 1;
   indent();
   *out << "</" << name << ">" << std::endl;
 }
@@ -58,18 +60,29 @@ XMLWriter::end_section(const std::string& name)
 void
 XMLWriter::write(const std::string& name, const std::string& value)
 {
+  indent();
   // FIXME: Implement magic to convert things to UTF-8
   *out << "<" << name << ">";
   *out << value;
-  *out << "</" << name << ">";
+  *out << "</" << name << ">" << std::endl;
 }
 
 void
 XMLWriter::write(const std::string& name, int value)
 {
+  indent();
   *out << "<" << name << ">";
   *out << value;
-  *out << "</" << name << ">";
+  *out << "</" << name << ">" << std::endl;
+}
+
+void
+XMLWriter::write(const std::string& name, bool value)
+{
+  indent();
+  *out << "<" << name << ">";
+  *out << value;
+  *out << "</" << name << ">" << std::endl; 
 }
 
 /* EOF */
