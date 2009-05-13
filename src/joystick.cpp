@@ -425,17 +425,58 @@ Joystick::load(const XMLReader& root_reader)
   std::string cfg_name;
   if (root_reader.read("name", cfg_name) && name == cfg_name)
     {
+      // Read calibration data
       if (XMLReader reader = root_reader.get_section("calibration"))
         {
+          std::vector<CalibrationData> calibration_data;
+          const std::vector<XMLReader>& sections = reader.get_sections();
+          for(std::vector<XMLReader>::const_iterator i = sections.begin(); i != sections.end(); ++i)
+            {
+              CalibrationData data;
+
+              //i->read("axis", );
+              //i->read("precision", );
+              i->read("invert",     data.invert);
+              i->read("center-min", data.center_min);
+              i->read("center-max", data.center_max);
+              i->read("range-min",  data.range_min);
+              i->read("range-max",  data.range_max);
+
+              calibration_data.push_back(data);
+            }
+
+          set_calibration(calibration_data);
         }
 
-      if (XMLReader reader = root_reader.get_section("axis-map"))
-        {
-        }
+      { // Read axis mapping
+        const std::vector<std::string>& cfg_axis_map = root_reader.get_string_list("axis-map");
+        std::vector<int> mapping;
+        
+        for(std::vector<std::string>::const_iterator i = cfg_axis_map.begin(); i != cfg_axis_map.end(); ++i)
+          {
+            int type = 0;
+            int code = 0;
+            str2event(*i, type, code);
+            mapping.push_back(code);
+          }
 
-      if (XMLReader reader = root_reader.get_section("button-map"))
-        {
-        }
+        set_axis_mapping(mapping);
+      }
+
+      { // Read button mapping
+        const std::vector<std::string>& cfg_button_map = root_reader.get_string_list("button-map");
+        std::vector<int> mapping;
+        
+        for(std::vector<std::string>::const_iterator i = cfg_button_map.begin(); i != cfg_button_map.end(); ++i)
+          {
+            int type = 0;
+            int code = 0;
+            str2event(*i, type, code);
+            mapping.push_back(code);
+          }
+
+        set_button_mapping(mapping);
+      }
     }
 }
 

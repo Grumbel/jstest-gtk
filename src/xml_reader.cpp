@@ -51,6 +51,44 @@ XMLReader::get_section(const std::string& name) const
   return XMLReader(dynamic_cast<XMLListNode*>(get_node(name)));
 }
 
+std::vector<XMLReader>
+XMLReader::get_sections() const
+{
+  std::vector<XMLReader> lst;
+  if (root)
+    {
+      for(std::vector<XMLNode*>::const_iterator i = root->children.begin(); i != root->children.end(); ++i)
+        {
+          lst.push_back(XMLReader(dynamic_cast<XMLListNode*>(*i)));
+        }
+    }
+  return lst;
+}
+
+std::vector<std::string>
+XMLReader::get_string_list(const std::string& name) const
+{
+  std::vector<std::string> lst;
+
+  XMLListNode* node = dynamic_cast<XMLListNode*>(get_node(name));
+  if (node)
+    {
+      for(std::vector<XMLNode*>::iterator i = node->children.begin(); i != node->children.end(); ++i)
+        {
+          if (XMLDataNode* data = dynamic_cast<XMLDataNode*>(*i))
+            {
+              lst.push_back(data->data);
+            }
+        }
+ 
+      return lst;
+    }
+  else
+    {
+      return lst;
+    }
+}
+
 bool
 XMLReader::read(const std::string& name, bool& value) const
 {

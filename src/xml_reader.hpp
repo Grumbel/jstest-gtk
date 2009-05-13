@@ -37,6 +37,8 @@ public:
   std::string get_name() const;
   XMLNode*  get_node(const std::string& name) const;
   XMLReader get_section(const std::string& name) const;
+  std::vector<XMLReader> get_sections() const;
+  std::vector<std::string> get_string_list(const std::string& name) const;
 
   bool read(const std::string& name, bool& value) const;
   bool read(const std::string& name, int& value) const;
