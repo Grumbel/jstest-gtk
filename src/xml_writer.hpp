@@ -16,21 +16,32 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <vector>
-#include <iostream>
-#include <algorithm>
+#ifndef HEADER_JSTEST_GTK_XML_WRITER_HPP
+#define HEADER_JSTEST_GTK_XML_WRITER_HPP
+
+#include <memory>
 #include <fstream>
-#include <iterator>
-#include <expat.h>
-
-#include "joystick_configuration.hpp"
 
-JoystickConfiguration::JoystickConfiguration(const std::string& filename)
+class XMLWriter
 {
-}
+private:
+  std::auto_ptr<std::ofstream> out;
+  int depth;
+  
+public:
+  XMLWriter(const std::string& filename);
 
-JoystickConfiguration::~JoystickConfiguration()
-{
-}
+  void indent();
+  void start_section(const std::string& name);
+  void end_section(const std::string& name);
+  void write(const std::string& name, const std::string& value);
+  void write(const std::string& name, int value);
+
+private:
+  XMLWriter(const XMLWriter&);
+  XMLWriter& operator=(const XMLWriter&);
+};
+
+#endif
 
 /* EOF */

@@ -24,14 +24,6 @@
 class JoystickConfiguration
 {
 private:
-  enum {
-    PARSE_DOCUMENT,                   // initial state
-    PARSE_JSTEST_GTK,                 // inside jstest-gtk
-    PARSE_JOYSTICK_NAME,              // inside joystick/name
-    PARSE_JOYSTICK_DEVICE,            // inside joystick/device
-    PARSE_JOYSTICK_CALIBRATION,       // inside joystick/calibration
-    PARSE_JOYSTICK_CALIBRATION_AXIS,  // inside joystick/calibration/axis
-  };
 
 public:
   JoystickConfiguration(const std::string& filename);

@@ -18,13 +18,13 @@
 env = Environment(CXXFLAGS=["-g", "-Wall", "-Werror"],
                   LIBS=["expat"])
 env.ParseConfig('pkg-config --cflags --libs gtkmm-2.4 gtkglextmm-1.2 sigc++-2.0')
-env.Program('jscfg-test', ['src/joystick_configuration.cpp'])
-env.Program('xml-test', ['src/xml_parser.cpp'], CPPDEFINES=['__TEST__'])
 env.Program('jstest-gtk', [
     'src/axis_widget.cpp',
     'src/button_widget.cpp',
     'src/throttle_widget.cpp',
     'src/rudder_widget.cpp',
+    'src/xml_writer.cpp',
+    'src/xml_parser.cpp',
     'src/joystick_list_widget.cpp',
     'src/joystick_test_widget.cpp',
     'src/joystick_calibration_widget.cpp',

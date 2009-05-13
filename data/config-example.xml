@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<jstest-gtk>
+<joysticks>
   <joystick>
     <name>Sony PLAYSTATION(R)3 Controller</name>
     <device>/dev/input/js0</device>
@@ -32,4 +32,4 @@
       <button>BTN_Y</button>
     </button-map>
   </joystick>
-</jstest-gtk>
+</joysticks>
