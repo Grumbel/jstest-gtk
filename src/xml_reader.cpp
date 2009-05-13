@@ -24,12 +24,18 @@ XMLReader::XMLReader(XMLListNode* root_)
 {
 }
 
+std::string
+XMLReader::get_name() const 
+{ 
+  return root->get_name(); 
+}
+
 XMLNode*
-XMLReader::get_node(const std::string& name)
+XMLReader::get_node(const std::string& name) const
 {
   if (root)
     {
-      for(std::vector<XMLNode*>::iterator i = root->children.begin(); i != root->children.end(); ++i)
+      for(std::vector<XMLNode*>::const_iterator i = root->children.begin(); i != root->children.end(); ++i)
         {
           if ((*i)->get_name() == name)
             return *i;
@@ -40,38 +46,53 @@ XMLReader::get_node(const std::string& name)
 }
 
 XMLReader
-XMLReader::get_section(const std::string& name)
+XMLReader::get_section(const std::string& name) const
 {
   return XMLReader(dynamic_cast<XMLListNode*>(get_node(name)));
 }
 
-void
-XMLReader::read(const std::string& name, bool& value)
+bool
+XMLReader::read(const std::string& name, bool& value) const
 {
   XMLDataNode* node = dynamic_cast<XMLDataNode*>(get_node(name));
   if (node)
     {
       value = (node->data != "0");
+      return true;
+    }
+  else
+    {
+      return false;
     }
 }
 
-void
-XMLReader::read(const std::string& name, int& value)
+bool
+XMLReader::read(const std::string& name, int& value) const
 {
   XMLDataNode* node = dynamic_cast<XMLDataNode*>(get_node(name));
   if (node)
     {
       value = atoi(node->data.c_str());
+      return true;
+    }
+  else
+    {
+      return false;
     }
 }
 
-void
-XMLReader::read(const std::string& name, std::string& value)
+bool
+XMLReader::read(const std::string& name, std::string& value) const
 {
   XMLDataNode* node = dynamic_cast<XMLDataNode*>(get_node(name));
   if (node)
     {
       value = node->data;
+      return true;
+    }
+  else
+    {
+      return false;
     }
 }
 

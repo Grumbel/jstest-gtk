@@ -22,6 +22,7 @@
 #include <string>
 
 class XMLListNode;
+class XMLNode;
 
 class XMLReader
 {
@@ -31,11 +32,15 @@ private:
 public:
   XMLReader(XMLListNode* node);
 
-  XMLNode*  get_node(const std::string& name);
-  XMLReader get_section(const std::string& name);
-  void read(const std::string& name, bool& value);
-  void read(const std::string& name, int& value);
-  void read(const std::string& name, std::string& value);
+  operator bool() const { return root; }
+
+  std::string get_name() const;
+  XMLNode*  get_node(const std::string& name) const;
+  XMLReader get_section(const std::string& name) const;
+
+  bool read(const std::string& name, bool& value) const;
+  bool read(const std::string& name, int& value) const;
+  bool read(const std::string& name, std::string& value) const;
 };
 
 #endif

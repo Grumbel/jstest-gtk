@@ -26,6 +26,7 @@
 #include <linux/joystick.h>
 #include "joystick_description.hpp"
 
+class XMLReader;
 class XMLWriter;
 
 class Joystick
@@ -89,6 +90,7 @@ public:
   void set_axis_mapping(const std::vector<int>& mapping);
 
   void write(XMLWriter& out);
+  void load(const XMLReader& reader);
 
 private:
   Joystick(const Joystick&);

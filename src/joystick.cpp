@@ -34,6 +34,7 @@
 
 #include "evdev_helper.hpp"
 #include "xml_writer.hpp"
+#include "xml_reader.hpp"
 #include "joystick.hpp"
 
 Joystick::Joystick(const std::string& filename_)
@@ -416,6 +417,26 @@ Joystick::write(XMLWriter& out)
   }
 
   out.end_section("joystick");
+}
+
+void
+Joystick::load(const XMLReader& root_reader)
+{
+  std::string cfg_name;
+  if (root_reader.read("name", cfg_name) && name == cfg_name)
+    {
+      if (XMLReader reader = root_reader.get_section("calibration"))
+        {
+        }
+
+      if (XMLReader reader = root_reader.get_section("axis-map"))
+        {
+        }
+
+      if (XMLReader reader = root_reader.get_section("button-map"))
+        {
+        }
+    }
 }
 
 /* EOF */
