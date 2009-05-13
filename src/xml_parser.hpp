@@ -1,5 +1,5 @@
 /*
-**  Windstille - A Sci-Fi Action-Adventure Game
+**  jstest-gtk - A graphical joystick tester
 **  Copyright (C) 2009 Ingo Ruhnke <grumbel@gmx.de>
 **
 **  This program is free software: you can redistribute it and/or modify
@@ -23,6 +23,8 @@
 #include <memory>
 #include <iostream>
 
+#include <expat.h>
+
 /*
  * The code below does not produce a full DOM, but a drastically
  * simplified one, namely nodes can either contain text or they can
@@ -35,6 +37,8 @@ class XMLNode
 public:
   XMLNode() {}
   virtual ~XMLNode() {}
+
+  virtual std::string get_name() const =0;
 
   virtual void print(std::ostream& out, int depth = 0) =0;
 };
@@ -57,6 +61,8 @@ public:
         delete *i;
       }
   }
+
+  std::string get_name() const { return name; }
 
   void print(std::ostream& out, int depth = 0)
   {
@@ -83,6 +89,8 @@ public:
     : name(name_),
       data(data_)
   {}
+
+  std::string get_name() const { return name; }
 
   void print(std::ostream& out, int depth = 0)
   {

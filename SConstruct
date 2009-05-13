@@ -24,6 +24,7 @@ env.Program('jstest-gtk', [
     'src/throttle_widget.cpp',
     'src/rudder_widget.cpp',
     'src/xml_writer.cpp',
+    'src/xml_reader.cpp',
     'src/xml_parser.cpp',
     'src/joystick_list_widget.cpp',
     'src/joystick_test_widget.cpp',

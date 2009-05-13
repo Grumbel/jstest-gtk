@@ -13,15 +13,11 @@ git push --tags
 [[ TODO ]]
 ==========
 
-* implement command line load/save
+* implement command line load
 
 * use while loop in Joystick::update
 
 * don't pop up new dialogs when old ones are still present
-
-* [FEATURE] Possibility of activate noise reduction in joystick axis
-  (read only field, but can't hurd to have it, in case any app wants
-  to play with it)
 
 * [FEATURE] Load and save presets in devices, and to load them automatically
   when you connect the device.
@@ -47,9 +43,13 @@ git push --tags
 [[ Possible Future Improvments ]]
 =================================
 
+* [FEATURE] Possibility of activate noise reduction in joystick axis
+  (read only field, but can't hurd to have it, in case any app wants
+  to play with it)
+
 * Joystick Database, base it on evdev, not joydev:
 
-* [FEATURE] Watch teh system, maybe being in systray, to protect the
+* [FEATURE] Watch the system, maybe being in systray, to protect the
   device from accidental reconfiguration by another
   application. (unlikely, as that would mean polling and other then
   jscalibrator there isn't much to mess up joystick calibration)

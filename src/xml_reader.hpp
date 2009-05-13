@@ -16,33 +16,28 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef HEADER_JSTEST_GTK_XML_WRITER_HPP
-#define HEADER_JSTEST_GTK_XML_WRITER_HPP
+#ifndef HEADER_JSTEST_GTK_XML_READER_HPP
+#define HEADER_JSTEST_GTK_XML_READER_HPP
 
-#include <memory>
-#include <fstream>
+#include <string>
+
+class XMLListNode;
 
-class XMLWriter
+class XMLReader
 {
 private:
-  std::auto_ptr<std::ofstream> out;
-  int depth;
+  XMLListNode* root;
   
 public:
-  XMLWriter(const std::string& filename);
+  XMLReader(XMLListNode* node);
 
-  void indent();
-  void start_section(const std::string& name);
-  void end_section(const std::string& name);
-  void write(const std::string& name, const std::string& value);
-  void write(const std::string& name, int value);
-  void write(const std::string& name, bool value);
-
-private:
-  XMLWriter(const XMLWriter&);
-  XMLWriter& operator=(const XMLWriter&);
+  XMLNode*  get_node(const std::string& name);
+  XMLReader get_section(const std::string& name);
+  void read(const std::string& name, bool& value);
+  void read(const std::string& name, int& value);
+  void read(const std::string& name, std::string& value);
 };
-
-#endif
 
+#endif
+
 /* EOF */
