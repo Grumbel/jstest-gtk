@@ -13,7 +13,13 @@ git push --tags
 [[ TODO ]]
 ==========
 
-* implement command line load
+* [  Save Profile         ]
+  |-----------------------|
+  |  [*] save calibration |
+  |  [*] save calibration |
+  |         [Cancel] [Ok] |
+
+* implement command line profile load
 
 * use while loop in Joystick::update
 

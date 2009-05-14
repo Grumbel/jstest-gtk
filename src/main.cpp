@@ -20,6 +20,9 @@
 #include <gtkmm/main.h>
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "joystick_test_widget.hpp"
 #include "joystick_list_widget.hpp"
@@ -181,7 +184,12 @@ Main::main(int argc, char** argv)
     {
       Glib::set_application_name("Joystick Test");
       Glib::set_prgname("jstest-gtk");
-      std::cout << "'" << Glib::get_user_config_dir() + "/" + Glib::get_prgname() << "'" << std::endl;
+      cfg_directory = Glib::build_filename(Glib::get_user_config_dir(), Glib::get_prgname());
+      if (access(cfg_directory.c_str(), R_OK | W_OK) != 0 &&
+          mkdir(cfg_directory.c_str(), 0770) != 0)
+        {
+          throw std::runtime_error(cfg_directory + ": " + strerror(errno));
+        }
       Gtk::Main kit(&argc, &argv);
 
       if (device_files.empty())

@@ -31,29 +31,6 @@
 #include "joystick_calibration_widget.hpp"
 #include "joystick_test_widget.hpp"
 
-class ProfileColumns : public Gtk::TreeModel::ColumnRecord
-{
-private:
-  static ProfileColumns* instance_;
-
-public:
-  static ProfileColumns& instance() {
-    if (instance_)
-      return *instance_;
-    else
-      return *(instance_ = new ProfileColumns());
-  }
-
-  Gtk::TreeModelColumn<Glib::ustring> name;
-
-private:
-  ProfileColumns() {
-    add(name);
-  }
-};
-
-ProfileColumns* ProfileColumns::instance_ = 0;
-
 JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
   : Gtk::Dialog(joystick_.get_name()),
     joystick(joystick_),
@@ -78,9 +55,6 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
   label.set_use_markup(true);
   label.set_selectable();
 
-  profile_list = Gtk::ListStore::create(ProfileColumns::instance());
-  profile_entry.set_model(profile_list);
-  profile_entry.set_text_column(ProfileColumns::instance().name);
   profile_hbox.pack_start(profile_delete_button, Gtk::PACK_SHRINK);
   profile_hbox.pack_start(profile_save_button, Gtk::PACK_SHRINK);
   profile_hbox.add(profile_entry);
@@ -296,23 +270,31 @@ JoystickTestWidget::on_response(int v)
 void
 JoystickTestWidget::on_save_profile()
 {
-  Gtk::TreeIter it = profile_list->append();
-  Glib::ustring filename = profile_entry.get_active_text();
-  (*it)[ProfileColumns::instance().name] = filename;
-  {
-    XMLWriter out(filename);
-    out.start_section("joysticks");
-    joystick.write(out);
-    out.end_section("joysticks");
-  }
+  on_save_profile_as("Hello World");
+}
+
+void
+JoystickTestWidget::on_save_profile_as(const std::string& name)
+{
+  std::ostringstream profile_name; 
+  profile_name << "Profile " <<  profile_entry.get_model()->children().size();
+  profile_entry.append_text(profile_name.str());
+  profile_entry.set_active_text(profile_name.str());
+
+  std::ostringstream filename;
+  filename << Main::current()->get_cfg_directory() << "/" << "profile"
+           << profile_entry.get_model()->children().size() << ".xml";
+  XMLWriter out(filename.str());
+  out.start_section("joysticks");
+  joystick.write(out);
+  out.end_section("joysticks");
 }
 
 void
 JoystickTestWidget::on_delete_profile()
 {
-  Gtk::TreeIter it = profile_entry.get_active();
-  if (it)
-    profile_list->erase(it);
+  // FIXME: Bad idea, could lead to deletion of the wrong entry when text is the same
+  profile_entry.remove_text(profile_entry.get_active_text());
 }
 
 /* EOF */

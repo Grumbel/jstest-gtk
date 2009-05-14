@@ -38,6 +38,8 @@ private:
   std::vector<Joystick*>    joysticks;
   std::vector<Gtk::Dialog*> dialogs;
 
+  std::string cfg_directory;
+
   void on_dialog_hide(Gtk::Dialog* dialog);
 
 public:
@@ -50,6 +52,8 @@ public:
   void show_mapping_dialog(Joystick& joystick);
 
   int main(int argc, char** argv);
+
+  std::string get_cfg_directory() const { return cfg_directory; }
 };
 
 #endif

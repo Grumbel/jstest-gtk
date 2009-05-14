@@ -28,7 +28,7 @@
 #include <gtkmm/button.h>
 #include <gtkmm/dialog.h>
 #include <gtkmm/alignment.h>
-#include <gtkmm/comboboxentry.h>
+#include <gtkmm/comboboxtext.h>
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/liststore.h>
 
@@ -49,8 +49,7 @@ private:
   Gtk::HBox  profile_hbox;
   Gtk::ToolButton profile_save_button;
   Gtk::ToolButton profile_delete_button;
-  Gtk::ComboBoxEntry profile_entry;
-  Glib::RefPtr<Gtk::ListStore> profile_list;
+  Gtk::ComboBoxText profile_entry;
 
   Gtk::Frame axis_frame;
   Gtk::VBox  axis_vbox;
@@ -92,6 +91,7 @@ public:
   void on_response(int v);
 
   void on_save_profile();
+  void on_save_profile_as(const std::string& name);
   void on_delete_profile();
 
 private:
