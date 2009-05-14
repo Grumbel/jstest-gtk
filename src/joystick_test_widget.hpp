@@ -28,6 +28,9 @@
 #include <gtkmm/button.h>
 #include <gtkmm/dialog.h>
 #include <gtkmm/alignment.h>
+#include <gtkmm/comboboxentry.h>
+#include <gtkmm/toolbutton.h>
+#include <gtkmm/liststore.h>
 
 #include "throttle_widget.hpp"
 #include "rudder_widget.hpp"
@@ -42,8 +45,15 @@ private:
   Joystick& joystick;
   Gtk::Alignment alignment;
   Gtk::Label label;
+
+  Gtk::HBox  profile_hbox;
+  Gtk::ToolButton profile_save_button;
+  Gtk::ToolButton profile_delete_button;
+  Gtk::ComboBoxEntry profile_entry;
+  Glib::RefPtr<Gtk::ListStore> profile_list;
+
   Gtk::Frame axis_frame;
-  Gtk::VBox axis_vbox;
+  Gtk::VBox  axis_vbox;
   Gtk::Frame button_frame;
   Gtk::Table axis_table;
   Gtk::Table button_table;
@@ -80,6 +90,9 @@ public:
   void on_calibrate();
   void on_mapping();
   void on_response(int v);
+
+  void on_save_profile();
+  void on_delete_profile();
 
 private:
   JoystickTestWidget(const JoystickTestWidget&);

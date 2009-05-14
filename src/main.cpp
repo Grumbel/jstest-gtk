@@ -179,6 +179,9 @@ Main::main(int argc, char** argv)
     }
   else
     {
+      Glib::set_application_name("Joystick Test");
+      Glib::set_prgname("jstest-gtk");
+      std::cout << "'" << Glib::get_user_config_dir() + "/" + Glib::get_prgname() << "'" << std::endl;
       Gtk::Main kit(&argc, &argv);
 
       if (device_files.empty())

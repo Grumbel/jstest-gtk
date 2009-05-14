@@ -23,6 +23,7 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/image.h>
 
+#include "xml_writer.hpp"
 #include "main.hpp"
 #include "joystick.hpp"
 #include "button_widget.hpp"
@@ -30,11 +31,36 @@
 #include "joystick_calibration_widget.hpp"
 #include "joystick_test_widget.hpp"
 
+class ProfileColumns : public Gtk::TreeModel::ColumnRecord
+{
+private:
+  static ProfileColumns* instance_;
+
+public:
+  static ProfileColumns& instance() {
+    if (instance_)
+      return *instance_;
+    else
+      return *(instance_ = new ProfileColumns());
+  }
+
+  Gtk::TreeModelColumn<Glib::ustring> name;
+
+private:
+  ProfileColumns() {
+    add(name);
+  }
+};
+
+ProfileColumns* ProfileColumns::instance_ = 0;
+
 JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
   : Gtk::Dialog(joystick_.get_name()),
     joystick(joystick_),
     label("<b>" + joystick.get_name() + "</b>\nDevice: " + joystick.get_filename() , 
           Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER),
+    profile_save_button(Gtk::Stock::SAVE_AS),
+    profile_delete_button(Gtk::Stock::DELETE),
     axis_frame("Axes"),
     button_frame("Buttons"),
     button_table((joystick.get_button_count()-1) / 8 + 1, std::min(joystick.get_button_count(), 8)),
@@ -51,6 +77,15 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
 {
   label.set_use_markup(true);
   label.set_selectable();
+
+  profile_list = Gtk::ListStore::create(ProfileColumns::instance());
+  profile_entry.set_model(profile_list);
+  profile_entry.set_text_column(ProfileColumns::instance().name);
+  profile_hbox.pack_start(profile_delete_button, Gtk::PACK_SHRINK);
+  profile_hbox.pack_start(profile_save_button, Gtk::PACK_SHRINK);
+  profile_hbox.add(profile_entry);
+  profile_delete_button.signal_clicked().connect(sigc::mem_fun(this, &JoystickTestWidget::on_delete_profile));
+  profile_save_button.signal_clicked().connect(sigc::mem_fun(this, &JoystickTestWidget::on_save_profile));
 
   axis_frame.set_border_width(5);
   axis_table.set_border_width(5);
@@ -111,6 +146,8 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
 
   buttonbox.add(mapping_button);
   buttonbox.add(calibration_button);
+
+  get_vbox()->pack_start(profile_hbox, Gtk::PACK_SHRINK);
 
   get_vbox()->pack_start(axis_frame,   Gtk::PACK_EXPAND_WIDGET);
   get_vbox()->pack_start(button_frame, Gtk::PACK_EXPAND_WIDGET);
@@ -254,6 +291,28 @@ void
 JoystickTestWidget::on_response(int v)
 {
   hide();
+}
+
+void
+JoystickTestWidget::on_save_profile()
+{
+  Gtk::TreeIter it = profile_list->append();
+  Glib::ustring filename = profile_entry.get_active_text();
+  (*it)[ProfileColumns::instance().name] = filename;
+  {
+    XMLWriter out(filename);
+    out.start_section("joysticks");
+    joystick.write(out);
+    out.end_section("joysticks");
+  }
+}
+
+void
+JoystickTestWidget::on_delete_profile()
+{
+  Gtk::TreeIter it = profile_entry.get_active();
+  if (it)
+    profile_list->erase(it);
 }
 
 /* EOF */
