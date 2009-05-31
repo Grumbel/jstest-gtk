@@ -67,6 +67,7 @@ Joystick::Joystick(const std::string& filename_)
         }
       else
         {
+          orig_name = name_c_str;
           try {
             name = Glib::convert_with_fallback(name_c_str, "UTF-8", "ISO-8859-1");
           } catch(Glib::ConvertError& err) {
@@ -480,5 +481,63 @@ Joystick::load(const XMLReader& root_reader)
       }
     }
 }
+
+std::string
+Joystick::get_evdev() const
+{
+  // See /usr/share/doc/linux-doc-2.6.28/devices.txt.gz
+  for(int i = 0; i < 32; ++i)
+    {
+      std::ostringstream out;
+      out << "/dev/input/event" << i;
+      
+      int evdev_fd;
+      if ((evdev_fd = open(out.str().c_str(), O_RDONLY)) < 0)
+        {
+          // ignore
+        }
+      else
+        {
+          char evdev_name[256];
+          if (ioctl(evdev_fd, EVIOCGNAME(sizeof(evdev_name)), evdev_name) < 0)
+            {
+              std::cout << out.str() << ": " << strerror(errno) << std::endl;
+            }
+          else
+            {
+              if (orig_name == evdev_name)
+                {
+                  // Found a device that matches, so return it
+                  close(evdev_fd);
+                  return out.str();
+                }
+            }
+
+          close(evdev_fd);
+        }
+    }
+
+  throw std::runtime_error("couldn't find evdev for " + filename);
+}
+
+#ifdef __TEST__
+
+// g++ -D__TEST__ joystick.cpp evdev_helper.cpp xml_writer.cpp xml_reader.cpp -o joystick-test `pkg-config --cflags --libs gtkmm-2.4 sigc++-2.0`  
+
+int main(int argc, char** argv)
+{
+  for(int i = 1; i < argc; ++i)
+    {
+      Joystick joystick(argv[i]);
+
+      std::cout << "Filename: '" << joystick.get_filename() << "'\n";
+      std::cout << "Name:     '" << joystick.get_name() << "'\n";
+      std::cout << "Axis:     " << joystick.get_axis_count() << "\n";
+      std::cout << "Button:   " << joystick.get_button_count() << "\n";
+      std::cout << "Evdev:    '" << joystick.get_evdev() << "'\n";
+    }
+  return 0;
+}
+#endif
 
 /* EOF */

@@ -45,6 +45,7 @@ private:
   int fd;
 
   std::string filename;
+  std::string orig_name;
   Glib::ustring name;
   int axis_count;
   int button_count;
@@ -91,6 +92,11 @@ public:
 
   void write(XMLWriter& out);
   void load(const XMLReader& reader);
+
+  /** Get the evdev that this joystick device is based on. This call
+      is just a guess, not guranteed to be the exact same device, but
+      for our uses that should be enough. */
+  std::string get_evdev() const;
 
 private:
   Joystick(const Joystick&);
