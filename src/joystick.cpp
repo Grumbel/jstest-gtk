@@ -375,14 +375,13 @@ Joystick::set_axis_mapping(const std::vector<int>& mapping)
 void
 Joystick::correct_calibration(const std::vector<int>& mapping_old, const std::vector<int>& mapping_new)
 {
-  std::vector<CalibrationData> callib_old = get_calibration();
-  
   int axes[ABS_MAX + 1]; // axes[name] -> old_idx
   for(std::vector<int>::const_iterator i = mapping_old.begin(); i != mapping_old.end(); ++i)
     {
       axes[*i] = i - mapping_old.begin();
     }
 
+  std::vector<CalibrationData> callib_old = get_calibration();
   std::vector<CalibrationData> callib_new;
   for(std::vector<int>::const_iterator i = mapping_new.begin(); i != mapping_new.end(); ++i)
     {
