@@ -13,6 +13,8 @@ git push --tags
 [[ TODO ]]
 ==========
 
+* display "No joystick found" when no joystick is available
+
 * [  Save Profile         ]
   |-----------------------|
   | Name: ............... |
