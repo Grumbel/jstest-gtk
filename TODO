@@ -43,8 +43,6 @@ git push --tags
 * [BUG] add some more checks to catch invalid button/axis mappings supplied
   to the joydev interface
 
-* [BUG] swapping axis must also swap calibration data
-
 * [FEATURE] provide additional support for SDL and evdev devices
 
 

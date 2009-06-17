@@ -373,6 +373,36 @@ Joystick::set_axis_mapping(const std::vector<int>& mapping)
 }
 
 void
+Joystick::correct_calibration(const std::vector<int>& mapping_old, const std::vector<int>& mapping_new)
+{
+  
+  std::vector<CalibrationData> callib_old = get_calibration();
+  std::vector<CalibrationData> callib_new;
+  std::vector<int> ax;
+  int axmes[ABS_MAX + 1];
+  int it,jt;
+  it=0;
+  for(std::vector<int>::const_iterator i = mapping_old.begin(); i != mapping_old.end(); ++i)
+    {
+      jt=int(*i);
+      axmes[jt]=it;
+      ++it;
+    }
+  for(std::vector<int>::const_iterator i = mapping_new.begin(); i !=mapping_new.end(); ++i)
+    {
+      jt=axmes[(*i)];
+      ax.push_back(jt);
+    }
+  
+  for(std::vector<int>::const_iterator i = ax.begin(); i != ax.end(); ++i)
+    {
+      callib_new.push_back((callib_old[*i]));
+    }
+  
+  set_calibration(callib_new);
+}
+
+void
 Joystick::write(XMLWriter& out)
 {
   out.start_section("joystick");

@@ -119,6 +119,7 @@ void
 RemapWidget::on_apply()
 {
   std::vector<int> mapping;
+  std::vector<int> mapping_old;
   for(Gtk::TreeIter i = map_list->children().begin(); i != map_list->children().end(); ++i)
     {
       mapping.push_back((*i)[RemapWidgetColumns::instance().id]);
@@ -126,7 +127,9 @@ RemapWidget::on_apply()
 
   if (mode == REMAP_AXIS)
     {
+      mapping_old = joystick.get_axis_mapping();
       joystick.set_axis_mapping(mapping);
+      joystick.correct_calibration(mapping_old, mapping);
     }
   else if (mode == REMAP_BUTTON)
     {

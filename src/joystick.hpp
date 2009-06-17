@@ -89,7 +89,10 @@ public:
 
   void set_button_mapping(const std::vector<int>& mapping);
   void set_axis_mapping(const std::vector<int>& mapping);
-
+  
+  /** Corrects calibration data after remaping axes */
+  void correct_calibration(const std::vector<int>& mapping_old, const std::vector<int>& mapping_new);
+  
   void write(XMLWriter& out);
   void load(const XMLReader& reader);
 
