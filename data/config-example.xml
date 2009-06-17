@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<joysticks>
+<joystick-profile>
+  <name>Sony PLAYSTATION(R)3 Controller</name>
+  <name>My Profile</name>
   <joystick>
-    <name>Sony PLAYSTATION(R)3 Controller</name>
-    <device>/dev/input/js0</device>
     <calibration>
       <axis>
         <axis>ABS_X</axis>
@@ -32,4 +32,4 @@
       <button>BTN_Y</button>
     </button-map>
   </joystick>
-</joysticks>
+</joystick-profile>

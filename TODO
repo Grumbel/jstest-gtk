@@ -15,9 +15,12 @@ git push --tags
 
 * [  Save Profile         ]
   |-----------------------|
+  | Name: ............... |
   |  [*] save calibration |
   |  [*] save calibration |
   |         [Cancel] [Ok] |
+
+  Give Overwrite warning when name matches existing one.
 
 * implement command line profile load
 

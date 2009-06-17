@@ -55,6 +55,9 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
   label.set_use_markup(true);
   label.set_selectable();
 
+  profile_delete_button.set_tooltip_text("Delete the current profile");
+  profile_save_button.set_tooltip_text("Save the current configuration into a profile");
+
   profile_hbox.pack_start(profile_delete_button, Gtk::PACK_SHRINK);
   profile_hbox.pack_start(profile_save_button, Gtk::PACK_SHRINK);
   profile_hbox.add(profile_entry);

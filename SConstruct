@@ -1,6 +1,6 @@
 ##  -*- python -*-
-##  Windstille - A Sci-Fi Action-Adventure Game
-##  Copyright (C) 2000,2005 Ingo Ruhnke <grumbel@gmx.de>
+##  jstest-gtk - A graphical joystick tester
+##  Copyright (C) 2009 Ingo Ruhnke <grumbel@gmx.de>
 ##
 ##  This program is free software: you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
