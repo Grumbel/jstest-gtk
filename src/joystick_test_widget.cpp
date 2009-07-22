@@ -164,6 +164,8 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
     }
   else if (joystick.get_axis_count() == 6) // Dual Analog Gamepad
     {
+      // FIXME: never reached as this is the same as Flightstick, no
+      // way to tell them apart from simple axis count
       stick_hbox.pack_start(stick1_widget, Gtk::PACK_EXPAND_PADDING);
       stick_hbox.pack_start(stick2_widget, Gtk::PACK_EXPAND_PADDING);
       stick_hbox.pack_start(stick3_widget, Gtk::PACK_EXPAND_PADDING);
@@ -191,6 +193,19 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
       axis_callbacks[7].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_y_axis));
       axis_callbacks[4].connect(sigc::mem_fun(left_trigger_widget, &ThrottleWidget::set_pos));
       axis_callbacks[5].connect(sigc::mem_fun(right_trigger_widget, &ThrottleWidget::set_pos));
+    }
+  else if (joystick.get_axis_count() == 7) // Dual Analog Gamepad DragonRise Inc. Generic USB Joystick
+    {
+      stick_hbox.pack_start(stick1_widget, Gtk::PACK_EXPAND_PADDING);
+      stick_hbox.pack_start(stick2_widget, Gtk::PACK_EXPAND_PADDING);
+      stick_hbox.pack_start(stick3_widget, Gtk::PACK_EXPAND_PADDING);
+
+      axis_callbacks[0].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_x_axis));
+      axis_callbacks[1].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_y_axis));
+      axis_callbacks[3].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_x_axis));
+      axis_callbacks[4].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_y_axis));
+      axis_callbacks[5].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_x_axis));
+      axis_callbacks[6].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_y_axis));
     }
   else if (joystick.get_axis_count() == 28) // Playstation 3 Controller
     {
