@@ -24,6 +24,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#include "binreloc.h"
+
 #include "joystick_test_widget.hpp"
 #include "joystick_list_widget.hpp"
 #include "joystick_map_widget.hpp"
@@ -34,8 +36,9 @@
 
 Main* Main::current_ = 0;
 
-Main::Main()
-  : list_dialog(0)
+Main::Main(const std::string& datadir_)
+  : datadir(datadir_),
+    list_dialog(0)
 {
   current_ = this;
 }
@@ -182,38 +185,77 @@ Main::main(int argc, char** argv)
     }
   else
     {
-      Glib::set_application_name("Joystick Test");
-      Glib::set_prgname("jstest-gtk");
-      cfg_directory = Glib::build_filename(Glib::get_user_config_dir(), Glib::get_prgname());
-      if (access(cfg_directory.c_str(), R_OK | W_OK) != 0 &&
-          mkdir(cfg_directory.c_str(), 0770) != 0)
+      try 
         {
-          throw std::runtime_error(cfg_directory + ": " + strerror(errno));
-        }
-      Gtk::Main kit(&argc, &argv);
 
-      if (device_files.empty())
-        {
-          show_device_list_dialog();
-        }
-      else
-        {
-          for(DeviceFiles::iterator i = device_files.begin(); i != device_files.end(); ++i)
+          Glib::set_application_name("Joystick Test");
+          Glib::set_prgname("jstest-gtk");
+          cfg_directory = Glib::build_filename(Glib::get_user_config_dir(), Glib::get_prgname());
+          if (access(cfg_directory.c_str(), R_OK | W_OK) != 0 &&
+              mkdir(cfg_directory.c_str(), 0770) != 0)
             {
-              show_device_property_dialog(*i);
+              throw std::runtime_error(cfg_directory + ": " + strerror(errno));
             }
+          Gtk::Main kit(&argc, &argv);
+
+          if (device_files.empty())
+            {
+              show_device_list_dialog();
+            }
+          else
+            {
+              for(DeviceFiles::iterator i = device_files.begin(); i != device_files.end(); ++i)
+                {
+                  show_device_property_dialog(*i);
+                }
+            }
+          Gtk::Main::run();
         }
-      Gtk::Main::run();
+      catch(std::exception& err) 
+        {
+          std::cout << "Error: " << err.what() << std::endl;
+          return EXIT_FAILURE;
+        }
+      catch(Glib::Exception& err)
+        {
+          std::cout << "Error: " << err.what() << std::endl;
+          return EXIT_FAILURE;
+        }
     }
 
   return 0;
+}
+
+std::string find_datadir()
+{
+  BrInitError error;
+  if (!br_init(&error))
+    {
+      std::ostringstream out;
+      out << "Error: Couldn't init binreloc: " << error;
+      throw std::runtime_error(out.str());
+    }
+  else
+    {
+      char* c_prefix = br_find_exe_dir(NULL);
+      if (!c_prefix)
+        {
+          throw std::runtime_error("Error: Couldn't find prefix");
+        }
+      else
+        {
+          std::string prefix = c_prefix;
+          free(c_prefix);
+          return prefix + "/data/";
+        }
+    }
 }
 
 int main(int argc, char** argv)
 {
   try 
     {
-      Main app;
+      Main app(find_datadir());
       return app.main(argc, argv);
     } 
   catch(std::exception& err) 

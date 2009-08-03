@@ -123,7 +123,7 @@ JoystickListWidget::on_refresh()
   for(std::vector<JoystickDescription>::const_iterator i = joysticks.begin(); i != joysticks.end(); ++i)
     {
       Gtk::ListStore::iterator it = device_list->append();
-      (*it)[DeviceListColumns::instance().icon] = Gdk::Pixbuf::create_from_file("data/generic.png");
+      (*it)[DeviceListColumns::instance().icon] = Gdk::Pixbuf::create_from_file(Main::current()->get_data_directory() + "generic.png");
       (*it)[DeviceListColumns::instance().path] = i->filename;
 
       std::ostringstream out;

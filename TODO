@@ -13,6 +13,10 @@ git push --tags
 [[ TODO ]]
 ==========
 
+* grey out Properties when no joystick is present in the list
+
+* Refresh doesn't work (can't find images)
+
 * display "No joystick found" when no joystick is available
 
 * [  Save Profile         ]

@@ -33,6 +33,7 @@ public:
   static Main* current() { return current_; }
 
 private:
+  std::string datadir;
   JoystickListWidget* list_dialog;
 
   std::vector<Joystick*>    joysticks;
@@ -43,7 +44,7 @@ private:
   void on_dialog_hide(Gtk::Dialog* dialog);
 
 public:
-  Main();
+  Main(const std::string& datadir);
   ~Main();
 
   void show_device_list_dialog();
@@ -54,6 +55,7 @@ public:
   int main(int argc, char** argv);
 
   std::string get_cfg_directory() const { return cfg_directory; }
+  std::string get_data_directory() const { return datadir; }
 };
 
 #endif

@@ -2,3 +2,4 @@
 *~
 *.o
 jstest-gtk
+libbinreloc.a
