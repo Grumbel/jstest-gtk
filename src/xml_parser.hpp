@@ -57,9 +57,9 @@ public:
   ~XMLListNode()
   {
     for(std::vector<XMLNode*>::iterator i = children.begin(); i != children.end(); ++i)
-      {
-        delete *i;
-      }
+    {
+      delete *i;
+    }
   }
 
   std::string get_name() const { return name; }
@@ -68,9 +68,9 @@ public:
   {
     std::cout << std::string(2*depth, ' ') << "<" << name << ">" << std::endl;
     for(std::vector<XMLNode*>::iterator i = children.begin(); i != children.end(); ++i)
-      {
-        (*i)->print(out, depth + 1);
-      }
+    {
+      (*i)->print(out, depth + 1);
+    }
     std::cout << std::string(2*depth, ' ') << "</" << name << ">" << std::endl;
   }
 

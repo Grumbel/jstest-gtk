@@ -95,12 +95,12 @@ RemapWidget::on_clear()
   // Convert the ListStore into a vector
   std::vector<RemapEntry> rows;
   for(Gtk::TreeIter i = map_list->children().begin(); i != map_list->children().end(); ++i)
-    {
-      RemapEntry entry;
-      entry.id   = (*i)[RemapWidgetColumns::instance().id];
-      entry.name = (*i)[RemapWidgetColumns::instance().name];
-      rows.push_back(entry);
-    }
+  {
+    RemapEntry entry;
+    entry.id   = (*i)[RemapWidgetColumns::instance().id];
+    entry.name = (*i)[RemapWidgetColumns::instance().name];
+    rows.push_back(entry);
+  }
 
   // Sort the vector
   std::sort(rows.begin(), rows.end());
@@ -108,9 +108,9 @@ RemapWidget::on_clear()
   // Renter the vector into the liststore
   map_list->clear();
   for(std::vector<RemapEntry>::iterator i = rows.begin(); i != rows.end(); ++i)
-    {
-      add_entry(i->id, i->name);                
-    }
+  {
+    add_entry(i->id, i->name);                
+  }
 
   on_apply();
 }
@@ -121,20 +121,20 @@ RemapWidget::on_apply()
   std::vector<int> mapping;
   std::vector<int> mapping_old;
   for(Gtk::TreeIter i = map_list->children().begin(); i != map_list->children().end(); ++i)
-    {
-      mapping.push_back((*i)[RemapWidgetColumns::instance().id]);
-    }
+  {
+    mapping.push_back((*i)[RemapWidgetColumns::instance().id]);
+  }
 
   if (mode == REMAP_AXIS)
-    {
-      mapping_old = joystick.get_axis_mapping();
-      joystick.set_axis_mapping(mapping);
-      joystick.correct_calibration(mapping_old, mapping);
-    }
+  {
+    mapping_old = joystick.get_axis_mapping();
+    joystick.set_axis_mapping(mapping);
+    joystick.correct_calibration(mapping_old, mapping);
+  }
   else if (mode == REMAP_BUTTON)
-    {
-      joystick.set_button_mapping(mapping);
-    }
+  {
+    joystick.set_button_mapping(mapping);
+  }
 }
 
 void
@@ -155,19 +155,19 @@ RemapWidget::on_my_row_deleted(const Gtk::TreeModel::Path& path)
   // std::cout << "on_my_rows_deleted" << std::endl;
   
   if (mode == REMAP_AXIS)
+  {
+    if (joystick.get_axis_count() == (int)map_list->children().size())
     {
-      if (joystick.get_axis_count() == (int)map_list->children().size())
-        {
-          on_apply();
-        }
+      on_apply();
     }
+  }
   else if (mode == REMAP_BUTTON)
+  {
+    if (joystick.get_button_count() == (int)map_list->children().size())
     {
-      if (joystick.get_button_count() == (int)map_list->children().size())
-        {
-          on_apply();
-        }
+      on_apply();
     }
+  }
 }
 
 /* EOF */

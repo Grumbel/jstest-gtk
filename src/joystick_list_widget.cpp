@@ -91,26 +91,26 @@ JoystickListWidget::on_row_activated(const Gtk::TreeModel::Path& path, Gtk::Tree
 {
   Gtk::TreeModel::iterator it = treeview.get_model()->get_iter(path);
   if (it)
-    {
-      Main::current()->show_device_property_dialog((*it)[DeviceListColumns::instance().path]);
-    }
+  {
+    Main::current()->show_device_property_dialog((*it)[DeviceListColumns::instance().path]);
+  }
 }
 
 void
 JoystickListWidget::on_response(int v)
 {
   if (v == 0)
-    {
-      hide();
-    }
+  {
+    hide();
+  }
   else if (v == 1)
-    {
-      on_properties();
-    }
+  {
+    on_properties();
+  }
   else if (v == 2)
-    {
-      on_refresh();
-    }
+  {
+    on_refresh();
+  }
 }
 
 void
@@ -121,18 +121,18 @@ JoystickListWidget::on_refresh()
   device_list->clear();
 
   for(std::vector<JoystickDescription>::const_iterator i = joysticks.begin(); i != joysticks.end(); ++i)
-    {
-      Gtk::ListStore::iterator it = device_list->append();
-      (*it)[DeviceListColumns::instance().icon] = Gdk::Pixbuf::create_from_file(Main::current()->get_data_directory() + "generic.png");
-      (*it)[DeviceListColumns::instance().path] = i->filename;
+  {
+    Gtk::ListStore::iterator it = device_list->append();
+    (*it)[DeviceListColumns::instance().icon] = Gdk::Pixbuf::create_from_file(Main::current()->get_data_directory() + "generic.png");
+    (*it)[DeviceListColumns::instance().path] = i->filename;
 
-      std::ostringstream out;
-      out << i->name << "\n"
-          << "Device: " << i->filename << "\n"
-          << "Axes: " << i->axis_count << "\n"
-          << "Buttons: " << i->button_count;
-      (*it)[DeviceListColumns::instance().name] = out.str();
-    }
+    std::ostringstream out;
+    out << i->name << "\n"
+        << "Device: " << i->filename << "\n"
+        << "Axes: " << i->axis_count << "\n"
+        << "Buttons: " << i->button_count;
+    (*it)[DeviceListColumns::instance().name] = out.str();
+  }
 
   if (!joysticks.empty())
     treeview.get_selection()->select(device_list->children().begin());
@@ -143,9 +143,9 @@ JoystickListWidget::on_properties()
 {
   Gtk::TreeModel::iterator it = treeview.get_selection()->get_selected();
   if (it)
-    {
-      Main::current()->show_device_property_dialog((*it)[DeviceListColumns::instance().path]);
-    }
+  {
+    Main::current()->show_device_property_dialog((*it)[DeviceListColumns::instance().path]);
+  }
 }
 
 /* EOF */

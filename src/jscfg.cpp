@@ -26,14 +26,14 @@ void print_help()
             << "  --help, -h                 Display this help\n"
             << "  --btnmap, -b B1,B2,...     Display this help\n"
             << "  --axismap, -a A1,A2,...    Display this help\n"
-}
+    }
 
 int main(int argc, char** argv)
 {
   for(int i = 1; i < argc; ++i)
-    {
+  {
       
-    }
+  }
   
   return 0;
 }

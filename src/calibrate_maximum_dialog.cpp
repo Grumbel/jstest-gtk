@@ -46,49 +46,49 @@ CalibrateMaximumDialog::CalibrateMaximumDialog(Joystick& joystick_)
   max_axis_state.resize(joystick.get_axis_count());
  
   for(int i = 0; i < joystick.get_axis_count(); ++i)
-    {
-      min_axis_state[i] = joystick.get_axis_state(i);
-      max_axis_state[i] = joystick.get_axis_state(i);
-    }
+  {
+    min_axis_state[i] = joystick.get_axis_state(i);
+    max_axis_state[i] = joystick.get_axis_state(i);
+  }
 }
 
 void
 CalibrateMaximumDialog::on_response(int v)
 {
   if (v == 0)
+  {
+    // Calculate CalibrationData
+    std::vector<Joystick::CalibrationData> data;
+
+    for(int i = 0; i < joystick.get_axis_count(); ++i)
     {
-      // Calculate CalibrationData
-      std::vector<Joystick::CalibrationData> data;
+      Joystick::CalibrationData axis;
+      axis.calibrate  = true;
+      axis.invert     = false;
+      axis.center_min = axis.center_max = joystick.get_axis_state(i);
+      axis.range_min  = min_axis_state[i];
+      axis.range_max  = max_axis_state[i];
 
-      for(int i = 0; i < joystick.get_axis_count(); ++i)
-        {
-          Joystick::CalibrationData axis;
-          axis.calibrate  = true;
-          axis.invert     = false;
-          axis.center_min = axis.center_max = joystick.get_axis_state(i);
-          axis.range_min  = min_axis_state[i];
-          axis.range_max  = max_axis_state[i];
-
-          // When the center is the same as the outer edge of an axis,
-          // we assume its a throttle control or analog button and
-          // calculate the center on our own
-          if (axis.center_min == axis.range_min ||
-              axis.center_max == axis.range_max)
-            {
-              axis.center_min = axis.center_max = (axis.range_min + axis.range_max)/2;
-            }
+      // When the center is the same as the outer edge of an axis,
+      // we assume its a throttle control or analog button and
+      // calculate the center on our own
+      if (axis.center_min == axis.range_min ||
+          axis.center_max == axis.range_max)
+      {
+        axis.center_min = axis.center_max = (axis.range_min + axis.range_max)/2;
+      }
           
-          data.push_back(axis);
-        }
+      data.push_back(axis);
+    }
       
-      joystick.set_calibration(data);
+    joystick.set_calibration(data);
 
-      hide();
-    }
+    hide();
+  }
   else
-    {
-      joystick.set_calibration(orig_data);
-    }
+  {
+    joystick.set_calibration(orig_data);
+  }
 }
 
 void
@@ -96,16 +96,16 @@ CalibrateMaximumDialog::on_axis_move(int id, int value)
 {
   // std::cout << "AxisMove: " << id << " " << value << std::endl;
   if (!is_init_axis_state[id])
-    {
-      min_axis_state[id] = value;
-      max_axis_state[id] = value;
-      is_init_axis_state[id] = true;
-    }
+  {
+    min_axis_state[id] = value;
+    max_axis_state[id] = value;
+    is_init_axis_state[id] = true;
+  }
   else
-    {
-      min_axis_state[id] = std::min(value, min_axis_state[id]);
-      max_axis_state[id] = std::max(value, max_axis_state[id]);
-    }
+  {
+    min_axis_state[id] = std::min(value, min_axis_state[id]);
+    max_axis_state[id] = std::max(value, max_axis_state[id]);
+  }
 }
 
 /* EOF */

@@ -49,41 +49,41 @@ public:
   {
     typename std::map<std::string, Enum>::const_iterator i = string2enum.find(str);
     if (i == string2enum.end())
+    {
+      std::istringstream in(str);
+      Enum tmp;
+      in >> tmp;
+      if (in.fail())
       {
-        std::istringstream in(str);
-        Enum tmp;
-        in >> tmp;
-        if (in.fail())
-          {
-            std::ostringstream out;
-            out << "Couldn't convert '" << str << "' to enum " << name << std::endl;
-            throw std::runtime_error(out.str());
-          }
-        else
-          {
-            return tmp;
-          }
+        std::ostringstream out;
+        out << "Couldn't convert '" << str << "' to enum " << name << std::endl;
+        throw std::runtime_error(out.str());
       }
+      else
+      {
+        return tmp;
+      }
+    }
     else
-      {
-        return i->second;
-      }
+    {
+      return i->second;
+    }
   }
 
   std::string operator[](Enum v) const {
     typename std::map<Enum, std::string>::const_iterator i = enum2string.find(v);
     if (i == enum2string.end())
-      {
-        // If we can't convert symbolic, just convert the integer to a
-        // string
-        std::ostringstream out;
-        out << v;
-        return out.str();
-      }
+    {
+      // If we can't convert symbolic, just convert the integer to a
+      // string
+      std::ostringstream out;
+      out << v;
+      return out.str();
+    }
     else
-      {
-        return i->second;
-      }
+    {
+      return i->second;
+    }
   }
 };
 
@@ -606,14 +606,14 @@ public:
 
     Display* dpy = XOpenDisplay(NULL);
     if (!dpy)
-      {
-        throw std::runtime_error("Keysym2Keycode: Couldn't open X11 display");
-      }
+    {
+      throw std::runtime_error("Keysym2Keycode: Couldn't open X11 display");
+    }
     else
-      {
-        process_keymap(dpy);
-        XCloseDisplay(dpy);
-      }
+    {
+      process_keymap(dpy);
+      XCloseDisplay(dpy);
+    }
   }
 
   void process_keymap(Display* dpy)
@@ -628,17 +628,17 @@ public:
                                          &keysyms_per_keycode);
 
     for(int i = 0; i < num_keycodes; ++i)
+    {
+      if (keymap[i*keysyms_per_keycode] != NoSymbol)
       {
-        if (keymap[i*keysyms_per_keycode] != NoSymbol)
-          {
-            KeySym keysym = keymap[i*keysyms_per_keycode];
-            // FIXME: Duplicate entries confuse the conversion
-            // std::map<KeySym, int>::iterator it = mapping.find(keysym);
-            // if (it != mapping.end())
-            //   std::cout << "Duplicate keycode: " << i << std::endl;
-            mapping[keysym] = i;
-          }
+        KeySym keysym = keymap[i*keysyms_per_keycode];
+        // FIXME: Duplicate entries confuse the conversion
+        // std::map<KeySym, int>::iterator it = mapping.find(keysym);
+        // if (it != mapping.end())
+        //   std::cout << "Duplicate keycode: " << i << std::endl;
+        mapping[keysym] = i;
       }
+    }
 
     XFree(keymap);
   }
@@ -651,71 +651,71 @@ int xkeysym2keycode(const std::string& name)
   KeySym keysym = XStringToKeysym(name.substr(3).c_str());
 
   if (keysym == NoSymbol)
-    {
-      throw std::runtime_error("xkeysym2keycode: Couldn't convert name '" + name + "' to xkeysym");
-    }
+  {
+    throw std::runtime_error("xkeysym2keycode: Couldn't convert name '" + name + "' to xkeysym");
+  }
 
   std::map<KeySym, int>::iterator i = sym2code.mapping.find(keysym);
   if (i == sym2code.mapping.end())
-    {
-      throw std::runtime_error("xkeysym2keycode: Couldn't convert xkeysym '" + name + "' to evdev keycode");
-    }
+  {
+    throw std::runtime_error("xkeysym2keycode: Couldn't convert xkeysym '" + name + "' to evdev keycode");
+  }
   else
-    {
-      if (0)
-        std::cout << name << " -> " << keysym << " -> " << XKeysymToString(keysym) 
-                  << " -> " << btn2str(i->second) << "(" << i->second << ")" << std::endl;
-      return i->second;
-    }
+  {
+    if (0)
+      std::cout << name << " -> " << keysym << " -> " << XKeysymToString(keysym) 
+                << " -> " << btn2str(i->second) << "(" << i->second << ")" << std::endl;
+    return i->second;
+  }
 }
 
 bool str2event(const std::string& name, int& type, int& code)
 {
   if (name == "void" || name == "none")
-    {
-      type = -1;
-      code = -1;
-      return true;
-    }
+  {
+    type = -1;
+    code = -1;
+    return true;
+  }
   else if (name.compare(0, 3, "REL") == 0)
-    {
-      type = EV_REL;
-      code = evdev_rel_names[name];
-      return true;
-    }
+  {
+    type = EV_REL;
+    code = evdev_rel_names[name];
+    return true;
+  }
   else if (name.compare(0, 3, "ABS") == 0)
-    {
-      type = EV_ABS;
-      code = evdev_abs_names[name];
-      return true;
-    }
+  {
+    type = EV_ABS;
+    code = evdev_abs_names[name];
+    return true;
+  }
   else if (name.compare(0, 2, "XK") == 0)
-    {
-      type = EV_KEY;
-      code = xkeysym2keycode(name);
-      return true;      
-    }
+  {
+    type = EV_KEY;
+    code = xkeysym2keycode(name);
+    return true;      
+  }
   else if (name.compare(0, 2, "JS") == 0)
-    {
-      int int_value = 0;
-      std::istringstream(name.substr(3)) >> int_value;
+  {
+    int int_value = 0;
+    std::istringstream(name.substr(3)) >> int_value;
 
-      type = EV_KEY;
-      code = BTN_JOYSTICK + int_value;
+    type = EV_KEY;
+    code = BTN_JOYSTICK + int_value;
 
-      return true;
-    }
+    return true;
+  }
   else if (name.compare(0, 3, "KEY") == 0 ||
            name.compare(0, 3, "BTN") == 0)
-    {
-      type = EV_KEY;
-      code = evdev_btn_names[name];
-      return true;
-    }
+  {
+    type = EV_KEY;
+    code = evdev_btn_names[name];
+    return true;
+  }
   else
-    {
-      return false;
-    }
+  {
+    return false;
+  }
 }
 
 std::string btn2str(int i)

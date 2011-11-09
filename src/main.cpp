@@ -51,14 +51,14 @@ void
 Main::show_device_list_dialog()
 {
   if (list_dialog)
-    {
-      list_dialog->show();
-    }
+  {
+    list_dialog->show();
+  }
   else
-    {
-      list_dialog = new JoystickListWidget();
-      list_dialog->show_all();
-    }
+  {
+    list_dialog = new JoystickListWidget();
+    list_dialog->show_all();
+  }
 }
 
 void
@@ -97,9 +97,9 @@ Main::on_dialog_hide(Gtk::Dialog* dialog)
   delete dialog;
 
   if (dialogs.empty())
-    {
-      Gtk::Main::quit();
-    }
+  {
+    Gtk::Main::quit();
+  }
 }
 
 int
@@ -110,118 +110,118 @@ Main::main(int argc, char** argv)
   std::string config_save_file;
 
   for(int i = 1; i < argc; ++i)
+  {
+    if (strcmp("--help", argv[i]) == 0 ||
+        strcmp("-h", argv[i]) == 0)
     {
-      if (strcmp("--help", argv[i]) == 0 ||
-          strcmp("-h", argv[i]) == 0)
-        {
-          std::cout << "Usage: " << argv[0] << " [OPTIONS]... [DEVICE]...\n"
-                    << "A graphical joystick tester.\n"
-                    << "\n"
-                    << "Options:\n"
-                    << "  -h, --help      Display this help and exit\n"
-                    << "  -v, --version   Display version information and exit\n"
-                    << "  -l, --load CFG  Load load configuration from file and apply them\n"
-                    << "  -s, --save CFG  Save current device configuration to file CFG\n"
-                    << "\n"
-                    << "Report bugs to Ingo Ruhnke <grumbel@gmx.de>.\n";
-          return 0;
-        }
-      else if (strcmp("--load", argv[i]) == 0 ||
-               strcmp("-l", argv[i]) == 0)
-        {
-          ++i;
-          if (i < argc)
-            {
-              std::cout << "Configuration file load is not yet implemented" << std::endl;
-              return 0;
-            }
-          else
-            {
-              std::cout << "Error: " << argv[i-1] << " expected an argument" << std::endl;
-              exit(EXIT_FAILURE);
-            }         
-        }
-      else if (strcmp("--save", argv[i]) == 0 ||
-               strcmp("-s", argv[i]) == 0)
-        {
-          ++i;
-          if (i < argc)
-            {
-              config_save_file = argv[i];
-            }
-          else
-            {
-              std::cout << "Error: " << argv[i-1] << " expected an argument" << std::endl;
-              exit(EXIT_FAILURE);
-            }
-        }
-      else if (strcmp("--version", argv[i]) == 0 ||
-               strcmp("-v", argv[i]) == 0)
-        {
-          std::cout << "jstest-gtk 0.1.0" << std::endl;
-          return 0;
-        }
-      else if (argv[i][0] == '-')
-        {
-          std::cout << "Error: " << argv[0] << ": unrecognized option '" << argv[i] << "'" << std::endl;
-          return EXIT_FAILURE;
-        }
-      else
-        {
-          device_files.push_back(argv[i]);
-        }
+      std::cout << "Usage: " << argv[0] << " [OPTIONS]... [DEVICE]...\n"
+                << "A graphical joystick tester.\n"
+                << "\n"
+                << "Options:\n"
+                << "  -h, --help      Display this help and exit\n"
+                << "  -v, --version   Display version information and exit\n"
+                << "  -l, --load CFG  Load load configuration from file and apply them\n"
+                << "  -s, --save CFG  Save current device configuration to file CFG\n"
+                << "\n"
+                << "Report bugs to Ingo Ruhnke <grumbel@gmx.de>.\n";
+      return 0;
     }
+    else if (strcmp("--load", argv[i]) == 0 ||
+             strcmp("-l", argv[i]) == 0)
+    {
+      ++i;
+      if (i < argc)
+      {
+        std::cout << "Configuration file load is not yet implemented" << std::endl;
+        return 0;
+      }
+      else
+      {
+        std::cout << "Error: " << argv[i-1] << " expected an argument" << std::endl;
+        exit(EXIT_FAILURE);
+      }         
+    }
+    else if (strcmp("--save", argv[i]) == 0 ||
+             strcmp("-s", argv[i]) == 0)
+    {
+      ++i;
+      if (i < argc)
+      {
+        config_save_file = argv[i];
+      }
+      else
+      {
+        std::cout << "Error: " << argv[i-1] << " expected an argument" << std::endl;
+        exit(EXIT_FAILURE);
+      }
+    }
+    else if (strcmp("--version", argv[i]) == 0 ||
+             strcmp("-v", argv[i]) == 0)
+    {
+      std::cout << "jstest-gtk 0.1.0" << std::endl;
+      return 0;
+    }
+    else if (argv[i][0] == '-')
+    {
+      std::cout << "Error: " << argv[0] << ": unrecognized option '" << argv[i] << "'" << std::endl;
+      return EXIT_FAILURE;
+    }
+    else
+    {
+      device_files.push_back(argv[i]);
+    }
+  }
 
   if (!config_save_file.empty())
+  {
+    XMLWriter out(config_save_file);
+    out.start_section("joysticks");
+    for(DeviceFiles::iterator i = device_files.begin(); i != device_files.end(); ++i)
     {
-      XMLWriter out(config_save_file);
-      out.start_section("joysticks");
-      for(DeviceFiles::iterator i = device_files.begin(); i != device_files.end(); ++i)
-        {
-          Joystick joystick(*i);
-          joystick.write(out);
-        }
-      out.end_section("joysticks");
+      Joystick joystick(*i);
+      joystick.write(out);
     }
+    out.end_section("joysticks");
+  }
   else
+  {
+    try 
     {
-      try 
-        {
 
-          Glib::set_application_name("Joystick Test");
-          Glib::set_prgname("jstest-gtk");
-          cfg_directory = Glib::build_filename(Glib::get_user_config_dir(), Glib::get_prgname());
-          if (access(cfg_directory.c_str(), R_OK | W_OK) != 0 &&
-              mkdir(cfg_directory.c_str(), 0770) != 0)
-            {
-              throw std::runtime_error(cfg_directory + ": " + strerror(errno));
-            }
-          Gtk::Main kit(&argc, &argv);
+      Glib::set_application_name("Joystick Test");
+      Glib::set_prgname("jstest-gtk");
+      cfg_directory = Glib::build_filename(Glib::get_user_config_dir(), Glib::get_prgname());
+      if (access(cfg_directory.c_str(), R_OK | W_OK) != 0 &&
+          mkdir(cfg_directory.c_str(), 0770) != 0)
+      {
+        throw std::runtime_error(cfg_directory + ": " + strerror(errno));
+      }
+      Gtk::Main kit(&argc, &argv);
 
-          if (device_files.empty())
-            {
-              show_device_list_dialog();
-            }
-          else
-            {
-              for(DeviceFiles::iterator i = device_files.begin(); i != device_files.end(); ++i)
-                {
-                  show_device_property_dialog(*i);
-                }
-            }
-          Gtk::Main::run();
-        }
-      catch(std::exception& err) 
+      if (device_files.empty())
+      {
+        show_device_list_dialog();
+      }
+      else
+      {
+        for(DeviceFiles::iterator i = device_files.begin(); i != device_files.end(); ++i)
         {
-          std::cout << "Error: " << err.what() << std::endl;
-          return EXIT_FAILURE;
+          show_device_property_dialog(*i);
         }
-      catch(Glib::Exception& err)
-        {
-          std::cout << "Error: " << err.what() << std::endl;
-          return EXIT_FAILURE;
-        }
+      }
+      Gtk::Main::run();
     }
+    catch(std::exception& err) 
+    {
+      std::cout << "Error: " << err.what() << std::endl;
+      return EXIT_FAILURE;
+    }
+    catch(Glib::Exception& err)
+    {
+      std::cout << "Error: " << err.what() << std::endl;
+      return EXIT_FAILURE;
+    }
+  }
 
   return 0;
 }
@@ -230,39 +230,39 @@ std::string find_datadir()
 {
   BrInitError error;
   if (!br_init(&error))
-    {
-      std::ostringstream out;
-      out << "Error: Couldn't init binreloc: " << error;
-      throw std::runtime_error(out.str());
-    }
+  {
+    std::ostringstream out;
+    out << "Error: Couldn't init binreloc: " << error;
+    throw std::runtime_error(out.str());
+  }
   else
+  {
+    char* c_prefix = br_find_exe_dir(NULL);
+    if (!c_prefix)
     {
-      char* c_prefix = br_find_exe_dir(NULL);
-      if (!c_prefix)
-        {
-          throw std::runtime_error("Error: Couldn't find prefix");
-        }
-      else
-        {
-          std::string prefix = c_prefix;
-          free(c_prefix);
-          return prefix + "/data/";
-        }
+      throw std::runtime_error("Error: Couldn't find prefix");
     }
+    else
+    {
+      std::string prefix = c_prefix;
+      free(c_prefix);
+      return prefix + "/data/";
+    }
+  }
 }
 
 int main(int argc, char** argv)
 {
   try 
-    {
-      Main app(find_datadir());
-      return app.main(argc, argv);
-    } 
+  {
+    Main app(find_datadir());
+    return app.main(argc, argv);
+  } 
   catch(std::exception& err) 
-    {
-      std::cout << "Error: " << err.what() << std::endl;
-      return EXIT_FAILURE;
-    }
+  {
+    std::cout << "Error: " << err.what() << std::endl;
+    return EXIT_FAILURE;
+  }
 }
 
 /* EOF */

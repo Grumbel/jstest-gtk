@@ -25,13 +25,13 @@ XMLWriter::XMLWriter(const std::string& filename)
     depth(0)
 {
   if (!*out)
-    {
-      throw std::runtime_error("couldn't open " + filename);
-    }
+  {
+    throw std::runtime_error("couldn't open " + filename);
+  }
   else
-    {
-      (*out) << "<?xml version=\"1.0\"?>" << std::endl;
-    }
+  {
+    (*out) << "<?xml version=\"1.0\"?>" << std::endl;
+  }
 }
 
 void

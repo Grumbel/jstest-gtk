@@ -34,53 +34,53 @@ AxisWidget::on_my_expose_event(GdkEventExpose* event)
 {
   Glib::RefPtr<Gdk::Window> window = drawingarea.get_window();
   if(window)
+  {
+    Cairo::RefPtr<Cairo::Context> cr = window->create_cairo_context();
+    if (0)
     {
-      Cairo::RefPtr<Cairo::Context> cr = window->create_cairo_context();
-      if (0)
-        {
-          cr->rectangle(event->area.x, event->area.y,
-                        event->area.width, event->area.height);
-          cr->clip();
-        }
-
-      int w  = drawingarea.get_allocation().get_width()  - 10;
-      int h  = drawingarea.get_allocation().get_height() - 10;
-      int px = w/2 + (w/2  * x);
-      int py = h/2 + (h/2 * y);
-
-      cr->translate(5, 5);
-
-      // Outer Rectangle
-      cr->set_source_rgb(0.0, 0.0, 0.0);
-      cr->set_line_width(1.0);
-      cr->rectangle(0, 0, w, h);
-      cr->stroke();
-
-      // BG Circle
-      cr->arc(w/2, h/2, w/2, 0.0, 2.0 * M_PI);
-      cr->set_source_rgba(0.0, 0.0, 0.0, 0.1);
-      cr->fill();
-
-      // Cross
-      cr->set_line_width(0.5);
-      cr->set_source_rgba(0.0, 0.0, 0.0, 0.5);
-      cr->move_to(w/2, 0);
-      cr->line_to(w/2, h);
-
-      cr->set_source_rgba(0.0, 0.0, 0.0, 0.5);
-      cr->move_to(0, h/2);
-      cr->line_to(w, h/2);
-      cr->stroke();
-
-      // Cursor
-      cr->set_source_rgb(0.0, 0.0, 0.0);
-      cr->set_line_width(2.0);
-      cr->move_to(px, py-5);          
-      cr->line_to(px, py+5);
-      cr->move_to(px-5, py);          
-      cr->line_to(px+5, py);
-      cr->stroke();
+      cr->rectangle(event->area.x, event->area.y,
+                    event->area.width, event->area.height);
+      cr->clip();
     }
+
+    int w  = drawingarea.get_allocation().get_width()  - 10;
+    int h  = drawingarea.get_allocation().get_height() - 10;
+    int px = w/2 + (w/2  * x);
+    int py = h/2 + (h/2 * y);
+
+    cr->translate(5, 5);
+
+    // Outer Rectangle
+    cr->set_source_rgb(0.0, 0.0, 0.0);
+    cr->set_line_width(1.0);
+    cr->rectangle(0, 0, w, h);
+    cr->stroke();
+
+    // BG Circle
+    cr->arc(w/2, h/2, w/2, 0.0, 2.0 * M_PI);
+    cr->set_source_rgba(0.0, 0.0, 0.0, 0.1);
+    cr->fill();
+
+    // Cross
+    cr->set_line_width(0.5);
+    cr->set_source_rgba(0.0, 0.0, 0.0, 0.5);
+    cr->move_to(w/2, 0);
+    cr->line_to(w/2, h);
+
+    cr->set_source_rgba(0.0, 0.0, 0.0, 0.5);
+    cr->move_to(0, h/2);
+    cr->line_to(w, h/2);
+    cr->stroke();
+
+    // Cursor
+    cr->set_source_rgb(0.0, 0.0, 0.0);
+    cr->set_line_width(2.0);
+    cr->move_to(px, py-5);          
+    cr->line_to(px, py+5);
+    cr->move_to(px-5, py);          
+    cr->line_to(px+5, py);
+    cr->stroke();
+  }
   
   return true;
 }

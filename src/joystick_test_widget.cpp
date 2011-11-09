@@ -79,43 +79,43 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
     axis_table.resize(joystick.get_axis_count(), 2);
       
   for(int i = 0; i < joystick.get_axis_count(); ++i)
+  {
+    std::ostringstream str;
+    str << "Axis " << i << ": ";
+    Gtk::Label& label = *Gtk::manage(new Gtk::Label(str.str()));
+
+    Gtk::ProgressBar& progressbar = *Gtk::manage(new Gtk::ProgressBar());
+    progressbar.set_fraction(0.5);
+
+    if (i >= (int)axis_table.property_n_rows())
     {
-      std::ostringstream str;
-      str << "Axis " << i << ": ";
-      Gtk::Label& label = *Gtk::manage(new Gtk::Label(str.str()));
-
-      Gtk::ProgressBar& progressbar = *Gtk::manage(new Gtk::ProgressBar());
-      progressbar.set_fraction(0.5);
-
-      if (i >= (int)axis_table.property_n_rows())
-        {
-          axis_table.attach(label, 2, 3, 
-                            i - axis_table.property_n_rows(), i+1 - axis_table.property_n_rows(),     
-                            Gtk::SHRINK, Gtk::FILL);
-          axis_table.attach(progressbar, 3, 4,
-                            i - axis_table.property_n_rows(), i+1 - axis_table.property_n_rows(), 
-                            Gtk::FILL|Gtk::EXPAND, Gtk::EXPAND);
-        }
-      else
-        {
-          axis_table.attach(label, 0, 1, i, i+1, Gtk::SHRINK, Gtk::FILL);
-          axis_table.attach(progressbar, 1, 2, i, i+1, Gtk::FILL|Gtk::EXPAND, Gtk::EXPAND);
-        }
-
-      axes.push_back(&progressbar);
+      axis_table.attach(label, 2, 3, 
+                        i - axis_table.property_n_rows(), i+1 - axis_table.property_n_rows(),     
+                        Gtk::SHRINK, Gtk::FILL);
+      axis_table.attach(progressbar, 3, 4,
+                        i - axis_table.property_n_rows(), i+1 - axis_table.property_n_rows(), 
+                        Gtk::FILL|Gtk::EXPAND, Gtk::EXPAND);
     }
+    else
+    {
+      axis_table.attach(label, 0, 1, i, i+1, Gtk::SHRINK, Gtk::FILL);
+      axis_table.attach(progressbar, 1, 2, i, i+1, Gtk::FILL|Gtk::EXPAND, Gtk::EXPAND);
+    }
+
+    axes.push_back(&progressbar);
+  }
 
   for(int i = 0; i < joystick.get_button_count(); ++i)
-    {
-      int x = i % 8;
-      int y = i / 8;
+  {
+    int x = i % 8;
+    int y = i / 8;
 
-      std::ostringstream str;
-      str << i;
-      ButtonWidget& button = *Gtk::manage(new ButtonWidget(32, 32, str.str()));
-      button_table.attach(button, x, x+1, y, y+1, Gtk::EXPAND, Gtk::EXPAND);
-      buttons.push_back(&button);
-    }
+    std::ostringstream str;
+    str << i;
+    ButtonWidget& button = *Gtk::manage(new ButtonWidget(32, 32, str.str()));
+    button_table.attach(button, x, x+1, y, y+1, Gtk::EXPAND, Gtk::EXPAND);
+    buttons.push_back(&button);
+  }
   
   alignment.set_padding(8, 8, 8, 8);
   alignment.add(label);
@@ -139,96 +139,96 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
     axis_callbacks.push_back(sigc::signal<void, double>());
 
   if (joystick.get_axis_count() == 2) // Simple stick
-    {
-      stick_hbox.pack_start(stick1_widget, Gtk::PACK_EXPAND_PADDING);
-      axis_callbacks[0].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_x_axis));
-      axis_callbacks[1].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_y_axis));
-    }
+  {
+    stick_hbox.pack_start(stick1_widget, Gtk::PACK_EXPAND_PADDING);
+    axis_callbacks[0].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_x_axis));
+    axis_callbacks[1].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_y_axis));
+  }
   else if (joystick.get_axis_count() == 6) // Flightstick
-    {
-      Gtk::Table& table = *Gtk::manage(new Gtk::Table(2, 2));
+  {
+    Gtk::Table& table = *Gtk::manage(new Gtk::Table(2, 2));
       
-      table.attach(stick1_widget, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-      table.attach(rudder_widget,   0, 1, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
-      table.attach(throttle_widget, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+    table.attach(stick1_widget, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+    table.attach(rudder_widget,   0, 1, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
+    table.attach(throttle_widget, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 
-      stick_hbox.pack_start(table, Gtk::PACK_EXPAND_PADDING);
-      stick_hbox.pack_start(stick3_widget, Gtk::PACK_EXPAND_PADDING);
+    stick_hbox.pack_start(table, Gtk::PACK_EXPAND_PADDING);
+    stick_hbox.pack_start(stick3_widget, Gtk::PACK_EXPAND_PADDING);
 
-      axis_callbacks[0].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_x_axis));
-      axis_callbacks[1].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_y_axis));
-      axis_callbacks[2].connect(sigc::mem_fun(rudder_widget, &RudderWidget::set_pos));
-      axis_callbacks[3].connect(sigc::mem_fun(throttle_widget, &ThrottleWidget::set_pos));
-      axis_callbacks[4].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_x_axis));
-      axis_callbacks[5].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_y_axis));
-    }
+    axis_callbacks[0].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_x_axis));
+    axis_callbacks[1].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_y_axis));
+    axis_callbacks[2].connect(sigc::mem_fun(rudder_widget, &RudderWidget::set_pos));
+    axis_callbacks[3].connect(sigc::mem_fun(throttle_widget, &ThrottleWidget::set_pos));
+    axis_callbacks[4].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_x_axis));
+    axis_callbacks[5].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_y_axis));
+  }
   else if (joystick.get_axis_count() == 6) // Dual Analog Gamepad
-    {
-      // FIXME: never reached as this is the same as Flightstick, no
-      // way to tell them apart from simple axis count
-      stick_hbox.pack_start(stick1_widget, Gtk::PACK_EXPAND_PADDING);
-      stick_hbox.pack_start(stick2_widget, Gtk::PACK_EXPAND_PADDING);
-      stick_hbox.pack_start(stick3_widget, Gtk::PACK_EXPAND_PADDING);
+  {
+    // FIXME: never reached as this is the same as Flightstick, no
+    // way to tell them apart from simple axis count
+    stick_hbox.pack_start(stick1_widget, Gtk::PACK_EXPAND_PADDING);
+    stick_hbox.pack_start(stick2_widget, Gtk::PACK_EXPAND_PADDING);
+    stick_hbox.pack_start(stick3_widget, Gtk::PACK_EXPAND_PADDING);
 
-      axis_callbacks[0].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_x_axis));
-      axis_callbacks[1].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_y_axis));
-      axis_callbacks[2].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_x_axis));
-      axis_callbacks[3].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_y_axis));
-      axis_callbacks[4].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_x_axis));
-      axis_callbacks[5].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_y_axis));
-    }
+    axis_callbacks[0].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_x_axis));
+    axis_callbacks[1].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_y_axis));
+    axis_callbacks[2].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_x_axis));
+    axis_callbacks[3].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_y_axis));
+    axis_callbacks[4].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_x_axis));
+    axis_callbacks[5].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_y_axis));
+  }
   else if (joystick.get_axis_count() == 8) // Dual Analog Gamepad + Analog Trigger
-    {
-      stick_hbox.pack_start(stick1_widget, Gtk::PACK_EXPAND_PADDING);
-      stick_hbox.pack_start(stick2_widget, Gtk::PACK_EXPAND_PADDING);
-      stick_hbox.pack_start(stick3_widget, Gtk::PACK_EXPAND_PADDING);
-      stick_hbox.pack_start(left_trigger_widget, Gtk::PACK_EXPAND_PADDING);
-      stick_hbox.pack_start(right_trigger_widget, Gtk::PACK_EXPAND_PADDING);
+  {
+    stick_hbox.pack_start(stick1_widget, Gtk::PACK_EXPAND_PADDING);
+    stick_hbox.pack_start(stick2_widget, Gtk::PACK_EXPAND_PADDING);
+    stick_hbox.pack_start(stick3_widget, Gtk::PACK_EXPAND_PADDING);
+    stick_hbox.pack_start(left_trigger_widget, Gtk::PACK_EXPAND_PADDING);
+    stick_hbox.pack_start(right_trigger_widget, Gtk::PACK_EXPAND_PADDING);
 
-      axis_callbacks[0].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_x_axis));
-      axis_callbacks[1].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_y_axis));
-      axis_callbacks[2].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_x_axis));
-      axis_callbacks[3].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_y_axis));
-      axis_callbacks[6].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_x_axis));
-      axis_callbacks[7].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_y_axis));
-      axis_callbacks[4].connect(sigc::mem_fun(left_trigger_widget, &ThrottleWidget::set_pos));
-      axis_callbacks[5].connect(sigc::mem_fun(right_trigger_widget, &ThrottleWidget::set_pos));
-    }
+    axis_callbacks[0].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_x_axis));
+    axis_callbacks[1].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_y_axis));
+    axis_callbacks[2].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_x_axis));
+    axis_callbacks[3].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_y_axis));
+    axis_callbacks[6].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_x_axis));
+    axis_callbacks[7].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_y_axis));
+    axis_callbacks[4].connect(sigc::mem_fun(left_trigger_widget, &ThrottleWidget::set_pos));
+    axis_callbacks[5].connect(sigc::mem_fun(right_trigger_widget, &ThrottleWidget::set_pos));
+  }
   else if (joystick.get_axis_count() == 7) // Dual Analog Gamepad DragonRise Inc. Generic USB Joystick
-    {
-      stick_hbox.pack_start(stick1_widget, Gtk::PACK_EXPAND_PADDING);
-      stick_hbox.pack_start(stick2_widget, Gtk::PACK_EXPAND_PADDING);
-      stick_hbox.pack_start(stick3_widget, Gtk::PACK_EXPAND_PADDING);
+  {
+    stick_hbox.pack_start(stick1_widget, Gtk::PACK_EXPAND_PADDING);
+    stick_hbox.pack_start(stick2_widget, Gtk::PACK_EXPAND_PADDING);
+    stick_hbox.pack_start(stick3_widget, Gtk::PACK_EXPAND_PADDING);
 
-      axis_callbacks[0].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_x_axis));
-      axis_callbacks[1].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_y_axis));
-      axis_callbacks[3].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_x_axis));
-      axis_callbacks[4].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_y_axis));
-      axis_callbacks[5].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_x_axis));
-      axis_callbacks[6].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_y_axis));
-    }
+    axis_callbacks[0].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_x_axis));
+    axis_callbacks[1].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_y_axis));
+    axis_callbacks[3].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_x_axis));
+    axis_callbacks[4].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_y_axis));
+    axis_callbacks[5].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_x_axis));
+    axis_callbacks[6].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_y_axis));
+  }
   else if (joystick.get_axis_count() == 28) // Playstation 3 Controller
-    {
-      stick_hbox.pack_start(stick1_widget, Gtk::PACK_EXPAND_PADDING);
-      stick_hbox.pack_start(stick2_widget, Gtk::PACK_EXPAND_PADDING);
-      // Not using stick3 for now, as the dpad is 4 axis on the PS3, not 2 (one for each direction)
-      //stick_hbox.pack_start(stick3_widget, Gtk::PACK_EXPAND_PADDING);
-      stick_hbox.pack_start(left_trigger_widget, Gtk::PACK_EXPAND_PADDING);
-      stick_hbox.pack_start(right_trigger_widget, Gtk::PACK_EXPAND_PADDING);
+  {
+    stick_hbox.pack_start(stick1_widget, Gtk::PACK_EXPAND_PADDING);
+    stick_hbox.pack_start(stick2_widget, Gtk::PACK_EXPAND_PADDING);
+    // Not using stick3 for now, as the dpad is 4 axis on the PS3, not 2 (one for each direction)
+    //stick_hbox.pack_start(stick3_widget, Gtk::PACK_EXPAND_PADDING);
+    stick_hbox.pack_start(left_trigger_widget, Gtk::PACK_EXPAND_PADDING);
+    stick_hbox.pack_start(right_trigger_widget, Gtk::PACK_EXPAND_PADDING);
 
-      axis_callbacks[0].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_x_axis));
-      axis_callbacks[1].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_y_axis));
-      axis_callbacks[2].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_x_axis));
-      axis_callbacks[3].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_y_axis));
-      //axis_callbacks[6].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_x_axis));
-      //axis_callbacks[7].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_y_axis));
-      axis_callbacks[12].connect(sigc::mem_fun(left_trigger_widget, &ThrottleWidget::set_pos));
-      axis_callbacks[13].connect(sigc::mem_fun(right_trigger_widget, &ThrottleWidget::set_pos));
-    }
+    axis_callbacks[0].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_x_axis));
+    axis_callbacks[1].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_y_axis));
+    axis_callbacks[2].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_x_axis));
+    axis_callbacks[3].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_y_axis));
+    //axis_callbacks[6].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_x_axis));
+    //axis_callbacks[7].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_y_axis));
+    axis_callbacks[12].connect(sigc::mem_fun(left_trigger_widget, &ThrottleWidget::set_pos));
+    axis_callbacks[13].connect(sigc::mem_fun(right_trigger_widget, &ThrottleWidget::set_pos));
+  }
   else
-    {
-      std::cout << "Warning: unknown joystick, not displaying graphical representation." << std::endl;
-    }
+  {
+    std::cout << "Warning: unknown joystick, not displaying graphical representation." << std::endl;
+  }
 
   axis_vbox.pack_start(stick_hbox, Gtk::PACK_SHRINK);
   axis_vbox.add(axis_table);
