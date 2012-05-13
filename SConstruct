@@ -17,7 +17,7 @@
 
 env = Environment(CXXFLAGS=["-g", "-Wall", "-Werror"],
                   LIBS=["expat"])
-env.ParseConfig('pkg-config --cflags --libs gtkmm-2.4 sigc++-2.0')
+env.ParseConfig('pkg-config --cflags --libs gtkmm-2.4 sigc++-2.0 x11')
 env.Program('jstest-gtk', [
     'src/axis_widget.cpp',
     'src/button_widget.cpp',
