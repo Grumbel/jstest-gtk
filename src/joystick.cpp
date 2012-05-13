@@ -29,6 +29,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <sstream>
+#include <unistd.h>
 #include <linux/joystick.h>
 #include <glibmm/main.h>
 #include <glibmm/convert.h>
