@@ -53,7 +53,7 @@ DeviceListColumns* DeviceListColumns::instance_ = 0;
 JoystickListWidget::JoystickListWidget()
   : Gtk::Dialog("Joystick Preferences"),
     label("Below is a list of available joysticks on the system. Press Refresh to "
-          "update the list, press Properties to get a seperate device dialog. The "
+          "update the list, press Properties to get a separate device dialog. The "
           "devices listed are only joystick devices, not evdev devices or SDL "
           "devices, you can view the other ones via the top tab.")
     //frame("Device List"),
