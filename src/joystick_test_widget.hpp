@@ -43,6 +43,8 @@ class JoystickTestWidget : public Gtk::Dialog
 {
 private:
   Joystick& joystick;
+  bool m_simple_ui;
+
   Gtk::Alignment alignment;
   Gtk::Label label;
 
@@ -76,7 +78,7 @@ private:
   std::vector<sigc::signal<void, double> > axis_callbacks;
 
 public:
-  JoystickTestWidget(Joystick& joystick);
+  JoystickTestWidget(Joystick& joystick, bool simple_ui);
 
   void axis_move(int number, int value);
   void button_move(int number, bool value);

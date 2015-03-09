@@ -34,6 +34,8 @@ public:
 
 private:
   std::string datadir;
+  bool m_simple_ui;
+
   JoystickListWidget* list_dialog;
 
   std::vector<Joystick*>    joysticks;

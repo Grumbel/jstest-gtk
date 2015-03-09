@@ -31,9 +31,10 @@
 #include "joystick_calibration_widget.hpp"
 #include "joystick_test_widget.hpp"
 
-JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
+JoystickTestWidget::JoystickTestWidget(Joystick& joystick_, bool simple_ui)
   : Gtk::Dialog(joystick_.get_name()),
     joystick(joystick_),
+    m_simple_ui(simple_ui),
     label("<b>" + joystick.get_name() + "</b>\nDevice: " + joystick.get_filename() ,
           Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER),
     axis_frame("Axes"),
@@ -217,7 +218,11 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
     std::cout << "Warning: unknown joystick, not displaying graphical representation." << std::endl;
   }
 
-  axis_vbox.pack_start(stick_hbox, Gtk::PACK_SHRINK);
+  if (!m_simple_ui)
+  {
+    axis_vbox.pack_start(stick_hbox, Gtk::PACK_SHRINK);
+  }
+
   axis_vbox.add(axis_table);
   axis_frame.add(axis_vbox);
 

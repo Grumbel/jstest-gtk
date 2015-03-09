@@ -38,6 +38,7 @@ Main* Main::current_ = 0;
 
 Main::Main(const std::string& datadir_)
   : datadir(datadir_),
+    m_simple_ui(false),
     list_dialog(0)
 {
   current_ = this;
@@ -65,7 +66,7 @@ void
 Main::show_device_property_dialog(const std::string& filename)
 {
   Joystick* joystick = new Joystick(filename);
-  JoystickTestWidget* dialog = new JoystickTestWidget(*joystick);
+  JoystickTestWidget* dialog = new JoystickTestWidget(*joystick, m_simple_ui);
   dialog->signal_hide().connect(sigc::bind(sigc::mem_fun(this, &Main::on_dialog_hide), dialog));
   dialog->show_all();
   joysticks.push_back(joystick);
@@ -120,6 +121,7 @@ Main::main(int argc, char** argv)
                 << "Options:\n"
                 << "  -h, --help      Display this help and exit\n"
                 << "  -v, --version   Display version information and exit\n"
+                << "  --simple        Hide graphical representation of axis\n"
                 << "\n"
                 << "Report bugs to Ingo Ruhnke <grumbel@gmx.de>.\n";
       return 0;
@@ -129,6 +131,10 @@ Main::main(int argc, char** argv)
     {
       std::cout << "jstest-gtk 0.1.0" << std::endl;
       return 0;
+    }
+    else if (strcmp("--simple", argv[i]) == 0)
+    {
+      m_simple_ui = true;
     }
     else if (argv[i][0] == '-')
     {
@@ -156,7 +162,6 @@ Main::main(int argc, char** argv)
   {
     try
     {
-
       Glib::set_application_name("Joystick Test");
       Glib::set_prgname("jstest-gtk");
       cfg_directory = Glib::build_filename(Glib::get_user_config_dir(), Glib::get_prgname());
