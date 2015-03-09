@@ -1,5 +1,5 @@
-[[ jstest-gtk ]]
-================
+jstest-gtk
+==========
 
 jstest-gtk is a simple joystick tester based on Gtk+. It provides you
 with a list of attached joysticks, a way to display which buttons and
@@ -15,8 +15,8 @@ Questions, comments and bug reporst can be given to:
  * Ingo Ruhnke <grumbel@gmx.de>
 
 
-[[ Compiling ]]
-===============
+Compiling
+---------
 
 Make sure you have the following pieces of software installed (they
 are part of most distributions):
@@ -28,19 +28,19 @@ are part of most distributions):
 
 You can compile it by typing:
 
- $ scons
+    $ scons
 
 
-[[ Usage ]]
-===========
+Usage
+-----
 
 Once compiled you can start jstest-gtk with:
 
- $ ./jstest-gtk
+    $ ./jstest-gtk
 
 or if you know the device you want to test with:
 
- $ ./jstest-gtk /dev/input/js0
+    $ ./jstest-gtk /dev/input/js0
 
 The main window will provide you with a list of currently available
 joysticks. When you double click a joystick it will display the Test
@@ -60,8 +60,8 @@ give it a far bigger deadzone then needed, thus reducing your ability
 for fine movements.
 
 
-[[ SDL Notes ]]
-===============
+SDL Notes
+---------
 
 Depending on what version and what compilation flags where used, your
 version of SDL might not use the joystick interface at all, but
@@ -72,8 +72,8 @@ the joystick interface, not evdev.
 To work around that you have to set an environment variable that
 forces SDL to use the joystick device:
 
- $ SDL_JOYSTICK_DEVICE="/dev/input/js0"
- $ export SDL_JOYSTICK_DEVICE
+    $ SDL_JOYSTICK_DEVICE="/dev/input/js0"
+    $ export SDL_JOYSTICK_DEVICE
 
 When you need two or more joysticks this will not work and you might
 need to recompile SDL and disable the evdev support.
@@ -82,16 +82,13 @@ More info can be found at:
 
  * ftp://ptah.lnf.kth.se/pub/misc/sdl-env-vars
 
-SDL_LINUX_JOYSTICK
-	Special joystick configuration string for linux. The format is
-	"name numaxes numhats numballs"
-	where name is the name string of the joystick (possibly in single
-	quotes), and the rest are the number of axes, hats and balls
-	respectively.
+`SDL_LINUX_JOYSTICK`:
+  Special joystick configuration string for linux. The format is
+  `name numaxes numhats numballs`
+  where name is the name string of the joystick (possibly in single
+  quotes), and the rest are the number of axes, hats and balls
+  respectively.
 
-SDL_JOYSTICK_DEVICE
-	Joystick device to use in the linux joystick driver, in addition
-	to the usual: /dev/js*, /dev/input/event*, /dev/input/js*
-
-
-# EOF #
+`SDL_JOYSTICK_DEVICE`:
+  Joystick device to use in the linux joystick driver, in addition to
+  the usual: `/dev/js*`, `/dev/input/event*`, `/dev/input/js*`
