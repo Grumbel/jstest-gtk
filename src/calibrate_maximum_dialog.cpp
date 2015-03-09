@@ -6,12 +6,12 @@
 **  it under the terms of the GNU General Public License as published by
 **  the Free Software Foundation, either version 3 of the License, or
 **  (at your option) any later version.
-**  
+**
 **  This program is distributed in the hope that it will be useful,
 **  but WITHOUT ANY WARRANTY; without even the implied warranty of
 **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 **  GNU General Public License for more details.
-**  
+**
 **  You should have received a copy of the GNU General Public License
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
@@ -44,7 +44,7 @@ CalibrateMaximumDialog::CalibrateMaximumDialog(Joystick& joystick_)
   is_init_axis_state.resize(joystick.get_axis_count(), false);
   min_axis_state.resize(joystick.get_axis_count());
   max_axis_state.resize(joystick.get_axis_count());
- 
+
   for(int i = 0; i < joystick.get_axis_count(); ++i)
   {
     min_axis_state[i] = joystick.get_axis_state(i);
@@ -77,10 +77,10 @@ CalibrateMaximumDialog::on_response(int v)
       {
         axis.center_min = axis.center_max = (axis.range_min + axis.range_max)/2;
       }
-          
+
       data.push_back(axis);
     }
-      
+
     joystick.set_calibration(data);
 
     hide();

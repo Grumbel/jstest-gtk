@@ -6,12 +6,12 @@
 **  it under the terms of the GNU General Public License as published by
 **  the Free Software Foundation, either version 3 of the License, or
 **  (at your option) any later version.
-**  
+**
 **  This program is distributed in the hope that it will be useful,
 **  but WITHOUT ANY WARRANTY; without even the implied warranty of
 **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 **  GNU General Public License for more details.
-**  
+**
 **  You should have received a copy of the GNU General Public License
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
@@ -62,9 +62,9 @@ RemapWidget::RemapWidget(Joystick& joystick_, Mode mode_)
   treeview.set_border_width(5);
 
   pack_start(treeview,  Gtk::PACK_EXPAND_WIDGET);
-  
+
   treeview.set_reorderable();
-  
+
   map_list->signal_row_inserted().connect(sigc::mem_fun(this, &RemapWidget::on_my_row_inserted));
   map_list->signal_row_deleted().connect(sigc::mem_fun(this, &RemapWidget::on_my_row_deleted));
   map_list->signal_rows_reordered().connect(sigc::mem_fun(this, &RemapWidget::on_my_rows_reordered));
@@ -109,7 +109,7 @@ RemapWidget::on_clear()
   map_list->clear();
   for(std::vector<RemapEntry>::iterator i = rows.begin(); i != rows.end(); ++i)
   {
-    add_entry(i->id, i->name);                
+    add_entry(i->id, i->name);
   }
 
   on_apply();
@@ -141,7 +141,7 @@ void
 RemapWidget::on_my_rows_reordered(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter, int* new_order)
 {
   // std::cout << "on_my_rows_reordered" << std::endl;
-}                         
+}
 
 void
 RemapWidget::on_my_row_inserted(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter)
@@ -153,7 +153,7 @@ void
 RemapWidget::on_my_row_deleted(const Gtk::TreeModel::Path& path)
 {
   // std::cout << "on_my_rows_deleted" << std::endl;
-  
+
   if (mode == REMAP_AXIS)
   {
     if (joystick.get_axis_count() == (int)map_list->children().size())

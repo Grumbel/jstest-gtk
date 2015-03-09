@@ -6,12 +6,12 @@
 **  it under the terms of the GNU General Public License as published by
 **  the Free Software Foundation, either version 3 of the License, or
 **  (at your option) any later version.
-**  
+**
 **  This program is distributed in the hope that it will be useful,
 **  but WITHOUT ANY WARRANTY; without even the implied warranty of
 **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 **  GNU General Public License for more details.
-**  
+**
 **  You should have received a copy of the GNU General Public License
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
@@ -137,7 +137,7 @@ XMLParser::on_end_element(const char* el)
 
     node_stack.pop_back();
     node.clear();
-    cdata.clear();      
+    cdata.clear();
   }
 }
 
@@ -158,15 +158,15 @@ XMLParser::raise_error(const std::string& str)
 #ifdef __TEST__
 int main(int argc, char** argv)
 {
-  try 
+  try
   {
     for(int i = 1; i < argc; ++i)
     {
       std::auto_ptr<XMLNode> root = XMLParser::parse(argv[i]);
       root->print(std::cout);
     }
-  } 
-  catch(std::exception& err) 
+  }
+  catch(std::exception& err)
   {
     std::cout << "Error: " << err.what() << std::endl;
   }

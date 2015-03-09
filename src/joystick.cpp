@@ -6,12 +6,12 @@
 **  it under the terms of the GNU General Public License as published by
 **  the Free Software Foundation, either version 3 of the License, or
 **  (at your option) any later version.
-**  
+**
 **  This program is distributed in the hope that it will be useful,
 **  but WITHOUT ANY WARRANTY; without even the implied warranty of
 **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 **  GNU General Public License for more details.
-**  
+**
 **  You should have received a copy of the GNU General Public License
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
@@ -58,13 +58,13 @@ Joystick::Joystick(const std::string& filename_)
     axis_count   = num_axis;
     button_count = num_button;
 
-    // Get Name 
+    // Get Name
     char name_c_str[1024];
     if (ioctl(fd, JSIOCGNAME(sizeof(name_c_str)), name_c_str) < 0)
     {
       std::ostringstream str;
       str << filename << ": " << strerror(errno);
-      throw std::runtime_error(str.str());          
+      throw std::runtime_error(str.str());
     }
     else
     {
@@ -80,7 +80,7 @@ Joystick::Joystick(const std::string& filename_)
   }
 
   orig_calibration_data = get_calibration();
-  
+
   connection = Glib::signal_io().connect(sigc::mem_fun(this, &Joystick::on_in), fd, Glib::IO_IN);
 }
 
@@ -137,14 +137,14 @@ Joystick::get_joysticks()
 
   for(int i = 0; i < 32; ++i)
   {
-    try 
+    try
     {
       std::ostringstream str;
       str << "/dev/input/js" << i;
       Joystick joystick(str.str());
 
       joysticks.push_back(JoystickDescription(joystick.get_filename(),
-                                              joystick.get_name(),                                                  
+                                              joystick.get_name(),
                                               joystick.get_axis_count(),
                                               joystick.get_button_count()));
     }
@@ -264,7 +264,7 @@ void
 Joystick::clear_calibration()
 {
   std::vector<CalibrationData> data;
-  
+
   for(int i = 0; i < get_axis_count(); ++i)
   {
     CalibrationData cal;
@@ -275,7 +275,7 @@ Joystick::clear_calibration()
     cal.center_max = 0;
     cal.range_min  = 0;
     cal.range_max  = 0;
-     
+
     data.push_back(cal);
   }
 
@@ -364,7 +364,7 @@ Joystick::set_axis_mapping(const std::vector<int>& mapping)
   uint8_t axismap[ABS_MAX + 1];
 
   std::copy(mapping.begin(), mapping.end(), axismap);
-  
+
   if (ioctl(fd, JSIOCSAXMAP, axismap) < 0)
   {
     std::ostringstream str;
@@ -388,7 +388,7 @@ Joystick::correct_calibration(const std::vector<int>& mapping_old, const std::ve
   {
     callib_new.push_back(callib_old[axes[*i]]);
   }
-  
+
   set_calibration(callib_new);
 }
 
@@ -398,7 +398,7 @@ Joystick::write(XMLWriter& out)
   out.start_section("joystick");
   out.write("name",   name);
   out.write("device", filename);
-  
+
   { // write CalibrationData
     std::vector<CalibrationData> data = get_calibration();
 
@@ -434,7 +434,7 @@ Joystick::write(XMLWriter& out)
     for(std::vector<int>::iterator i = mapping.begin(); i != mapping.end(); ++i)
     {
       out.write("button", btn2str(*i));
-    }   
+    }
     out.end_section("button-map");
   }
 
@@ -473,7 +473,7 @@ Joystick::load(const XMLReader& root_reader)
     { // Read axis mapping
       const std::vector<std::string>& cfg_axis_map = root_reader.get_string_list("axis-map");
       std::vector<int> mapping;
-        
+
       for(std::vector<std::string>::const_iterator i = cfg_axis_map.begin(); i != cfg_axis_map.end(); ++i)
       {
         int type = 0;
@@ -488,7 +488,7 @@ Joystick::load(const XMLReader& root_reader)
     { // Read button mapping
       const std::vector<std::string>& cfg_button_map = root_reader.get_string_list("button-map");
       std::vector<int> mapping;
-        
+
       for(std::vector<std::string>::const_iterator i = cfg_button_map.begin(); i != cfg_button_map.end(); ++i)
       {
         int type = 0;
@@ -510,7 +510,7 @@ Joystick::get_evdev() const
   {
     std::ostringstream out;
     out << "/dev/input/event" << i;
-      
+
     int evdev_fd;
     if ((evdev_fd = open(out.str().c_str(), O_RDONLY)) < 0)
     {
@@ -542,7 +542,7 @@ Joystick::get_evdev() const
 
 #ifdef __TEST__
 
-// g++ -D__TEST__ joystick.cpp evdev_helper.cpp xml_writer.cpp xml_reader.cpp -o joystick-test `pkg-config --cflags --libs gtkmm-2.4 sigc++-2.0`  
+// g++ -D__TEST__ joystick.cpp evdev_helper.cpp xml_writer.cpp xml_reader.cpp -o joystick-test `pkg-config --cflags --libs gtkmm-2.4 sigc++-2.0`
 
 int main(int argc, char** argv)
 {

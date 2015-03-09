@@ -6,12 +6,12 @@
 **  it under the terms of the GNU General Public License as published by
 **  the Free Software Foundation, either version 3 of the License, or
 **  (at your option) any later version.
-**  
+**
 **  This program is distributed in the hope that it will be useful,
 **  but WITHOUT ANY WARRANTY; without even the implied warranty of
 **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 **  GNU General Public License for more details.
-**  
+**
 **  You should have received a copy of the GNU General Public License
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
@@ -49,7 +49,7 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
   get_vbox()->pack_start(label, Gtk::PACK_SHRINK);
 
   calibration_button.signal_clicked().connect(sigc::mem_fun(this, &JoystickCalibrationWidget::on_calibrate));
-  
+
   buttonbox.set_border_width(5);
   buttonbox.add(calibration_button);
   get_vbox()->pack_start(buttonbox, Gtk::PACK_SHRINK);
@@ -58,17 +58,17 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
 
   axis_table.attach(*Gtk::manage(new Gtk::Label("CenterMin")), 1, 2, 0, 1);
   axis_table.attach(*Gtk::manage(new Gtk::Label("CenterMax")), 2, 3, 0, 1);
-  
+
   axis_table.attach(*Gtk::manage(new Gtk::Label("RangeMin")), 3, 4, 0, 1);
   axis_table.attach(*Gtk::manage(new Gtk::Label("RangeMax")), 4, 5, 0, 1);
 
   axis_table.attach(*Gtk::manage(new Gtk::Label("Invert")), 5, 6, 0, 1);
-  
+
   axis_table.set_col_spacing(2, 8);
   for(int i = 0; i < joystick.get_axis_count(); ++i)
   {
     CalibrationData data;
-      
+
     Gtk::SpinButton&  center_min = *Gtk::manage(new Gtk::SpinButton(*Gtk::manage(data.center_min = new Gtk::Adjustment(0, -32768, 32767))));
     Gtk::SpinButton&  center_max = *Gtk::manage(new Gtk::SpinButton(*Gtk::manage(data.center_max = new Gtk::Adjustment(0, -32768, 32767))));
     Gtk::SpinButton&  range_min  = *Gtk::manage(new Gtk::SpinButton(*Gtk::manage(data.range_min  = new Gtk::Adjustment(0, -32768, 32767))));
@@ -104,11 +104,11 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
   add_button(Gtk::Stock::REVERT_TO_SAVED,  2);
   add_button("Raw Events", 1);
   add_button(Gtk::Stock::CLOSE, 0);
-  
+
   axis_frame.add(axis_table);
 
   get_vbox()->pack_start(axis_frame, Gtk::PACK_EXPAND_WIDGET);
-  
+
   signal_response().connect(sigc::mem_fun(this, &JoystickCalibrationWidget::on_response));
 
   update_with(joystick.get_calibration());
@@ -117,7 +117,7 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
 void
 JoystickCalibrationWidget::on_clear()
 {
-  joystick.clear_calibration();  
+  joystick.clear_calibration();
   update_with(joystick.get_calibration());
 }
 
@@ -125,7 +125,7 @@ void
 JoystickCalibrationWidget::update_with(const std::vector<Joystick::CalibrationData>& data)
 {
   assert(data.size() == calibration_data.size());
-  
+
   for(int i = 0; i < (int)data.size(); ++i)
   {
     calibration_data[i].invert->set_active(data[i].invert);
@@ -140,7 +140,7 @@ void
 JoystickCalibrationWidget::on_apply()
 {
   std::vector<Joystick::CalibrationData> data(calibration_data.size());
-  
+
   for(int i = 0; i < (int)data.size(); ++i)
   {
     data[i].calibrate  = true;
@@ -160,7 +160,7 @@ JoystickCalibrationWidget::on_calibrate()
   CalibrateMaximumDialog dialog(joystick);
   dialog.show_all();
   dialog.run();
-  update_with(joystick.get_calibration()); 
+  update_with(joystick.get_calibration());
 }
 
 void
@@ -177,7 +177,7 @@ JoystickCalibrationWidget::on_response(int i)
   else if (i == 2)
   {
     joystick.reset_calibration();
-    update_with(joystick.get_calibration());      
+    update_with(joystick.get_calibration());
   }
 }
 

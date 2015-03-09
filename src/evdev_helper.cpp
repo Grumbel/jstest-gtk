@@ -1,4 +1,4 @@
-/* 
+/*
 **  Xbox360 USB Gamepad Userspace Driver
 **  Copyright (C) 2008 Ingo Ruhnke <grumbel@gmx.de>
 **
@@ -37,15 +37,15 @@ protected:
     : name(name)
   {
   }
-  
-  void add(Enum i, const std::string& name) 
+
+  void add(Enum i, const std::string& name)
   {
     enum2string[i] = name;
     string2enum[name] = i;
   }
 
 public:
-  Enum operator[](const std::string& str) const 
+  Enum operator[](const std::string& str) const
   {
     typename std::map<std::string, Enum>::const_iterator i = string2enum.find(str);
     if (i == string2enum.end())
@@ -91,7 +91,7 @@ public:
 class EvDevRelEnum : public EnumBox<int>
 {
 public:
-  EvDevRelEnum() 
+  EvDevRelEnum()
     : EnumBox<int>("EV_REL")
   {
     // File.new("/usr/include/linux/input.h")
@@ -113,7 +113,7 @@ public:
 class EvDevAbsEnum : public EnumBox<int>
 {
 public:
-  EvDevAbsEnum() 
+  EvDevAbsEnum()
     : EnumBox<int>("EV_ABS")
   {
     // File.new("/usr/include/linux/input.h")
@@ -151,7 +151,7 @@ public:
 class EvDevBtnEnum : public EnumBox<int>
 {
 public:
-  EvDevBtnEnum() 
+  EvDevBtnEnum()
     : EnumBox<int>("EV_KEY")
   {
     // File.new("/usr/include/linux/input.h")
@@ -600,7 +600,7 @@ public:
   // Map KeySym to kernel keycode
   std::map<KeySym, int> mapping;
 
-  Keysym2Keycode() 
+  Keysym2Keycode()
   {
     //std::cout << "Initing Keysym2Keycode" << std::endl;
 
@@ -663,7 +663,7 @@ int xkeysym2keycode(const std::string& name)
   else
   {
     if (0)
-      std::cout << name << " -> " << keysym << " -> " << XKeysymToString(keysym) 
+      std::cout << name << " -> " << keysym << " -> " << XKeysymToString(keysym)
                 << " -> " << btn2str(i->second) << "(" << i->second << ")" << std::endl;
     return i->second;
   }
@@ -693,7 +693,7 @@ bool str2event(const std::string& name, int& type, int& code)
   {
     type = EV_KEY;
     code = xkeysym2keycode(name);
-    return true;      
+    return true;
   }
   else if (name.compare(0, 2, "JS") == 0)
   {

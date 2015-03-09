@@ -6,12 +6,12 @@
 **  it under the terms of the GNU General Public License as published by
 **  the Free Software Foundation, either version 3 of the License, or
 **  (at your option) any later version.
-**  
+**
 **  This program is distributed in the hope that it will be useful,
 **  but WITHOUT ANY WARRANTY; without even the implied warranty of
 **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 **  GNU General Public License for more details.
-**  
+**
 **  You should have received a copy of the GNU General Public License
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
@@ -75,13 +75,13 @@ AxisWidget::on_my_expose_event(GdkEventExpose* event)
     // Cursor
     cr->set_source_rgb(0.0, 0.0, 0.0);
     cr->set_line_width(2.0);
-    cr->move_to(px, py-5);          
+    cr->move_to(px, py-5);
     cr->line_to(px, py+5);
-    cr->move_to(px-5, py);          
+    cr->move_to(px-5, py);
     cr->line_to(px+5, py);
     cr->stroke();
   }
-  
+
   return true;
 }
 

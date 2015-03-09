@@ -6,12 +6,12 @@
 **  it under the terms of the GNU General Public License as published by
 **  the Free Software Foundation, either version 3 of the License, or
 **  (at your option) any later version.
-**  
+**
 **  This program is distributed in the hope that it will be useful,
 **  but WITHOUT ANY WARRANTY; without even the implied warranty of
 **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 **  GNU General Public License for more details.
-**  
+**
 **  You should have received a copy of the GNU General Public License
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
@@ -34,7 +34,7 @@
 JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
   : Gtk::Dialog(joystick_.get_name()),
     joystick(joystick_),
-    label("<b>" + joystick.get_name() + "</b>\nDevice: " + joystick.get_filename() , 
+    label("<b>" + joystick.get_name() + "</b>\nDevice: " + joystick.get_filename() ,
           Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER),
     profile_save_button(Gtk::Stock::SAVE_AS),
     profile_delete_button(Gtk::Stock::DELETE),
@@ -77,7 +77,7 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
     axis_table.resize((joystick.get_axis_count()+1)/2, 4);
   else
     axis_table.resize(joystick.get_axis_count(), 2);
-      
+
   for(int i = 0; i < joystick.get_axis_count(); ++i)
   {
     std::ostringstream str;
@@ -89,11 +89,11 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
 
     if (i >= (int)axis_table.property_n_rows())
     {
-      axis_table.attach(label, 2, 3, 
-                        i - axis_table.property_n_rows(), i+1 - axis_table.property_n_rows(),     
+      axis_table.attach(label, 2, 3,
+                        i - axis_table.property_n_rows(), i+1 - axis_table.property_n_rows(),
                         Gtk::SHRINK, Gtk::FILL);
       axis_table.attach(progressbar, 3, 4,
-                        i - axis_table.property_n_rows(), i+1 - axis_table.property_n_rows(), 
+                        i - axis_table.property_n_rows(), i+1 - axis_table.property_n_rows(),
                         Gtk::FILL|Gtk::EXPAND, Gtk::EXPAND);
     }
     else
@@ -116,7 +116,7 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
     button_table.attach(button, x, x+1, y, y+1, Gtk::EXPAND, Gtk::EXPAND);
     buttons.push_back(&button);
   }
-  
+
   alignment.set_padding(8, 8, 8, 8);
   alignment.add(label);
   get_vbox()->pack_start(alignment, Gtk::PACK_SHRINK);
@@ -147,7 +147,7 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
   else if (joystick.get_axis_count() == 6) // Flightstick
   {
     Gtk::Table& table = *Gtk::manage(new Gtk::Table(2, 2));
-      
+
     table.attach(stick1_widget, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
     table.attach(rudder_widget,   0, 1, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
     table.attach(throttle_widget, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
@@ -294,7 +294,7 @@ JoystickTestWidget::on_save_profile()
 void
 JoystickTestWidget::on_save_profile_as(const std::string& name)
 {
-  std::ostringstream profile_name; 
+  std::ostringstream profile_name;
   profile_name << "Profile " <<  profile_entry.get_model()->children().size();
   profile_entry.append_text(profile_name.str());
   profile_entry.set_active_text(profile_name.str());
