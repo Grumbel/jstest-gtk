@@ -30,14 +30,12 @@
 #include "joystick_map_widget.hpp"
 #include "joystick_calibration_widget.hpp"
 #include "joystick_test_widget.hpp"
-
+
 JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
   : Gtk::Dialog(joystick_.get_name()),
     joystick(joystick_),
     label("<b>" + joystick.get_name() + "</b>\nDevice: " + joystick.get_filename() ,
           Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER),
-    profile_save_button(Gtk::Stock::SAVE_AS),
-    profile_delete_button(Gtk::Stock::DELETE),
     axis_frame("Axes"),
     button_frame("Buttons"),
     button_table((joystick.get_button_count()-1) / 8 + 1, std::min(joystick.get_button_count(), 8)),
@@ -54,15 +52,6 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
 {
   label.set_use_markup(true);
   label.set_selectable();
-
-  profile_delete_button.set_tooltip_text("Delete the current profile");
-  profile_save_button.set_tooltip_text("Save the current configuration into a profile");
-
-  profile_hbox.pack_start(profile_delete_button, Gtk::PACK_SHRINK);
-  profile_hbox.pack_start(profile_save_button, Gtk::PACK_SHRINK);
-  profile_hbox.add(profile_entry);
-  profile_delete_button.signal_clicked().connect(sigc::mem_fun(this, &JoystickTestWidget::on_delete_profile));
-  profile_save_button.signal_clicked().connect(sigc::mem_fun(this, &JoystickTestWidget::on_save_profile));
 
   axis_frame.set_border_width(5);
   axis_table.set_border_width(5);
@@ -123,8 +112,6 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_)
 
   buttonbox.add(mapping_button);
   buttonbox.add(calibration_button);
-
-  get_vbox()->pack_start(profile_hbox, Gtk::PACK_SHRINK);
 
   get_vbox()->pack_start(axis_frame,   Gtk::PACK_EXPAND_WIDGET);
   get_vbox()->pack_start(button_frame, Gtk::PACK_EXPAND_WIDGET);
@@ -285,34 +272,4 @@ JoystickTestWidget::on_response(int v)
   hide();
 }
 
-void
-JoystickTestWidget::on_save_profile()
-{
-  on_save_profile_as("Hello World");
-}
-
-void
-JoystickTestWidget::on_save_profile_as(const std::string& name)
-{
-  std::ostringstream profile_name;
-  profile_name << "Profile " <<  profile_entry.get_model()->children().size();
-  profile_entry.append_text(profile_name.str());
-  profile_entry.set_active_text(profile_name.str());
-
-  std::ostringstream filename;
-  filename << Main::current()->get_cfg_directory() << "/" << "profile"
-           << profile_entry.get_model()->children().size() << ".xml";
-  XMLWriter out(filename.str());
-  out.start_section("joysticks");
-  joystick.write(out);
-  out.end_section("joysticks");
-}
-
-void
-JoystickTestWidget::on_delete_profile()
-{
-  // FIXME: Bad idea, could lead to deletion of the wrong entry when text is the same
-  profile_entry.remove_text(profile_entry.get_active_text());
-}
-
 /* EOF */

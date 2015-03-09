@@ -120,40 +120,9 @@ Main::main(int argc, char** argv)
                 << "Options:\n"
                 << "  -h, --help      Display this help and exit\n"
                 << "  -v, --version   Display version information and exit\n"
-                << "  -l, --load CFG  Load load configuration from file and apply them\n"
-                << "  -s, --save CFG  Save current device configuration to file CFG\n"
                 << "\n"
                 << "Report bugs to Ingo Ruhnke <grumbel@gmx.de>.\n";
       return 0;
-    }
-    else if (strcmp("--load", argv[i]) == 0 ||
-             strcmp("-l", argv[i]) == 0)
-    {
-      ++i;
-      if (i < argc)
-      {
-        std::cout << "Configuration file load is not yet implemented" << std::endl;
-        return 0;
-      }
-      else
-      {
-        std::cout << "Error: " << argv[i-1] << " expected an argument" << std::endl;
-        exit(EXIT_FAILURE);
-      }
-    }
-    else if (strcmp("--save", argv[i]) == 0 ||
-             strcmp("-s", argv[i]) == 0)
-    {
-      ++i;
-      if (i < argc)
-      {
-        config_save_file = argv[i];
-      }
-      else
-      {
-        std::cout << "Error: " << argv[i-1] << " expected an argument" << std::endl;
-        exit(EXIT_FAILURE);
-      }
     }
     else if (strcmp("--version", argv[i]) == 0 ||
              strcmp("-v", argv[i]) == 0)
