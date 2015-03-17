@@ -216,12 +216,36 @@ std::string find_datadir()
     {
       throw std::runtime_error("Error: Couldn't find prefix");
     }
+    struct stat pathExists;
+    std::string prefix;
+
+    /* Check for the presence of generic.png to ensure we have the correct data folder */
+    char* fileCheck = br_strcat(c_prefix, "/data/generic.png");
+    if (stat (fileCheck, &pathExists) == 0)
+    {
+      prefix = c_prefix;
+      prefix += "/data/";
+    }
+
+    /* If the data was not found in the first location, check a more common
+    location for system installs.  For most people this will be /usr/share/ */
     else
     {
-      std::string prefix = c_prefix;
       free(c_prefix);
-      return prefix + "/data/";
+      c_prefix = br_find_data_dir(NULL);
+       if (!c_prefix)
+       {
+         throw std::runtime_error("Error: Couldn't find prefix");
+       }
+       else
+       {
+         prefix = c_prefix;
+         prefix += "/jstest-gtk/data/";
+       }
     }
+    free (c_prefix);
+    free (fileCheck);
+    return prefix;
   }
 }
 
