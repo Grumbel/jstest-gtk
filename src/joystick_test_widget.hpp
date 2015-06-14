@@ -53,6 +53,7 @@ private:
   Gtk::Frame button_frame;
   Gtk::Table axis_table;
   Gtk::Table button_table;
+  Gtk::HBox  test_hbox;
   Gtk::HBox  stick_hbox;
 
   Gtk::Button mapping_button;

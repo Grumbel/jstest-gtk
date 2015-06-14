@@ -24,6 +24,7 @@
 #include <gtkmm/label.h>
 #include <gtkmm/table.h>
 #include <gtkmm/dialog.h>
+#include <gtkmm/scrolledwindow.h>
 
 #include "joystick.hpp"
 
@@ -37,6 +38,7 @@ private:
   Gtk::Table  axis_table;
   Gtk::HButtonBox buttonbox;
   Gtk::Button calibration_button;
+  Gtk::ScrolledWindow scroll;
 
   struct CalibrationData {
     Gtk::CheckButton* invert;

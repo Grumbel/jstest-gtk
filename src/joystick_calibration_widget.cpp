@@ -105,7 +105,10 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
   add_button("Raw Events", 1);
   add_button(Gtk::Stock::CLOSE, 0);
 
-  axis_frame.add(axis_table);
+  scroll.add(axis_table);
+  scroll.set_policy(Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
+  scroll.set_size_request(-1, 200);
+  axis_frame.add(scroll);
 
   get_vbox()->pack_start(axis_frame, Gtk::PACK_EXPAND_WIDGET);
 
