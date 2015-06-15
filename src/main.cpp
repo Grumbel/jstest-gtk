@@ -32,7 +32,6 @@
 #include "joystick_calibration_widget.hpp"
 #include "joystick.hpp"
 #include "main.hpp"
-#include "xml_writer.hpp"
 
 Main* Main::current_ = 0;
 
@@ -108,7 +107,6 @@ Main::main(int argc, char** argv)
 {
   typedef std::vector<std::string> DeviceFiles;
   DeviceFiles device_files;
-  std::string config_save_file;
 
   for(int i = 1; i < argc; ++i)
   {
@@ -147,54 +145,40 @@ Main::main(int argc, char** argv)
     }
   }
 
-  if (!config_save_file.empty())
+  try
   {
-    XMLWriter out(config_save_file);
-    out.start_section("joysticks");
-    for(DeviceFiles::iterator i = device_files.begin(); i != device_files.end(); ++i)
+    Glib::set_application_name("Joystick Test");
+    Glib::set_prgname("jstest-gtk");
+    cfg_directory = Glib::build_filename(Glib::get_user_config_dir(), Glib::get_prgname());
+    if (access(cfg_directory.c_str(), R_OK | W_OK) != 0 &&
+        mkdir(cfg_directory.c_str(), 0770) != 0)
     {
-      Joystick joystick(*i);
-      joystick.write(out);
+      throw std::runtime_error(cfg_directory + ": " + strerror(errno));
     }
-    out.end_section("joysticks");
-  }
-  else
-  {
-    try
-    {
-      Glib::set_application_name("Joystick Test");
-      Glib::set_prgname("jstest-gtk");
-      cfg_directory = Glib::build_filename(Glib::get_user_config_dir(), Glib::get_prgname());
-      if (access(cfg_directory.c_str(), R_OK | W_OK) != 0 &&
-          mkdir(cfg_directory.c_str(), 0770) != 0)
-      {
-        throw std::runtime_error(cfg_directory + ": " + strerror(errno));
-      }
-      Gtk::Main kit(&argc, &argv);
+    Gtk::Main kit(&argc, &argv);
 
-      if (device_files.empty())
-      {
-        show_device_list_dialog();
-      }
-      else
-      {
-        for(DeviceFiles::iterator i = device_files.begin(); i != device_files.end(); ++i)
-        {
-          show_device_property_dialog(*i);
-        }
-      }
-      Gtk::Main::run();
-    }
-    catch(std::exception& err)
+    if (device_files.empty())
     {
-      std::cout << "Error: " << err.what() << std::endl;
-      return EXIT_FAILURE;
+      show_device_list_dialog();
     }
-    catch(Glib::Exception& err)
+    else
     {
-      std::cout << "Error: " << err.what() << std::endl;
-      return EXIT_FAILURE;
+      for(DeviceFiles::iterator i = device_files.begin(); i != device_files.end(); ++i)
+      {
+        show_device_property_dialog(*i);
+      }
     }
+    Gtk::Main::run();
+  }
+  catch(std::exception& err)
+  {
+    std::cout << "Error: " << err.what() << std::endl;
+    return EXIT_FAILURE;
+  }
+  catch(Glib::Exception& err)
+  {
+    std::cout << "Error: " << err.what() << std::endl;
+    return EXIT_FAILURE;
   }
 
   return 0;

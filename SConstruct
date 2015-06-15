@@ -21,15 +21,12 @@ binreloc_lib = binreloc_env.StaticLibrary("binreloc", ["external/binreloc-2.0/bi
 env = Environment(CXXFLAGS=["-g", "-Wall", "-Werror"],
                   LIBS=["expat", binreloc_lib],
                   CPPPATH=["external/binreloc-2.0/"])
-env.ParseConfig('pkg-config --cflags --libs gtkmm-2.4 sigc++-2.0 expat x11')
+env.ParseConfig('pkg-config --cflags --libs gtkmm-2.4 sigc++-2.0 x11 | sed "s/-I/-isystem/"')
 env.Program('jstest-gtk', [
     'src/axis_widget.cpp',
     'src/button_widget.cpp',
     'src/throttle_widget.cpp',
     'src/rudder_widget.cpp',
-    'src/xml_writer.cpp',
-    'src/xml_reader.cpp',
-    'src/xml_parser.cpp',
     'src/joystick_list_widget.cpp',
     'src/joystick_test_widget.cpp',
     'src/joystick_calibration_widget.cpp',

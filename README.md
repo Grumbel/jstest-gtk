@@ -24,7 +24,6 @@ are part of most distributions):
  * scons
  * sigc++
  * gtkmm
- * exapt
 
 You can compile it by typing:
 

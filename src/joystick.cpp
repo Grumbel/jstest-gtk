@@ -35,8 +35,6 @@
 #include <glibmm/convert.h>
 
 #include "evdev_helper.hpp"
-#include "xml_writer.hpp"
-#include "xml_reader.hpp"
 #include "joystick.hpp"
 
 Joystick::Joystick(const std::string& filename_)
@@ -390,116 +388,6 @@ Joystick::correct_calibration(const std::vector<int>& mapping_old, const std::ve
   }
 
   set_calibration(callib_new);
-}
-
-void
-Joystick::write(XMLWriter& out)
-{
-  out.start_section("joystick");
-  out.write("name",   name);
-  out.write("device", filename);
-
-  { // write CalibrationData
-    std::vector<CalibrationData> data = get_calibration();
-
-    out.start_section("calibration");
-    for(std::vector<CalibrationData>::iterator i = data.begin(); i != data.end(); ++i)
-    {
-      out.start_section("axis");
-      //out.write("id",         i - data.begin());
-      out.write("calibrate",  i->calibrate);
-      out.write("center-min", i->center_min);
-      out.write("center-max", i->center_max);
-      out.write("range-min",  i->range_min);
-      out.write("range-max",  i->range_max);
-      out.write("invert",     i->invert);
-      out.end_section("axis");
-    }
-    out.end_section("calibration");
-  }
-
-  {
-    std::vector<int> mapping = get_axis_mapping();
-    out.start_section("axis-map");
-    for(std::vector<int>::iterator i = mapping.begin(); i != mapping.end(); ++i)
-    {
-      out.write("axis", abs2str(*i));
-    }
-    out.end_section("axis-map");
-  }
-
-  {
-    std::vector<int> mapping = get_button_mapping();
-    out.start_section("button-map");
-    for(std::vector<int>::iterator i = mapping.begin(); i != mapping.end(); ++i)
-    {
-      out.write("button", btn2str(*i));
-    }
-    out.end_section("button-map");
-  }
-
-  out.end_section("joystick");
-}
-
-void
-Joystick::load(const XMLReader& root_reader)
-{
-  std::string cfg_name;
-  if (root_reader.read("name", cfg_name) && name == cfg_name)
-  {
-    // Read calibration data
-    if (XMLReader reader = root_reader.get_section("calibration"))
-    {
-      std::vector<CalibrationData> calibration_data;
-      const std::vector<XMLReader>& sections = reader.get_sections();
-      for(std::vector<XMLReader>::const_iterator i = sections.begin(); i != sections.end(); ++i)
-      {
-        CalibrationData data;
-
-        //i->read("axis", );
-        //i->read("precision", );
-        i->read("invert",     data.invert);
-        i->read("center-min", data.center_min);
-        i->read("center-max", data.center_max);
-        i->read("range-min",  data.range_min);
-        i->read("range-max",  data.range_max);
-
-        calibration_data.push_back(data);
-      }
-
-      set_calibration(calibration_data);
-    }
-
-    { // Read axis mapping
-      const std::vector<std::string>& cfg_axis_map = root_reader.get_string_list("axis-map");
-      std::vector<int> mapping;
-
-      for(std::vector<std::string>::const_iterator i = cfg_axis_map.begin(); i != cfg_axis_map.end(); ++i)
-      {
-        int type = 0;
-        int code = 0;
-        str2event(*i, type, code);
-        mapping.push_back(code);
-      }
-
-      set_axis_mapping(mapping);
-    }
-
-    { // Read button mapping
-      const std::vector<std::string>& cfg_button_map = root_reader.get_string_list("button-map");
-      std::vector<int> mapping;
-
-      for(std::vector<std::string>::const_iterator i = cfg_button_map.begin(); i != cfg_button_map.end(); ++i)
-      {
-        int type = 0;
-        int code = 0;
-        str2event(*i, type, code);
-        mapping.push_back(code);
-      }
-
-      set_button_mapping(mapping);
-    }
-  }
 }
 
 std::string

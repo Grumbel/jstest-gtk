@@ -23,7 +23,6 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/image.h>
 
-#include "xml_writer.hpp"
 #include "main.hpp"
 #include "joystick.hpp"
 #include "button_widget.hpp"
