@@ -57,6 +57,8 @@ Main::show_device_list_dialog()
   else
   {
     list_dialog = new JoystickListWidget();
+    dialogs.push_back(list_dialog);
+    list_dialog->signal_hide().connect(sigc::bind(sigc::mem_fun(this, &Main::on_dialog_hide), list_dialog));
     list_dialog->show_all();
   }
 }
