@@ -61,7 +61,10 @@ RemapWidget::RemapWidget(Joystick& joystick_, Mode mode_)
   set_border_width(5);
   treeview.set_border_width(5);
 
-  pack_start(treeview,  Gtk::PACK_EXPAND_WIDGET);
+  scroll.add(treeview);
+  scroll.set_size_request(-1, 300);
+  scroll.set_policy(Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
+  pack_start(scroll,  Gtk::PACK_EXPAND_WIDGET);
 
   treeview.set_reorderable();
 

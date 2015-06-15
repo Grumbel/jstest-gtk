@@ -20,11 +20,10 @@
 #define HEADER_JSTEST_GTK_REMAP_WIDGET_HPP
 
 #include <gtkmm/box.h>
-#include <gtkmm/button.h>
-#include <gtkmm/buttonbox.h>
 #include <gtkmm/liststore.h>
 #include <gtkmm/treeview.h>
 #include <gtkmm/treemodel.h>
+#include <gtkmm/scrolledwindow.h>
 
 class Joystick;
 
@@ -39,6 +38,7 @@ private:
 
   Gtk::TreeView treeview;
   Glib::RefPtr<Gtk::ListStore> map_list;
+  Gtk::ScrolledWindow scroll;
 
 public:
   RemapWidget(Joystick& joystick_, Mode mode);
