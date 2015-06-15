@@ -15,10 +15,15 @@
 ##  You should have received a copy of the GNU General Public License
 ##  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
+
 binreloc_env = Environment(CPPDEFINES=["ENABLE_BINRELOC"])
 binreloc_lib = binreloc_env.StaticLibrary("binreloc", ["external/binreloc-2.0/binreloc.c"])
 
-env = Environment(CXXFLAGS=["-g", "-Wall", "-Werror"],
+env = Environment(ENV=os.environ,
+                  CXXFLAGS=["-g", "-Wall", "-Wextra", # "-Wconversion", "-Wshadow" "-Weffc++",
+                            "-pedantic", "-Wno-c++0x-compat", "-Wnon-virtual-dtor",
+                            "-Wcast-qual", "-Winit-self", "-Wno-unused-parameter"],
                   LIBS=["expat", binreloc_lib],
                   CPPPATH=["external/binreloc-2.0/"])
 env.ParseConfig('pkg-config --cflags --libs gtkmm-2.4 sigc++-2.0 x11 | sed "s/-I/-isystem/"')
