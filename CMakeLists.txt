@@ -47,7 +47,7 @@ set_target_properties(binreloc PROPERTIES COMPILE_DEFINITIONS ENABLE_BINRELOC)
 file(GLOB JSTEST_GTK_SOURCES src/*.cpp)
 
 add_executable(jstest-gtk ${JSTEST_GTK_SOURCES})
-target_include_directories(jstest-gtk SYSTEM PRIVATE
+include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/external/binreloc-2.0/
   ${GTKMM_INCLUDE_DIRS}
   ${SIGCPP_INCLUDE_DIRS}
