@@ -42,7 +42,7 @@ pkg_search_module(SIGCPP REQUIRED sigc++-2.0)
 pkg_search_module(X11 REQUIRED x11)
 
 add_library(binreloc STATIC ${CMAKE_CURRENT_SOURCE_DIR}/external/binreloc-2.0/binreloc.c)
-target_compile_definitions(binreloc PUBLIC ENABLE_BINRELOC)
+set_target_properties(binreloc PROPERTIES COMPILE_DEFINITIONS ENABLE_BINRELOC)
 
 file(GLOB JSTEST_GTK_SOURCES src/*.cpp)
 
