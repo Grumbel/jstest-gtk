@@ -1,5 +1,2 @@
-.sconsign.dblite
 *~
-*.o
-jstest-gtk
-libbinreloc.a
+/build/
