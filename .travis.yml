@@ -29,11 +29,8 @@ matrix:
   fast_finish: true
 
 before_install:
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt-get update -qq
   - sudo apt-get install build-essential cmake libgtkmm-2.4-dev libsigc++-2.0-dev
-  - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.9; fi
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
 
 script:
   - git clean -f
