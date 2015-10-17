@@ -44,21 +44,7 @@ pkg_search_module(X11 REQUIRED x11)
 add_library(binreloc STATIC ${CMAKE_CURRENT_SOURCE_DIR}/external/binreloc-2.0/binreloc.c)
 target_compile_definitions(binreloc PUBLIC ENABLE_BINRELOC)
 
-# file(GLOB JSTEST_GTK_SOURCES src/*.cpp)
-set(JSTEST_GTK_SOURCES
-  src/axis_widget.cpp
-  src/button_widget.cpp
-  src/throttle_widget.cpp
-  src/rudder_widget.cpp
-  src/joystick_list_widget.cpp
-  src/joystick_test_widget.cpp
-  src/joystick_calibration_widget.cpp
-  src/joystick_map_widget.cpp
-  src/joystick.cpp
-  src/calibrate_maximum_dialog.cpp
-  src/remap_widget.cpp
-  src/evdev_helper.cpp
-  src/main.cpp)
+file(GLOB JSTEST_GTK_SOURCES src/*.cpp)
 
 add_executable(jstest-gtk ${JSTEST_GTK_SOURCES})
 target_include_directories(jstest-gtk SYSTEM PRIVATE
