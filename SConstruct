@@ -21,7 +21,7 @@ binreloc_env = Environment(CPPDEFINES=["ENABLE_BINRELOC"])
 binreloc_lib = binreloc_env.StaticLibrary("binreloc", ["external/binreloc-2.0/binreloc.c"])
 
 env = Environment(ENV=os.environ,
-                  CXXFLAGS=["-g", "-Wall", "-Wextra", # "-Wconversion", "-Wshadow" "-Weffc++",
+                  CXXFLAGS=["-g", "-Wall", "-std=c++11", "-Wextra", # "-Wconversion", "-Wshadow" "-Weffc++",
                             "-pedantic", "-Wno-c++0x-compat", "-Wnon-virtual-dtor",
                             "-Wcast-qual", "-Winit-self", "-Wno-unused-parameter"],
                   LIBS=["expat", binreloc_lib],
