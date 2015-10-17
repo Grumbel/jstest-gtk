@@ -42,7 +42,7 @@ pkg_search_module(SIGCPP REQUIRED sigc++-2.0)
 pkg_search_module(X11 REQUIRED x11)
 
 add_library(binreloc STATIC ${CMAKE_CURRENT_SOURCE_DIR}/external/binreloc-2.0/binreloc.c)
-set_target_properties(binreloc PROPERTIES COMPILE_DEFINITIONS ENABLE_BINRELOC)
+set_property(TARGET binreloc PROPERTY COMPILE_DEFINITIONS ENABLE_BINRELOC)
 
 file(GLOB JSTEST_GTK_SOURCES src/*.cpp)
 
@@ -52,10 +52,11 @@ include_directories(
   ${GTKMM_INCLUDE_DIRS}
   ${SIGCPP_INCLUDE_DIRS}
   ${X11_INCLUDE_DIRS})
-target_compile_options(jstest-gtk PRIVATE
+set_property(TARGET jstest-gtk PROPERTY COMPILE_OPTIONS
   ${GTKMM_CFLAGS_OTHER}
   ${SIGCPP_CFLAGS_OTHER}
-  ${X11_CFLAGS_OTHER})
+  ${X11_CFLAGS_OTHER}
+  ${WARNINGS_CXX_FLAGS})
 target_link_libraries(jstest-gtk
   binreloc
   ${GTKMM_LIBRARIES}

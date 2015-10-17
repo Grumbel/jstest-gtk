@@ -39,7 +39,7 @@ script:
   - git clean -f
   - mkdir build
   - cd build
-  - cmake .. -DWARNINGS=ON -DWERROR=ON
+  - cmake .. -DWARNINGS=ON -DWERROR=OFF
   - make VERBOSE=1
 
 # EOF #
