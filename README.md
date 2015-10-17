@@ -23,13 +23,16 @@ Compiling
 Make sure you have the following pieces of software installed (they
 are part of most distributions):
 
- * scons
+ * cmake
  * sigc++
  * gtkmm
 
 You can compile it by typing:
 
-    $ scons
+    $ mkdir build
+    $ cd build
+    $ cmake ..
+    $ make
 
 
 Usage
