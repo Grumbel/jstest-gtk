@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Grumbel/jstest-gtk.svg?branch=master)](https://travis-ci.org/Grumbel/jstest-gtk)
+
 jstest-gtk
 ==========
 
@@ -21,14 +23,16 @@ Compiling
 Make sure you have the following pieces of software installed (they
 are part of most distributions):
 
- * scons
+ * cmake
  * sigc++
  * gtkmm
- * exapt
 
 You can compile it by typing:
 
-    $ scons
+    $ mkdir build
+    $ cd build
+    $ cmake ..
+    $ make
 
 
 Usage

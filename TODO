@@ -5,13 +5,21 @@ Pre Release Testing:
 
 VERSION="0.1.0"
 TAG="v${VERSION}"
-git tag -s  "${TAG}" -m "jstest-gtk ${TAG}" 
+git tag -s  "${TAG}" -m "jstest-gtk ${TAG}"
 git archive --format=tar --prefix="jstest-gtk-${VERSION}/" ${TAG} | bzip2 -c > /tmp/jstest-gtk-${VERSION}.tar.bz2
 git push --tags
 
 ==========
 [[ TODO ]]
 ==========
+
+* add ability to plot axis values into a dynamic 2d graph (good for seeing steps/noise)
+
+* use libudev for automatic detection of newly plugged in joysticks
+  (would allow getting the correct evdev and doing proper reset of
+  joystick calibration values without replug)
+
+* axis mapping seems to behave broken
 
 * grey out Properties when no joystick is present in the list
 
@@ -102,7 +110,7 @@ git push --tags
 * jscal:
 
 # Remove any calibration and report raw USB data
-jsscal -s 6,0,0,0,0,0,0,0,0,0,0,0,0 /dev/input/js0 
+jsscal -s 6,0,0,0,0,0,0,0,0,0,0,0,0 /dev/input/js0
 
 jscal -s
 6, // number of axes
@@ -152,14 +160,14 @@ Apply coef:
 ===========
 
   if (value > corr->coef[0])
-    { 
+    {
       if (value < corr->coef[1])
         {
           value = 0;
         }
       else
         {
-          value = (corr->coef[3] * (value - corr->coef[1])) / 16384; 
+          value = (corr->coef[3] * (value - corr->coef[1])) / 16384;
         }
     }
   else
