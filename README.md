@@ -12,7 +12,7 @@ You can find the latest version at:
 
  * http://github.com/Grumbel/jstest-gtk/tree/master
 
-Questions, comments and bug reporst can be given to:
+Questions, comments and bug reports can be given to:
 
  * Ingo Ruhnke <grumbel@gmx.de>
 
