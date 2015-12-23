@@ -137,7 +137,7 @@ JoystickListWidget::on_refresh()
     (*it)[DeviceListColumns::instance().path] = i->filename;
 
     std::ostringstream out;
-    out << i->name << "\n"
+	out << name << "\n"
         << "Device: " << i->filename << "\n"
         << "Axes: " << i->axis_count << "\n"
         << "Buttons: " << i->button_count;
