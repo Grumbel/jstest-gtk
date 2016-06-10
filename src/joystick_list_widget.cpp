@@ -72,8 +72,6 @@ JoystickListWidget::JoystickListWidget()
   add_button(Gtk::Stock::PROPERTIES, 1);
   add_button(Gtk::Stock::CLOSE, 0);
 
-  signal_response().connect(sigc::mem_fun(this, &JoystickListWidget::on_response));
-
   // Set model
   device_list = Gtk::ListStore::create(DeviceListColumns::instance());
   treeview.set_model(device_list);
