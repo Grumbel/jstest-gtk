@@ -20,17 +20,19 @@
 # http://docs.travis-ci.com/user/build-configuration/
 
 language: cpp
+dist: trusty
+sudo: required
 
 compiler:
   - gcc
-  # - clang
+  - clang
 
 matrix:
   fast_finish: true
 
 before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install build-essential cmake libgtkmm-2.4-dev libsigc++-2.0-dev
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
+  - if [ "$CXX" == "clang++" ]; then export CXX="clang++-4.0" CC="clang-4.0"; fi
 
 script:
   - git clean -f
@@ -38,5 +40,18 @@ script:
   - cd build
   - cmake .. -DWARNINGS=ON -DWERROR=OFF
   - make VERBOSE=1
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    - llvm-toolchain-precise
+    packages:
+    - build-essential
+    - cmake
+    - clang-4.0
+    - g++-4.9
+    - libgtkmm-2.4-dev
+    - libsigc++-2.0-dev
 
 # EOF #
