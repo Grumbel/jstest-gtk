@@ -25,13 +25,9 @@ ButtonWidget::ButtonWidget(int width, int height, const std::string& name_)
 }
 
 bool
-ButtonWidget::on_expose_event(GdkEventExpose* event)
+ButtonWidget::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 {
-  Gtk::DrawingArea::on_expose_event(event);
-  Glib::RefPtr<Gdk::Window> window = get_window();
-  if(window)
-  {
-    Cairo::RefPtr<Cairo::Context> cr = window->create_cairo_context();
+  Gtk::DrawingArea::on_draw(cr);
 
     int w  = get_allocation().get_width()  - 10;
     int h  = get_allocation().get_height() - 10;
@@ -55,7 +51,6 @@ ButtonWidget::on_expose_event(GdkEventExpose* event)
     else
       cr->move_to(w/2-4, h/2+3);
     cr->show_text(name);
-  }
 
   return true;
 }

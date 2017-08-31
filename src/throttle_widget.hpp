@@ -30,7 +30,7 @@ private:
 public:
   ThrottleWidget(int width, int height, bool invert = false);
 
-  bool on_expose_event(GdkEventExpose* event);
+  bool on_draw(const ::Cairo::RefPtr< ::Cairo::Context>& cr) override;
   void set_pos(double p);
 
 private:

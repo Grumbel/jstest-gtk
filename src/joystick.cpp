@@ -31,8 +31,7 @@
 #include <sstream>
 #include <unistd.h>
 #include <linux/joystick.h>
-#include <glibmm/main.h>
-#include <glibmm/convert.h>
+#include <glibmm.h>
 
 #include "evdev_helper.hpp"
 #include "joystick.hpp"
@@ -139,12 +138,16 @@ Joystick::get_joysticks()
     {
       std::ostringstream str;
       str << "/dev/input/js" << i;
+
+      if (Glib::file_test(str.str(), Glib::FILE_TEST_EXISTS))
+      {
       Joystick joystick(str.str());
 
       joysticks.push_back(JoystickDescription(joystick.get_filename(),
                                               joystick.get_name(),
                                               joystick.get_axis_count(),
                                               joystick.get_button_count()));
+    }
     }
     catch(std::exception& err)
     {

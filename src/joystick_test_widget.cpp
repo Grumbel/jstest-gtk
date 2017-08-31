@@ -35,7 +35,7 @@ JoystickTestWidget::JoystickTestWidget(Joystick& joystick_, bool simple_ui)
     joystick(joystick_),
     m_simple_ui(simple_ui),
     label("<b>" + joystick.get_name() + "</b>\nDevice: " + joystick.get_filename() ,
-          Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER),
+          Gtk::ALIGN_START, Gtk::ALIGN_START),
     axis_frame("Axes"),
     button_frame("Buttons"),
     mapping_button("Mapping"),

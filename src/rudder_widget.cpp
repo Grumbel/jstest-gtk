@@ -25,21 +25,9 @@ RudderWidget::RudderWidget(int width, int height)
 }
 
 bool
-RudderWidget::on_expose_event(GdkEventExpose* event)
+RudderWidget::on_draw(const ::Cairo::RefPtr< ::Cairo::Context>& cr)
 {
   double p = (pos + 1.0)/2.0;
-  if (0)
-  {
-    get_window()->draw_rectangle(get_style()->get_fg_gc(get_state()),
-                                 true,
-                                 (get_allocation().get_width() * p) - 4, 0,
-                                 9, get_allocation().get_height()-1);
-  }
-
-  Glib::RefPtr<Gdk::Window> window = get_window();
-  if(window)
-  {
-    Cairo::RefPtr<Cairo::Context> cr = window->create_cairo_context();
 
     int w  = get_allocation().get_width()-10;
     int h  = get_allocation().get_height()-10;
@@ -62,7 +50,6 @@ RudderWidget::on_expose_event(GdkEventExpose* event)
     cr->move_to(w * p, 0);
     cr->line_to(w * p, h);
     cr->stroke();
-  }
 
   return true;
 }

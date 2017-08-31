@@ -30,7 +30,7 @@ private:
 public:
   ButtonWidget(int width, int height, const std::string& name);
 
-  bool on_expose_event(GdkEventExpose* event);
+  bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
   void set_down(bool t);
 
 private:

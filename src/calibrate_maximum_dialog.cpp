@@ -33,7 +33,6 @@ CalibrateMaximumDialog::CalibrateMaximumDialog(Joystick& joystick_)
   joystick.clear_calibration();
 
   set_border_width(5);
-  set_has_separator(false);
   label.set_line_wrap();
   get_vbox()->add(label);
   add_button(Gtk::Stock::CANCEL, 1);

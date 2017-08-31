@@ -38,7 +38,7 @@ private:
 public:
   CalibrateMaximumDialog(Joystick& joystick);
 
-  void on_response(int v);
+  void on_response(int v) override;
   void on_axis_move(int id, int value);
 
 private:

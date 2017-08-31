@@ -20,12 +20,12 @@
 #define HEADER_JSTEST_GTK_MAIN_HPP
 
 #include <vector>
-#include <gtkmm/dialog.h>
+#include <gtkmm.h>
 
 class Joystick;
 class JoystickListWidget;
 
-class Main
+class Main : public Gtk::Application
 {
 private:
   static Main* current_;
@@ -54,7 +54,9 @@ public:
   void show_calibration_dialog(Joystick& joystick);
   void show_mapping_dialog(Joystick& joystick);
 
-  int main(int argc, char** argv);
+  static Glib::RefPtr<Main> create();
+
+  int run(int argc, char** argv) /* override only since gtkmm 3.4 ! */;
 
   std::string get_cfg_directory() const { return cfg_directory; }
   std::string get_data_directory() const { return datadir; }

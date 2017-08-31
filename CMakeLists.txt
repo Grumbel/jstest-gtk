@@ -45,7 +45,7 @@ elseif(COMPILER_SUPPORTS_CXX0X)
 endif()
 
 find_package(PkgConfig REQUIRED)
-pkg_search_module(GTKMM REQUIRED gtkmm-2.4)
+pkg_search_module(GTKMM REQUIRED gtkmm-3.0)
 pkg_search_module(SIGCPP REQUIRED sigc++-2.0)
 pkg_search_module(X11 REQUIRED x11)
 
