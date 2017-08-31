@@ -16,7 +16,7 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <gtkmm/stock.h>
+#include <gtkmm.h>
 
 #include "main.hpp"
 #include "joystick.hpp"
@@ -58,11 +58,11 @@ JoystickListWidget::JoystickListWidget()
           "devices, you can view the other ones via the top tab.")
     //frame("Device List"),
 {
-  set_has_separator(false);
   set_default_size(450, 310);
 
   label.set_line_wrap();
 
+  scrolled.set_vexpand(true);
   scrolled.set_border_width(5);
   scrolled.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_ALWAYS);
   scrolled.add(treeview);

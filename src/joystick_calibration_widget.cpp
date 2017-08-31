@@ -38,8 +38,6 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
     buttonbox(Gtk::BUTTONBOX_SPREAD),
     calibration_button("Start Calibration")
 {
-  set_has_separator(false);
-
   set_border_width(5);
   axis_frame.set_border_width(5);
   axis_table.set_border_width(5);
@@ -69,10 +67,10 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
   {
     CalibrationData data;
 
-    Gtk::SpinButton&  center_min = *Gtk::manage(new Gtk::SpinButton(*Gtk::manage(data.center_min = new Gtk::Adjustment(0, -32768, 32767))));
-    Gtk::SpinButton&  center_max = *Gtk::manage(new Gtk::SpinButton(*Gtk::manage(data.center_max = new Gtk::Adjustment(0, -32768, 32767))));
-    Gtk::SpinButton&  range_min  = *Gtk::manage(new Gtk::SpinButton(*Gtk::manage(data.range_min  = new Gtk::Adjustment(0, -32768, 32767))));
-    Gtk::SpinButton&  range_max  = *Gtk::manage(new Gtk::SpinButton(*Gtk::manage(data.range_max  = new Gtk::Adjustment(0, -32768, 32767))));
+    Gtk::SpinButton&  center_min = *Gtk::manage(new Gtk::SpinButton((data.center_min = Gtk::Adjustment::create(0, -32768, 32767))));
+    Gtk::SpinButton&  center_max = *Gtk::manage(new Gtk::SpinButton((data.center_max = Gtk::Adjustment::create(0, -32768, 32767))));
+    Gtk::SpinButton&  range_min  = *Gtk::manage(new Gtk::SpinButton((data.range_min  = Gtk::Adjustment::create(0, -32768, 32767))));
+    Gtk::SpinButton&  range_max  = *Gtk::manage(new Gtk::SpinButton((data.range_max  = Gtk::Adjustment::create(0, -32768, 32767))));
     Gtk::CheckButton& invert     = *(data.invert = Gtk::manage(new Gtk::CheckButton()));
 
     center_min.signal_value_changed().connect(sigc::mem_fun(this, &JoystickCalibrationWidget::on_apply));

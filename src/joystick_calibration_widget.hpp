@@ -20,6 +20,7 @@
 #define HEADER_JOYSTICK_CALIBRATION_WIDGET_HPP
 
 #include <gtkmm/box.h>
+#include <gtkmm/checkbutton.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/label.h>
 #include <gtkmm/table.h>
@@ -42,10 +43,10 @@ private:
 
   struct CalibrationData {
     Gtk::CheckButton* invert;
-    Gtk::Adjustment* center_min;
-    Gtk::Adjustment* center_max;
-    Gtk::Adjustment* range_min;
-    Gtk::Adjustment* range_max;
+    Glib::RefPtr<Gtk::Adjustment> center_min;
+    Glib::RefPtr<Gtk::Adjustment> center_max;
+    Glib::RefPtr<Gtk::Adjustment> range_min;
+    Glib::RefPtr<Gtk::Adjustment> range_max;
   };
 
   std::vector<CalibrationData> calibration_data;
@@ -57,7 +58,7 @@ public:
 
   void on_clear();
   void on_apply();
-  void on_response(int i);
+  void on_response(int i) override;
   void on_calibrate();
 
 private:

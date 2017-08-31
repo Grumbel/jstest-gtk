@@ -19,30 +19,19 @@
 #include "axis_widget.hpp"
 
 AxisWidget::AxisWidget(int width, int height)
-  : Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_TOP, 0.0f, 0.0f),
+  : Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_START, 0.0f, 0.0f),
     x(0), y(0)
 {
   //modify_bg(Gtk::STATE_NORMAL , Gdk::Color("white"));
   //modify_fg(Gtk::STATE_NORMAL , Gdk::Color("black"));
   add(drawingarea);
-  drawingarea.signal_expose_event().connect(sigc::mem_fun(this, &AxisWidget::on_my_expose_event));
+  drawingarea.signal_draw().connect(sigc::mem_fun(this, &AxisWidget::on_draw));
   drawingarea.set_size_request(width, height);
 }
 
 bool
-AxisWidget::on_my_expose_event(GdkEventExpose* event)
+AxisWidget::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 {
-  Glib::RefPtr<Gdk::Window> window = drawingarea.get_window();
-  if(window)
-  {
-    Cairo::RefPtr<Cairo::Context> cr = window->create_cairo_context();
-    if (0)
-    {
-      cr->rectangle(event->area.x, event->area.y,
-                    event->area.width, event->area.height);
-      cr->clip();
-    }
-
     int w  = drawingarea.get_allocation().get_width()  - 10;
     int h  = drawingarea.get_allocation().get_height() - 10;
     int px = w/2 + (w/2  * x);
@@ -80,7 +69,6 @@ AxisWidget::on_my_expose_event(GdkEventExpose* event)
     cr->move_to(px-5, py);
     cr->line_to(px+5, py);
     cr->stroke();
-  }
 
   return true;
 }

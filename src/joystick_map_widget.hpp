@@ -40,7 +40,7 @@ private:
 public:
   JoystickMapWidget(Joystick& joystick);
 
-  void on_response(int v);
+  void on_response(int v) override;
 
 private:
   JoystickMapWidget(const JoystickMapWidget&);

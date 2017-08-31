@@ -48,7 +48,7 @@ public:
 
   void on_refresh();
   void on_properties();
-  void on_response(int v);
+  void on_response(int v) override;
   void on_row_activated(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column);
 
 private:

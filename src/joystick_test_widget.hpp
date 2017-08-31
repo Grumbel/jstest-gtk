@@ -86,7 +86,7 @@ public:
 
   void on_calibrate();
   void on_mapping();
-  void on_response(int v);
+  void on_response(int v) override;
 
 private:
   JoystickTestWidget(const JoystickTestWidget&);

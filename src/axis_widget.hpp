@@ -32,7 +32,7 @@ private:
 public:
   AxisWidget(int width, int height);
 
-  bool on_my_expose_event(GdkEventExpose* event);
+  bool on_draw(const Cairo::RefPtr<Cairo::Context>& context) override;
 
   void set_x_axis(double x);
   void set_y_axis(double x);

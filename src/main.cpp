@@ -17,7 +17,7 @@
 */
 
 #include <iostream>
-#include <gtkmm/main.h>
+#include <gtkmm.h>
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -36,7 +36,8 @@
 Main* Main::current_ = 0;
 
 Main::Main(const std::string& datadir_)
-  : datadir(datadir_),
+  : Gtk::Application("de.gmx.grumbel.jstest-gtk"),
+    datadir(datadir_),
     m_simple_ui(false),
     list_dialog(0)
 {
@@ -105,7 +106,7 @@ Main::on_dialog_hide(Gtk::Dialog* dialog)
 }
 
 int
-Main::main(int argc, char** argv)
+Main::run(int argc, char** argv)
 {
   typedef std::vector<std::string> DeviceFiles;
   DeviceFiles device_files;
@@ -149,15 +150,12 @@ Main::main(int argc, char** argv)
 
   try
   {
-    Glib::set_application_name("Joystick Test");
-    Glib::set_prgname("jstest-gtk");
     cfg_directory = Glib::build_filename(Glib::get_user_config_dir(), Glib::get_prgname());
     if (access(cfg_directory.c_str(), R_OK | W_OK) != 0 &&
         mkdir(cfg_directory.c_str(), 0770) != 0)
     {
       throw std::runtime_error(cfg_directory + ": " + strerror(errno));
     }
-    Gtk::Main kit(&argc, &argv);
 
     if (device_files.empty())
     {
@@ -170,7 +168,7 @@ Main::main(int argc, char** argv)
         show_device_property_dialog(*i);
       }
     }
-    Gtk::Main::run();
+    return Gtk::Application::run(*list_dialog, argc, argv);
   }
   catch(std::exception& err)
   {
@@ -215,8 +213,9 @@ int main(int argc, char** argv)
 {
   try
   {
-    Main app(find_datadir());
-    return app.main(argc, argv);
+    Glib::RefPtr<Main> app = Main::create();
+
+    return app->run(argc, argv);
   }
   catch(std::exception& err)
   {
@@ -225,4 +224,8 @@ int main(int argc, char** argv)
   }
 }
 
+Glib::RefPtr<Main> Main::create()
+{
+  return Glib::RefPtr<Main>(new Main(find_datadir()));
+}
 /* EOF */

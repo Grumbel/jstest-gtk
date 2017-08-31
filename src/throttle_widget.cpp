@@ -28,23 +28,9 @@ ThrottleWidget::ThrottleWidget(int width, int height, bool invert_)
 }
 
 bool
-ThrottleWidget::on_expose_event(GdkEventExpose* event)
+ThrottleWidget::on_draw(const ::Cairo::RefPtr< ::Cairo::Context>& cr)
 {
   double p = 1.0 - (pos + 1.0) / 2.0;
-
-  if (0)
-  {
-    int h = (get_allocation().get_height() * p);
-    get_window()->draw_rectangle(get_style()->get_fg_gc(get_state()),
-                                 true,
-                                 0, get_allocation().get_height() - h,
-                                 get_allocation().get_width(), h);
-  }
-
-  Glib::RefPtr<Gdk::Window> window = get_window();
-  if(window)
-  {
-    Cairo::RefPtr<Cairo::Context> cr = window->create_cairo_context();
 
     int w  = get_allocation().get_width()-10;
     int h  = get_allocation().get_height()-10;
@@ -60,7 +46,6 @@ ThrottleWidget::on_expose_event(GdkEventExpose* event)
     int dh = h*p;
     cr->rectangle(0, h - dh, w, dh);
     cr->fill();
-  }
 
   return true;
 }

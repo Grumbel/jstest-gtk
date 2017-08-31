@@ -30,7 +30,6 @@ JoystickMapWidget::JoystickMapWidget(Joystick& joystick)
     axis_map(joystick, RemapWidget::REMAP_AXIS),
     button_map(joystick, RemapWidget::REMAP_BUTTON)
 {
-  set_has_separator(false);
   set_border_width(5);
   label.set_line_wrap();
 
