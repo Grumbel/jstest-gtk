@@ -98,11 +98,6 @@ Main::on_dialog_hide(Gtk::Dialog* dialog)
 {
   dialogs.erase(std::remove(dialogs.begin(), dialogs.end(), dialog), dialogs.end());
   delete dialog;
-
-  if (dialogs.empty())
-  {
-    Gtk::Main::quit();
-  }
 }
 
 int
