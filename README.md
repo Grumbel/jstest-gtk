@@ -14,7 +14,7 @@ You can find the latest version at:
 
 Questions, comments and bug reports can be given to:
 
- * Ingo Ruhnke <grumbel@gmx.de>
+ * Ingo Ruhnke <grumbel@gmail.com>
 
 
 Compiling

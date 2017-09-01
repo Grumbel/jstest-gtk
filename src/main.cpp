@@ -1,6 +1,6 @@
 /*
 **  jstest-gtk - A graphical joystick tester
-**  Copyright (C) 2009 Ingo Ruhnke <grumbel@gmx.de>
+**  Copyright (C) 2009 Ingo Ruhnke <grumbel@gmail.com>
 **
 **  This program is free software: you can redistribute it and/or modify
 **  it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@
 Main* Main::current_ = 0;
 
 Main::Main(const std::string& datadir_)
-  : Gtk::Application("de.gmx.grumbel.jstest-gtk"),
+  : Gtk::Application("com.gmail.grumbel.jstest-gtk"),
     datadir(datadir_),
     m_simple_ui(false),
     list_dialog(0)
@@ -119,7 +119,7 @@ Main::run(int argc, char** argv)
                 << "  -v, --version   Display version information and exit\n"
                 << "  --simple        Hide graphical representation of axis\n"
                 << "\n"
-                << "Report bugs to Ingo Ruhnke <grumbel@gmx.de>.\n";
+                << "Report bugs to Ingo Ruhnke <grumbel@gmail.com>.\n";
       return 0;
     }
     else if (strcmp("--version", argv[i]) == 0 ||
