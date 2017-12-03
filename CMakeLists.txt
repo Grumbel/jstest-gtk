@@ -45,6 +45,7 @@ elseif(COMPILER_SUPPORTS_CXX0X)
 endif()
 
 find_package(PkgConfig REQUIRED)
+find_package(Threads)
 pkg_search_module(GTKMM REQUIRED gtkmm-3.0)
 pkg_search_module(SIGCPP REQUIRED sigc++-2.0)
 pkg_search_module(X11 REQUIRED x11)
@@ -67,6 +68,7 @@ set_property(TARGET jstest-gtk PROPERTY COMPILE_OPTIONS
   ${WARNINGS_CXX_FLAGS})
 target_link_libraries(jstest-gtk
   binreloc
+  ${CMAKE_THREAD_LIBS_INIT}
   ${GTKMM_LIBRARIES}
   ${SIGCPP_LIBRARIES}
   ${X11_LIBRARIES})
