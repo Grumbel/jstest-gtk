@@ -24,8 +24,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include "binreloc.h"
-
 #include "joystick_test_widget.hpp"
 #include "joystick_list_widget.hpp"
 #include "joystick_map_widget.hpp"
@@ -35,9 +33,9 @@
 
 Main* Main::current_ = 0;
 
-Main::Main(const std::string& datadir_) :
+Main::Main() :
   Gtk::Application("com.gmail.grumbel.jstest-gtk", Gio::APPLICATION_HANDLES_OPEN),
-  datadir(datadir_),
+  datadir("data/"),
   m_simple_ui(false)
 {
   current_ = this;
@@ -108,6 +106,7 @@ Main::run(int argc, char** argv)
                 << "  -h, --help      Display this help and exit\n"
                 << "  -v, --version   Display version information and exit\n"
                 << "  --simple        Hide graphical representation of axis\n"
+                << "  --datadir DIR   Load application data from DIR\n"
                 << "\n"
                 << "Report bugs to Ingo Ruhnke <grumbel@gmail.com>.\n";
       return 0;
@@ -122,6 +121,19 @@ Main::run(int argc, char** argv)
     {
       m_simple_ui = true;
     }
+    else if (strcmp("--datadir", argv[i]) == 0)
+    {
+      i += 1;
+      if (i >= argc)
+      {
+        std::cout << "Error: " << argv[0] << ": argument to --datadir is missing" << std::endl;
+        return EXIT_FAILURE;
+      }
+      else
+      {
+        datadir = argv[i];
+      }
+    }
     else if (argv[i][0] == '-')
     {
       std::cout << "Error: " << argv[0] << ": unrecognized option '" << argv[i] << "'" << std::endl;
@@ -131,7 +143,7 @@ Main::run(int argc, char** argv)
     {
       if (!device_files.empty())
       {
-        std::cout << "Error: multiple device files given, only one allowed: " << argv[i] << std::endl;
+        std::cout << "Error: " << argv[0] << ": multiple device files given, only one allowed: " << argv[i] << std::endl;
         return EXIT_FAILURE;
       }
 
@@ -167,31 +179,6 @@ Main::run(int argc, char** argv)
   return 0;
 }
 
-std::string find_datadir()
-{
-  BrInitError error;
-  if (!br_init(&error))
-  {
-    std::ostringstream out;
-    out << "Error: Couldn't init binreloc: " << error;
-    throw std::runtime_error(out.str());
-  }
-  else
-  {
-    char* c_prefix = br_find_exe_dir(NULL);
-    if (!c_prefix)
-    {
-      throw std::runtime_error("Error: Couldn't find prefix");
-    }
-    else
-    {
-      std::string prefix = c_prefix;
-      free(c_prefix);
-      return prefix + "/data/";
-    }
-  }
-}
-
 int main(int argc, char** argv)
 {
   try
@@ -209,6 +196,7 @@ int main(int argc, char** argv)
 
 Glib::RefPtr<Main> Main::create()
 {
-  return Glib::RefPtr<Main>(new Main(find_datadir()));
+  return Glib::RefPtr<Main>(new Main);
 }
+
 /* EOF */

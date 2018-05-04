@@ -17,6 +17,8 @@
 cmake_minimum_required(VERSION 2.8)
 project(jstest-gtk)
 
+include(GNUInstallDirs)
+
 option(WARNINGS "Switch on extra warnings" OFF)
 option(WERROR "Turn warnings into errors" OFF)
 
@@ -56,14 +58,10 @@ file(
   COPY ${JSTEST_GTK_DATA}
   DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/data/)
 
-add_library(binreloc STATIC ${CMAKE_CURRENT_SOURCE_DIR}/external/binreloc-2.0/binreloc.c)
-set_property(TARGET binreloc PROPERTY COMPILE_DEFINITIONS ENABLE_BINRELOC)
-
 file(GLOB JSTEST_GTK_SOURCES src/*.cpp)
 
 add_executable(jstest-gtk ${JSTEST_GTK_SOURCES})
 include_directories(
-  ${CMAKE_CURRENT_SOURCE_DIR}/external/binreloc-2.0/
   ${GTKMM_INCLUDE_DIRS}
   ${SIGCPP_INCLUDE_DIRS}
   ${X11_INCLUDE_DIRS})
@@ -73,10 +71,31 @@ set_property(TARGET jstest-gtk PROPERTY COMPILE_OPTIONS
   ${X11_CFLAGS_OTHER}
   ${WARNINGS_CXX_FLAGS})
 target_link_libraries(jstest-gtk
-  binreloc
   ${CMAKE_THREAD_LIBS_INIT}
   ${GTKMM_LIBRARIES}
   ${SIGCPP_LIBRARIES}
   ${X11_LIBRARIES})
+
+
+install(TARGETS jstest-gtk
+  RUNTIME DESTINATION ${CMAKE_INSTALL_LIBEXECDIR})
+
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/jstest-gtk.sh.in
+  ${CMAKE_BINARY_DIR}/jstest-gtk.sh)
+
+install(FILES
+  ${CMAKE_BINARY_DIR}/jstest-gtk.sh
+  RENAME jstest-gtk
+  PERMISSIONS OWNER_EXECUTE OWNER_READ OWNER_WRITE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+  DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+install(DIRECTORY data/ DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}
+  PATTERN "*~" EXCLUDE)
+
+install(FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/jstest-gtk.1
+  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+
 
 # EOF #

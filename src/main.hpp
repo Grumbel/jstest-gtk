@@ -43,7 +43,7 @@ private:
   void on_dialog_hide(Gtk::Dialog* dialog);
 
 public:
-  Main(const std::string& datadir);
+  Main();
   ~Main();
 
   JoystickTestWidget* show_device_property_dialog(const std::string& filename, Gtk::Window* parent = nullptr);
