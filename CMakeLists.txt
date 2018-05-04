@@ -50,6 +50,12 @@ pkg_search_module(GTKMM REQUIRED gtkmm-3.0)
 pkg_search_module(SIGCPP REQUIRED sigc++-2.0)
 pkg_search_module(X11 REQUIRED x11)
 
+# Copy data files over to build/
+file(GLOB JSTEST_GTK_DATA data/*.png)
+file(
+  COPY ${JSTEST_GTK_DATA}
+  DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/data/)
+
 add_library(binreloc STATIC ${CMAKE_CURRENT_SOURCE_DIR}/external/binreloc-2.0/binreloc.c)
 set_property(TARGET binreloc PROPERTY COMPILE_DEFINITIONS ENABLE_BINRELOC)
 
