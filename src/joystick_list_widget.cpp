@@ -62,13 +62,14 @@ JoystickListWidget::JoystickListWidget() :
   set_title("Joystick Preferences");
   set_icon_from_file(Main::current()->get_data_directory() + "generic.png");
   set_default_size(450, 310);
+  //set_border_width(5);
 
   scrolled.set_vexpand(true);
-  scrolled.set_border_width(5);
+  //scrolled.set_border_width(5);
   scrolled.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_ALWAYS);
   scrolled.add(treeview);
 
-
+  m_buttonbox.set_border_width(5);
   m_buttonbox.pack_end(m_refresh_button);
   m_buttonbox.pack_end(m_properties_button);
   m_buttonbox.pack_end(m_close_button);
