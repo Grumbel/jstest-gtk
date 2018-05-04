@@ -78,7 +78,8 @@ Joystick::Joystick(const std::string& filename_)
 
   orig_calibration_data = get_calibration();
 
-  connection = Glib::signal_io().connect(sigc::mem_fun(this, &Joystick::on_in), fd, Glib::IO_IN);
+  connection = Glib::signal_io().connect(sigc::mem_fun(this, &Joystick::on_in), fd,
+                                         Glib::IO_IN | Glib::IO_HUP | Glib::IO_ERR);
 }
 
 Joystick::~Joystick()
@@ -90,7 +91,23 @@ Joystick::~Joystick()
 bool
 Joystick::on_in(Glib::IOCondition cond)
 {
-  update();
+  if (cond & Glib::IO_IN)
+  {
+    update();
+  }
+
+  if (cond & Glib::IO_HUP)
+  {
+    std::cout << filename << ": joystick got disconnected" << std::endl;
+    connection.disconnect();
+  }
+
+  if (cond & Glib::IO_ERR)
+  {
+    std::cout << filename << ": error ocured while reading from joystick" << std::endl;
+    connection.disconnect();
+  }
+
   return true;
 }
 
