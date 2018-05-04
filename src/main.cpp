@@ -134,13 +134,6 @@ Main::run(int argc, char** argv)
 
   try
   {
-    cfg_directory = Glib::build_filename(Glib::get_user_config_dir(), Glib::get_prgname());
-    if (access(cfg_directory.c_str(), R_OK | W_OK) != 0 &&
-        mkdir(cfg_directory.c_str(), 0770) != 0)
-    {
-      throw std::runtime_error(cfg_directory + ": " + strerror(errno));
-    }
-
     if (device_files.empty())
     {
       JoystickListWidget list_dialog;

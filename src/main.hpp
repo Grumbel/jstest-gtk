@@ -39,8 +39,6 @@ private:
   std::vector<Joystick*>    joysticks;
   std::vector<Gtk::Dialog*> dialogs;
 
-  std::string cfg_directory;
-
   void on_dialog_hide(Gtk::Dialog* dialog);
 
 public:
@@ -55,7 +53,6 @@ public:
 
   int run(int argc, char** argv) /* override only since gtkmm 3.4 ! */;
 
-  std::string get_cfg_directory() const { return cfg_directory; }
   std::string get_data_directory() const { return datadir; }
 };
 
