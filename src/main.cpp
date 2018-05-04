@@ -35,10 +35,10 @@
 
 Main* Main::current_ = 0;
 
-Main::Main(const std::string& datadir_)
-  : Gtk::Application("com.gmail.grumbel.jstest-gtk"),
-    datadir(datadir_),
-    m_simple_ui(false)
+Main::Main(const std::string& datadir_) :
+  Gtk::Application("com.gmail.grumbel.jstest-gtk", Gio::APPLICATION_HANDLES_OPEN),
+  datadir(datadir_),
+  m_simple_ui(false)
 {
   current_ = this;
 }
@@ -47,21 +47,22 @@ Main::~Main()
 {
 }
 
-void
+JoystickTestWidget*
 Main::show_device_property_dialog(const std::string& filename, Gtk::Window* parent)
 {
   Joystick* joystick = new Joystick(filename);
   JoystickTestWidget* dialog = new JoystickTestWidget(*joystick, m_simple_ui);
   if (parent) {
     dialog->set_transient_for(*parent);
-  } else {
-    dialog->unset_transient_for();
   }
 
   dialog->signal_hide().connect(sigc::bind(sigc::mem_fun(this, &Main::on_dialog_hide), dialog));
   dialog->show_all();
+
   joysticks.push_back(joystick);
   dialogs.push_back(dialog);
+
+  return dialog;
 }
 
 void
@@ -144,12 +145,12 @@ Main::run(int argc, char** argv)
     {
       JoystickListWidget list_dialog;
       list_dialog.show_all();
-      return Gtk::Application::run(list_dialog, argc, argv);
+      return Gtk::Application::run(list_dialog);
     }
     else
     {
-      show_device_property_dialog(*device_files.begin());
-      return Gtk::Application::run(argc, argv);
+      auto dialog = show_device_property_dialog(*device_files.begin());
+      return Gtk::Application::run(*dialog);
     }
   }
   catch(std::exception& err)
