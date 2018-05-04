@@ -31,11 +31,11 @@
 #include "joystick_test_widget.hpp"
 
 JoystickTestWidget::JoystickTestWidget(JoystickGui& gui, Joystick& joystick_, bool simple_ui) :
-  Gtk::Dialog(joystick_.get_name()),
+  Gtk::Window(),
   m_gui(gui),
   joystick(joystick_),
   m_simple_ui(simple_ui),
-  label("<b>" + joystick.get_name() + "</b>\nDevice: " + joystick.get_filename() ,
+  label("<b>" + joystick.get_name() + "</b>\nDevice: " + joystick.get_filename(),
         Gtk::ALIGN_START, Gtk::ALIGN_START),
   axis_frame("Axes"),
   button_frame("Buttons"),
@@ -50,6 +50,7 @@ JoystickTestWidget::JoystickTestWidget(JoystickGui& gui, Joystick& joystick_, bo
   left_trigger_widget(32, 128, true),
   right_trigger_widget(32, 128, true)
 {
+  set_title(joystick_.get_name());
   set_icon_from_file(Main::current()->get_data_directory() + "generic.png");
   label.set_use_markup(true);
 
@@ -101,16 +102,17 @@ JoystickTestWidget::JoystickTestWidget(JoystickGui& gui, Joystick& joystick_, bo
 
   alignment.set_padding(8, 8, 8, 8);
   alignment.add(label);
-  get_vbox()->pack_start(alignment, Gtk::PACK_SHRINK);
+  m_vbox.pack_start(alignment, Gtk::PACK_SHRINK);
 
   buttonbox.add(mapping_button);
   buttonbox.add(calibration_button);
 
   test_hbox.pack_start(axis_frame,   Gtk::PACK_EXPAND_WIDGET);
   test_hbox.pack_start(button_frame, Gtk::PACK_EXPAND_WIDGET);
-  get_vbox()->pack_start(test_hbox, Gtk::PACK_SHRINK);
-  get_vbox()->pack_start(buttonbox, Gtk::PACK_SHRINK);
+  m_vbox.pack_start(test_hbox, Gtk::PACK_SHRINK);
+  m_vbox.pack_start(buttonbox, Gtk::PACK_SHRINK);
 
+  add(m_vbox);
 
   stick_hbox.set_border_width(5);
 
@@ -227,10 +229,6 @@ JoystickTestWidget::JoystickTestWidget(JoystickGui& gui, Joystick& joystick_, bo
 
   button_frame.add(button_table);
 
-  add_button(Gtk::Stock::CLOSE, 0);
-
-  signal_response().connect(sigc::mem_fun(this, &JoystickTestWidget::on_response));
-
   joystick.axis_move.connect(sigc::mem_fun(this, &JoystickTestWidget::axis_move));
   joystick.button_move.connect(sigc::mem_fun(this, &JoystickTestWidget::button_move));
 
@@ -268,12 +266,6 @@ void
 JoystickTestWidget::on_mapping()
 {
   m_gui.show_mapping_dialog();
-}
-
-void
-JoystickTestWidget::on_response(int v)
-{
-  hide();
 }
 
 /* EOF */

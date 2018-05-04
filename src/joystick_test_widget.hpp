@@ -39,14 +39,15 @@
 class Joystick;
 class JoystickGui;
 class ButtonWidget;
-
-class JoystickTestWidget : public Gtk::Dialog
+
+class JoystickTestWidget : public Gtk::Window
 {
 private:
   JoystickGui& m_gui;
   Joystick& joystick;
   bool m_simple_ui;
 
+  Gtk::VBox m_vbox;
   Gtk::Alignment alignment;
   Gtk::Label label;
 
@@ -88,13 +89,12 @@ public:
 
   void on_calibrate();
   void on_mapping();
-  void on_response(int v) override;
 
 private:
   JoystickTestWidget(const JoystickTestWidget&);
   JoystickTestWidget& operator=(const JoystickTestWidget&);
 };
-
+
 #endif
 
 /* EOF */
