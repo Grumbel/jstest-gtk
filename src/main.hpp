@@ -36,8 +36,6 @@ private:
   std::string datadir;
   bool m_simple_ui;
 
-  JoystickListWidget* list_dialog;
-
   std::vector<Joystick*>    joysticks;
   std::vector<Gtk::Dialog*> dialogs;
 
@@ -49,8 +47,7 @@ public:
   Main(const std::string& datadir);
   ~Main();
 
-  void show_device_list_dialog();
-  void show_device_property_dialog(const std::string& filename);
+  void show_device_property_dialog(const std::string& filename, Gtk::Window* parent = nullptr);
   void show_calibration_dialog(Joystick& joystick);
   void show_mapping_dialog(Joystick& joystick);
 

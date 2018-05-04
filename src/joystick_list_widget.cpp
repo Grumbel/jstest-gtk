@@ -22,7 +22,7 @@
 #include "joystick.hpp"
 #include "joystick_description.hpp"
 #include "joystick_list_widget.hpp"
-
+
 class DeviceListColumns : public Gtk::TreeModel::ColumnRecord
 {
 private:
@@ -49,15 +49,21 @@ private:
 };
 
 DeviceListColumns* DeviceListColumns::instance_ = 0;
-
-JoystickListWidget::JoystickListWidget()
-  : Gtk::Dialog("Joystick Preferences"),
-    label("Below is a list of available joysticks on the system. Press Refresh to "
-          "update the list, press Properties to get a separate device dialog. The "
-          "devices listed are only joystick devices, not evdev devices or SDL "
-          "devices, you can view the other ones via the top tab.")
-    //frame("Device List"),
+
+JoystickListWidget::JoystickListWidget() :
+  Gtk::Window(),
+  label("Below is a list of available joysticks on the system. Press Refresh to "
+        "update the list, press Properties to get a separate device dialog. The "
+        "devices listed are only joystick devices, not evdev devices or SDL "
+        "devices, you can view the other ones via the top tab."),
+  m_vbox(),
+  m_buttonbox(),
+  m_refresh_button(Gtk::Stock::REFRESH),
+  m_properties_button(Gtk::Stock::PROPERTIES),
+  m_close_button(Gtk::Stock::CLOSE)
+
 {
+  set_title("Joystick Preferences");
   set_default_size(450, 310);
 
   label.set_line_wrap();
@@ -66,11 +72,14 @@ JoystickListWidget::JoystickListWidget()
   scrolled.set_border_width(5);
   scrolled.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_ALWAYS);
   scrolled.add(treeview);
-  get_vbox()->add(scrolled);
+  m_vbox.add(scrolled);
 
-  add_button(Gtk::Stock::REFRESH, 2);
-  add_button(Gtk::Stock::PROPERTIES, 1);
-  add_button(Gtk::Stock::CLOSE, 0);
+  m_buttonbox.pack_end(m_refresh_button);
+  m_buttonbox.pack_end(m_properties_button);
+  m_buttonbox.pack_end(m_close_button);
+  m_vbox.pack_end(m_buttonbox, Gtk::PACK_SHRINK);
+
+  add(m_vbox);
 
   // Set model
   device_list = Gtk::ListStore::create(DeviceListColumns::instance());
@@ -79,9 +88,13 @@ JoystickListWidget::JoystickListWidget()
   treeview.append_column("Icon", DeviceListColumns::instance().icon);
   treeview.append_column("Name", DeviceListColumns::instance().name);
 
+  // Signals
   treeview.signal_row_activated().connect(sigc::mem_fun(this, &JoystickListWidget::on_row_activated));
+  m_refresh_button.signal_clicked().connect([this]{ on_refresh_button(); });
+  m_properties_button.signal_clicked().connect([this]{ on_properties_button(); });
+  m_close_button.signal_clicked().connect([this]{ hide(); });
 
-  on_refresh();
+  on_refresh_button();
 }
 
 void
@@ -90,29 +103,12 @@ JoystickListWidget::on_row_activated(const Gtk::TreeModel::Path& path, Gtk::Tree
   Gtk::TreeModel::iterator it = treeview.get_model()->get_iter(path);
   if (it)
   {
-    Main::current()->show_device_property_dialog((*it)[DeviceListColumns::instance().path]);
+    Main::current()->show_device_property_dialog((*it)[DeviceListColumns::instance().path], this);
   }
 }
 
 void
-JoystickListWidget::on_response(int v)
-{
-  if (v == 0)
-  {
-    hide();
-  }
-  else if (v == 1)
-  {
-    on_properties();
-  }
-  else if (v == 2)
-  {
-    on_refresh();
-  }
-}
-
-void
-JoystickListWidget::on_refresh()
+JoystickListWidget::on_refresh_button()
 {
   const std::vector<JoystickDescription>& joysticks = Joystick::get_joysticks();
 
@@ -147,13 +143,13 @@ JoystickListWidget::on_refresh()
 }
 
 void
-JoystickListWidget::on_properties()
+JoystickListWidget::on_properties_button()
 {
   Gtk::TreeModel::iterator it = treeview.get_selection()->get_selected();
   if (it)
   {
-    Main::current()->show_device_property_dialog((*it)[DeviceListColumns::instance().path]);
+    Main::current()->show_device_property_dialog((*it)[DeviceListColumns::instance().path], this);
   }
 }
-
+
 /* EOF */

@@ -27,8 +27,9 @@
 #include <gtkmm/treeview.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/liststore.h>
-
-class JoystickListWidget : public Gtk::Dialog
+#include <gtkmm/window.h>
+
+class JoystickListWidget : public Gtk::Window
 {
 private:
   Gtk::Label label;
@@ -37,25 +38,26 @@ private:
   Gtk::ScrolledWindow scrolled;
   Gtk::TreeView treeview;
 
-  Gtk::HButtonBox buttonbox;
-  Gtk::Button refresh_button;
-  Gtk::Button properties_button;
+  Gtk::VBox m_vbox;
+  Gtk::HButtonBox m_buttonbox;
+  Gtk::Button m_refresh_button;
+  Gtk::Button m_properties_button;
+  Gtk::Button m_close_button;
 
   Glib::RefPtr<Gtk::ListStore> device_list;
 
 public:
   JoystickListWidget();
 
-  void on_refresh();
-  void on_properties();
-  void on_response(int v) override;
+  void on_refresh_button();
+  void on_properties_button();
   void on_row_activated(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column);
 
 private:
   JoystickListWidget(const JoystickListWidget&);
   JoystickListWidget& operator=(const JoystickListWidget&);
 };
-
+
 #endif
 
 /* EOF */

@@ -34,12 +34,11 @@
 #include "main.hpp"
 
 Main* Main::current_ = 0;
-
+
 Main::Main(const std::string& datadir_)
   : Gtk::Application("com.gmail.grumbel.jstest-gtk"),
     datadir(datadir_),
-    m_simple_ui(false),
-    list_dialog(0)
+    m_simple_ui(false)
 {
   current_ = this;
 }
@@ -49,26 +48,16 @@ Main::~Main()
 }
 
 void
-Main::show_device_list_dialog()
-{
-  if (list_dialog)
-  {
-    list_dialog->show();
-  }
-  else
-  {
-    list_dialog = new JoystickListWidget();
-    dialogs.push_back(list_dialog);
-    list_dialog->signal_hide().connect(sigc::bind(sigc::mem_fun(this, &Main::on_dialog_hide), list_dialog));
-    list_dialog->show_all();
-  }
-}
-
-void
-Main::show_device_property_dialog(const std::string& filename)
+Main::show_device_property_dialog(const std::string& filename, Gtk::Window* parent)
 {
   Joystick* joystick = new Joystick(filename);
   JoystickTestWidget* dialog = new JoystickTestWidget(*joystick, m_simple_ui);
+  if (parent) {
+    dialog->set_transient_for(*parent);
+  } else {
+    dialog->unset_transient_for();
+  }
+
   dialog->signal_hide().connect(sigc::bind(sigc::mem_fun(this, &Main::on_dialog_hide), dialog));
   dialog->show_all();
   joysticks.push_back(joystick);
@@ -154,7 +143,10 @@ Main::run(int argc, char** argv)
 
     if (device_files.empty())
     {
-      show_device_list_dialog();
+      JoystickListWidget list_dialog;
+      //list_dialog.signal_hide().connect(sigc::bind(sigc::mem_fun(this, &Main::on_dialog_hide), &list_dialog));
+      list_dialog.show_all();
+      return Gtk::Application::run(list_dialog, argc, argv);
     }
     else
     {
@@ -162,8 +154,8 @@ Main::run(int argc, char** argv)
       {
         show_device_property_dialog(*i);
       }
+      return Gtk::Application::run(argc, argv);
     }
-    return Gtk::Application::run(*list_dialog, argc, argv);
   }
   catch(std::exception& err)
   {
@@ -178,7 +170,7 @@ Main::run(int argc, char** argv)
 
   return 0;
 }
-
+
 std::string find_datadir()
 {
   BrInitError error;
@@ -203,7 +195,7 @@ std::string find_datadir()
     }
   }
 }
-
+
 int main(int argc, char** argv)
 {
   try
@@ -218,7 +210,7 @@ int main(int argc, char** argv)
     return EXIT_FAILURE;
   }
 }
-
+
 Glib::RefPtr<Main> Main::create()
 {
   return Glib::RefPtr<Main>(new Main(find_datadir()));
