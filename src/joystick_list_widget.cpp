@@ -64,6 +64,7 @@ JoystickListWidget::JoystickListWidget() :
 
 {
   set_title("Joystick Preferences");
+  set_icon_from_file(Main::current()->get_data_directory() + "generic.png");
   set_default_size(450, 310);
 
   label.set_line_wrap();
