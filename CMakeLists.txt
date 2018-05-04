@@ -98,6 +98,10 @@ install(FILES
   DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 
 install(FILES
+  data/generic.png
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/pixmaps)
+
+install(FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/jstest-gtk.1
   DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 
