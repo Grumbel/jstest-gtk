@@ -100,7 +100,7 @@ Main::run(int argc, char** argv)
     if (strcmp("--help", argv[i]) == 0 ||
         strcmp("-h", argv[i]) == 0)
     {
-      std::cout << "Usage: " << argv[0] << " [OPTIONS]... [DEVICE]...\n"
+      std::cout << "Usage: " << argv[0] << " [OPTIONS]... [DEVICE]\n"
                 << "A graphical joystick tester.\n"
                 << "\n"
                 << "Options:\n"
@@ -128,6 +128,12 @@ Main::run(int argc, char** argv)
     }
     else
     {
+      if (!device_files.empty())
+      {
+        std::cout << "Error: multiple device files given, only one allowed: " << argv[i] << std::endl;
+        return EXIT_FAILURE;
+      }
+
       device_files.push_back(argv[i]);
     }
   }
@@ -137,16 +143,12 @@ Main::run(int argc, char** argv)
     if (device_files.empty())
     {
       JoystickListWidget list_dialog;
-      //list_dialog.signal_hide().connect(sigc::bind(sigc::mem_fun(this, &Main::on_dialog_hide), &list_dialog));
       list_dialog.show_all();
       return Gtk::Application::run(list_dialog, argc, argv);
     }
     else
     {
-      for(DeviceFiles::iterator i = device_files.begin(); i != device_files.end(); ++i)
-      {
-        show_device_property_dialog(*i);
-      }
+      show_device_property_dialog(*device_files.begin());
       return Gtk::Application::run(argc, argv);
     }
   }
