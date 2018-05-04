@@ -40,7 +40,7 @@ JoystickMapWidget::JoystickMapWidget(Joystick& joystick)
   get_vbox()->pack_start(hbox, Gtk::PACK_EXPAND_WIDGET);
 
   add_button(Gtk::Stock::REVERT_TO_SAVED, 1);
-  add_button(Gtk::Stock::CLOSE, 0);
+  Gtk::Widget* close_button = add_button(Gtk::Stock::CLOSE, 0);
 
   const std::vector<int>& button_mapping = joystick.get_button_mapping();
   for(std::vector<int>::const_iterator i = button_mapping.begin(); i != button_mapping.end(); ++i)
@@ -59,6 +59,8 @@ JoystickMapWidget::JoystickMapWidget(Joystick& joystick)
   }
 
   signal_response().connect(sigc::mem_fun(this, &JoystickMapWidget::on_response));
+
+  close_button->grab_focus();
 }
 
 void

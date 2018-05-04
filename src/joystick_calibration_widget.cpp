@@ -101,7 +101,7 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
 
   add_button(Gtk::Stock::REVERT_TO_SAVED,  2);
   add_button("Raw Events", 1);
-  add_button(Gtk::Stock::CLOSE, 0);
+  Gtk::Widget* close_button = add_button(Gtk::Stock::CLOSE, 0);
 
   scroll.add(axis_table);
   scroll.set_policy(Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
@@ -111,6 +111,8 @@ JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
   get_vbox()->pack_start(axis_frame, Gtk::PACK_EXPAND_WIDGET);
 
   signal_response().connect(sigc::mem_fun(this, &JoystickCalibrationWidget::on_response));
+
+  close_button->grab_focus();
 
   update_with(joystick.get_calibration());
 }

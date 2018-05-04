@@ -95,6 +95,8 @@ JoystickListWidget::JoystickListWidget() :
   m_properties_button.signal_clicked().connect([this]{ on_properties_button(); });
   m_close_button.signal_clicked().connect([this]{ hide(); });
 
+  m_close_button.grab_focus();
+
   on_refresh_button();
 }
 
