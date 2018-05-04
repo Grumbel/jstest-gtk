@@ -52,7 +52,12 @@ JoystickTestWidget::JoystickTestWidget(JoystickGui& gui, Joystick& joystick_, bo
 {
   set_icon_from_file(Main::current()->get_data_directory() + "generic.png");
   label.set_use_markup(true);
-  label.set_selectable();
+
+  // FIXME: Gtk3 selects all the text by default, even without user
+  // interaction, so disable this for now.
+  //
+  // label.set_selectable(true);
+  // label.select_region(-1, -1);
 
   axis_frame.set_border_width(5);
   axis_table.set_border_width(5);
