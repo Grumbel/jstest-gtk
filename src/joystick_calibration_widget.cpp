@@ -28,8 +28,8 @@
 JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
   : Gtk::Dialog("Calibration: " + joystick.get_name()),
     joystick(joystick),
-    label("The <i>center</i> values are the minimum and the maximum values of the deadzone. "
-          "The <i>min</i> and <i>max</i> values refer to the outer values. You have to unplug "
+    label("The <i>center</i> values are the minimum and the maximum values of the deadzone.\n"
+          "The <i>min</i> and <i>max</i> values refer to the outer values. You have to unplug\n"
           "your joystick or reboot to reset the values to their original default.\n"
           "\n"
           "To run the calibration wizard, press the <i>Calibrate</i> button."),
