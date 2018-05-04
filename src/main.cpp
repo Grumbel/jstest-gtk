@@ -33,6 +33,53 @@
 
 Main* Main::current_ = 0;
 
+JoystickGui::JoystickGui(std::unique_ptr<Joystick> joystick, bool simple_ui, Gtk::Window* parent) :
+  m_joystick(std::move(joystick)),
+  m_test_widget(),
+  m_mapping_widget(),
+  m_calibration_widget()
+{
+  m_test_widget = std::unique_ptr<JoystickTestWidget>(new JoystickTestWidget(*this, *m_joystick, simple_ui));
+  if (parent) {
+    m_test_widget->set_transient_for(*parent);
+  }
+
+  m_test_widget->show_all();
+}
+
+void
+JoystickGui::show_calibration_dialog()
+{
+  if (m_calibration_widget)
+  {
+    m_calibration_widget->present();
+  }
+  else
+  {
+    m_calibration_widget.reset(new JoystickCalibrationWidget(*m_joystick));
+    m_calibration_widget->signal_hide().connect([this] { m_calibration_widget.reset(); });
+    m_calibration_widget->set_transient_for(*m_test_widget);
+    m_calibration_widget->show_all();
+  }
+}
+
+void
+JoystickGui::show_mapping_dialog()
+{
+  if (m_mapping_widget)
+  {
+    m_mapping_widget->present();
+  }
+  else
+  {
+    m_mapping_widget.reset(new JoystickMapWidget(*m_joystick));
+    m_mapping_widget->signal_hide().connect([this] { m_calibration_widget.reset(); });
+    m_mapping_widget->set_transient_for(*m_test_widget);
+    m_mapping_widget->show_all();
+  }
+}
+
+
 Main::Main() :
   Gtk::Application("com.gmail.grumbel.jstest-gtk", Gio::APPLICATION_HANDLES_OPEN),
   datadir("data/"),
@@ -48,44 +95,26 @@ Main::~Main()
 JoystickTestWidget*
 Main::show_device_property_dialog(const std::string& filename, Gtk::Window* parent)
 {
-  Joystick* joystick = new Joystick(filename);
-  JoystickTestWidget* dialog = new JoystickTestWidget(*joystick, m_simple_ui);
-  if (parent) {
-    dialog->set_transient_for(*parent);
+  auto it = m_joystick_guis.find(filename);
+  if (it != m_joystick_guis.end())
+  {
+    JoystickTestWidget* widget = it->second->get_test_widget();
+    widget->present();
+    return widget;
   }
+  else
+  {
+    std::unique_ptr<Joystick> joystick(new Joystick(filename));
+    std::unique_ptr<JoystickGui> gui(new JoystickGui(std::move(joystick), m_simple_ui, parent));
 
-  dialog->signal_hide().connect(sigc::bind(sigc::mem_fun(this, &Main::on_dialog_hide), dialog));
-  dialog->show_all();
+    JoystickTestWidget* widget = gui->get_test_widget();
+    m_joystick_guis[filename] = std::move(gui);
+    widget->signal_hide().connect([this, filename]{
+        m_joystick_guis.erase(filename);
+      });
 
-  joysticks.push_back(joystick);
-  dialogs.push_back(dialog);
-
-  return dialog;
-}
-
-void
-Main::show_calibration_dialog(Joystick& joystick)
-{
-  JoystickCalibrationWidget* dialog = new JoystickCalibrationWidget(joystick);
-  dialog->signal_hide().connect(sigc::bind(sigc::mem_fun(this, &Main::on_dialog_hide), dialog));
-  dialog->show_all();
-  dialogs.push_back(dialog);
-}
-
-void
-Main::show_mapping_dialog(Joystick& joystick)
-{
-  JoystickMapWidget* dialog = new JoystickMapWidget(joystick);
-  dialog->signal_hide().connect(sigc::bind(sigc::mem_fun(this, &Main::on_dialog_hide), dialog));
-  dialog->show_all();
-  dialogs.push_back(dialog);
-}
-
-void
-Main::on_dialog_hide(Gtk::Dialog* dialog)
-{
-  dialogs.erase(std::remove(dialogs.begin(), dialogs.end(), dialog), dialogs.end());
-  delete dialog;
+    return widget;
+  }
 }
 
 int

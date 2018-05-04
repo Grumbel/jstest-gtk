@@ -37,11 +37,13 @@
 #include "axis_widget.hpp"
 
 class Joystick;
+class JoystickGui;
 class ButtonWidget;
 
 class JoystickTestWidget : public Gtk::Dialog
 {
 private:
+  JoystickGui& m_gui;
   Joystick& joystick;
   bool m_simple_ui;
 
@@ -79,7 +81,7 @@ private:
   std::vector<sigc::signal<void, double> > axis_callbacks;
 
 public:
-  JoystickTestWidget(Joystick& joystick, bool simple_ui);
+  JoystickTestWidget(JoystickGui& gui, Joystick& joystick, bool simple_ui);
 
   void axis_move(int number, int value);
   void button_move(int number, bool value);

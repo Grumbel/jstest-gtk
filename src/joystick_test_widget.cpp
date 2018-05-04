@@ -30,24 +30,25 @@
 #include "joystick_calibration_widget.hpp"
 #include "joystick_test_widget.hpp"
 
-JoystickTestWidget::JoystickTestWidget(Joystick& joystick_, bool simple_ui)
-  : Gtk::Dialog(joystick_.get_name()),
-    joystick(joystick_),
-    m_simple_ui(simple_ui),
-    label("<b>" + joystick.get_name() + "</b>\nDevice: " + joystick.get_filename() ,
-          Gtk::ALIGN_START, Gtk::ALIGN_START),
-    axis_frame("Axes"),
-    button_frame("Buttons"),
-    mapping_button("Mapping"),
-    calibration_button("Calibration"),
-    buttonbox(Gtk::BUTTONBOX_SPREAD),
-    stick1_widget(128, 128),
-    stick2_widget(128, 128),
-    stick3_widget(128, 128),
-    rudder_widget(128, 32),
-    throttle_widget(32, 128),
-    left_trigger_widget(32, 128, true),
-    right_trigger_widget(32, 128, true)
+JoystickTestWidget::JoystickTestWidget(JoystickGui& gui, Joystick& joystick_, bool simple_ui) :
+  Gtk::Dialog(joystick_.get_name()),
+  m_gui(gui),
+  joystick(joystick_),
+  m_simple_ui(simple_ui),
+  label("<b>" + joystick.get_name() + "</b>\nDevice: " + joystick.get_filename() ,
+        Gtk::ALIGN_START, Gtk::ALIGN_START),
+  axis_frame("Axes"),
+  button_frame("Buttons"),
+  mapping_button("Mapping"),
+  calibration_button("Calibration"),
+  buttonbox(Gtk::BUTTONBOX_SPREAD),
+  stick1_widget(128, 128),
+  stick2_widget(128, 128),
+  stick3_widget(128, 128),
+  rudder_widget(128, 32),
+  throttle_widget(32, 128),
+  left_trigger_widget(32, 128, true),
+  right_trigger_widget(32, 128, true)
 {
   label.set_use_markup(true);
   label.set_selectable();
@@ -254,13 +255,13 @@ JoystickTestWidget::button_move(int number, bool value)
 void
 JoystickTestWidget::on_calibrate()
 {
-  Main::current()->show_calibration_dialog(joystick);
+  m_gui.show_calibration_dialog();
 }
 
 void
 JoystickTestWidget::on_mapping()
 {
-  Main::current()->show_mapping_dialog(joystick);
+  m_gui.show_mapping_dialog();
 }
 
 void
