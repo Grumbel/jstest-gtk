@@ -41,7 +41,8 @@ JoystickTestWidget::JoystickTestWidget(JoystickGui& gui, Joystick& joystick_, bo
   button_frame("Buttons"),
   mapping_button("Mapping"),
   calibration_button("Calibration"),
-  buttonbox(Gtk::BUTTONBOX_SPREAD),
+  close_button(Gtk::Stock::CLOSE),
+  buttonbox(),
   stick1_widget(128, 128),
   stick2_widget(128, 128),
   stick3_widget(128, 128),
@@ -106,11 +107,12 @@ JoystickTestWidget::JoystickTestWidget(JoystickGui& gui, Joystick& joystick_, bo
 
   buttonbox.add(mapping_button);
   buttonbox.add(calibration_button);
+  buttonbox.add(close_button);
 
   test_hbox.pack_start(axis_frame,   Gtk::PACK_EXPAND_WIDGET);
   test_hbox.pack_start(button_frame, Gtk::PACK_EXPAND_WIDGET);
   m_vbox.pack_start(test_hbox, Gtk::PACK_SHRINK);
-  m_vbox.pack_start(buttonbox, Gtk::PACK_SHRINK);
+  m_vbox.pack_end(buttonbox, Gtk::PACK_SHRINK);
 
   add(m_vbox);
 
@@ -234,6 +236,9 @@ JoystickTestWidget::JoystickTestWidget(JoystickGui& gui, Joystick& joystick_, bo
 
   calibration_button.signal_clicked().connect(sigc::mem_fun(this, &JoystickTestWidget::on_calibrate));
   mapping_button.signal_clicked().connect(sigc::mem_fun(this, &JoystickTestWidget::on_mapping));
+  close_button.signal_clicked().connect([this]{ hide(); });
+
+  close_button.grab_focus();
 }
 
 void

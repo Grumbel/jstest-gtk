@@ -61,6 +61,7 @@ private:
 
   Gtk::Button mapping_button;
   Gtk::Button calibration_button;
+  Gtk::Button close_button;
   Gtk::HButtonBox buttonbox;
 
   AxisWidget stick1_widget;
