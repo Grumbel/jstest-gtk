@@ -52,10 +52,6 @@ DeviceListColumns* DeviceListColumns::instance_ = 0;
 
 JoystickListWidget::JoystickListWidget() :
   Gtk::Window(),
-  label("Below is a list of available joysticks on the system. Press Refresh to "
-        "update the list, press Properties to get a separate device dialog. The "
-        "devices listed are only joystick devices, not evdev devices or SDL "
-        "devices, you can view the other ones via the top tab."),
   m_vbox(),
   m_buttonbox(),
   m_refresh_button(Gtk::Stock::REFRESH),
@@ -67,17 +63,17 @@ JoystickListWidget::JoystickListWidget() :
   set_icon_from_file(Main::current()->get_data_directory() + "generic.png");
   set_default_size(450, 310);
 
-  label.set_line_wrap();
-
   scrolled.set_vexpand(true);
   scrolled.set_border_width(5);
   scrolled.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_ALWAYS);
   scrolled.add(treeview);
-  m_vbox.add(scrolled);
+
 
   m_buttonbox.pack_end(m_refresh_button);
   m_buttonbox.pack_end(m_properties_button);
   m_buttonbox.pack_end(m_close_button);
+
+  m_vbox.add(scrolled);
   m_vbox.pack_end(m_buttonbox, Gtk::PACK_SHRINK);
 
   add(m_vbox);

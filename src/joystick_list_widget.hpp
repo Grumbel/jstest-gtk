@@ -19,7 +19,6 @@
 #ifndef HEADER_JSTEST_GTK_JOYSTICK_LIST_WIDGET_HPP
 #define HEADER_JSTEST_GTK_JOYSTICK_LIST_WIDGET_HPP
 
-#include <gtkmm/label.h>
 #include <gtkmm/box.h>
 #include <gtkmm/button.h>
 #include <gtkmm/frame.h>
@@ -32,8 +31,6 @@
 class JoystickListWidget : public Gtk::Window
 {
 private:
-  Gtk::Label label;
-
   Gtk::Frame frame;
   Gtk::ScrolledWindow scrolled;
   Gtk::TreeView treeview;
