@@ -143,7 +143,7 @@ Main::run(int argc, char** argv)
     else if (strcmp("--version", argv[i]) == 0 ||
              strcmp("-v", argv[i]) == 0)
     {
-      std::cout << "jstest-gtk 0.1.0" << std::endl;
+      std::cout << "jstest-gtk 0.1.1" << std::endl;
       return 0;
     }
     else if (strcmp("--simple", argv[i]) == 0)
