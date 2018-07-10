@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.gitlab.jstest_gtk.jstest_gtk</id>
+  <name>jstest-gtk</name>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0+</project_license>
+  <content_rating type="oars-1.1" />
+  <summary>jstest-gtk - A graphical joystick tester</summary>
+  <description>
+    <p>
+      A simple joystick tester based on Gtk+. It provides you with a
+      list of attached joysticks, a way to display which buttons and
+      axis are pressed, a way to remap axis and buttons and a way to
+      calibrate your joystick.
+    </p>
+  </description>
+  <url type="homepage">https://jstest-gtk.gitlab.io</url>
+  <screenshots>
+    <screenshot type="default">https://jstest-gtk.gitlab.io/screenshot-0_1_0.png</screenshot>
+  </screenshots>
+  ​<releases>
+  ​  <release version="@GIT_REPO_VERSION@" date="@GIT_REPO_DATE@" />
+  </releases>
+</component>

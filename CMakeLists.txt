@@ -14,13 +14,31 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-cmake_minimum_required(VERSION 2.8)
-project(jstest-gtk)
+cmake_minimum_required(VERSION 3.0)
+project(jstest-gtk VERSION 0.1.1)
 
 include(GNUInstallDirs)
 
 option(WARNINGS "Switch on extra warnings" OFF)
 option(WERROR "Turn warnings into errors" OFF)
+option(BUILD_TESTS "Build test cases" OFF)
+
+if (BUILD_TESTS)
+  enable_testing()
+endif(BUILD_TESTS)
+
+find_package(Git)
+if(GIT_FOUND AND EXISTS "${CMAKE_SOURCE_DIR}/.git")
+  execute_process(COMMAND ${GIT_EXECUTABLE} describe --tags --always HEAD
+    OUTPUT_VARIABLE GIT_REPO_VERSION
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+  execute_process(COMMAND ${GIT_EXECUTABLE} log -n 1 --pretty=%cd --date=format:%Y-%m-%d ${GIT_REPO_VERSION}
+    OUTPUT_VARIABLE GIT_REPO_DATE
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+else()
+  set(GIT_REPO_VERSION "${PROJECT_VERSION}")
+endif()
 
 if(WARNINGS)
   set(WARNINGS_CXX_FLAGS ${WARNINGS_CXX_FLAGS}
@@ -103,5 +121,15 @@ install(FILES
 install(FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/jstest-gtk.1
   DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+
+configure_file(jstest-gtk.appdata.xml.in ${CMAKE_CURRENT_BINARY_DIR}/jstest-gtk.appdata.xml)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/jstest-gtk.appdata.xml
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/metainfo)
+
+if (BUILD_TESTS)
+  add_test(NAME jstest-gtk.appdata.xml
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    COMMAND appstream-util validate-relax ${CMAKE_CURRENT_BINARY_DIR}/jstest-gtk.appdata.xml)
+endif(BUILD_TESTS)
 
 # EOF #
