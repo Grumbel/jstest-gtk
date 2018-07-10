@@ -61,7 +61,7 @@ file(
 file(GLOB JSTEST_GTK_SOURCES src/*.cpp)
 
 add_executable(jstest-gtk ${JSTEST_GTK_SOURCES})
-include_directories(
+include_directories(SYSTEM
   ${GTKMM_INCLUDE_DIRS}
   ${SIGCPP_INCLUDE_DIRS}
   ${X11_INCLUDE_DIRS})
@@ -75,7 +75,6 @@ target_link_libraries(jstest-gtk
   ${GTKMM_LIBRARIES}
   ${SIGCPP_LIBRARIES}
   ${X11_LIBRARIES})
-
 
 install(TARGETS jstest-gtk
   RUNTIME DESTINATION ${CMAKE_INSTALL_LIBEXECDIR})
@@ -104,6 +103,5 @@ install(FILES
 install(FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/jstest-gtk.1
   DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-
 
 # EOF #
