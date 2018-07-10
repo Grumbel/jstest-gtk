@@ -115,8 +115,8 @@ install(FILES
   DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 
 install(FILES
-  data/generic.png
-  DESTINATION ${CMAKE_INSTALL_DATADIR}/pixmaps)
+  jstest-gtk.svg
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
 
 install(FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/jstest-gtk.1
