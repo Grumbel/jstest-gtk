@@ -1,14 +1,17 @@
 {
-    "app-id": "io.gitlab.jstest_gtk.jstest_gtk",
+    "app-id": "io.gitlab.jstest_gtk.jstest_gtk_nightly",
     "runtime": "org.gnome.Platform",
     "runtime-version": "3.28",
     "sdk": "org.gnome.Sdk",
+    "rename-icon": "jstest-gtk",
+    "rename-desktop-file": "jstest-gtk.desktop",
     "rename-appdata-file": "jstest-gtk.appdata.xml",
     "finish-args": [
         "--device=all",
         "--share=ipc",
         "--socket=x11",
-        "--socket=wayland"
+        "--socket=wayland",
+        "--socket=session-bus"
     ],
     "modules": [
         "shared-modules/gtkmm/libsigc++-2.10.0.json",
