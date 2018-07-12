@@ -171,14 +171,23 @@ JoystickTestWidget::JoystickTestWidget(JoystickGui& gui, Joystick& joystick_, bo
     stick_hbox.pack_start(left_trigger_widget, Gtk::PACK_EXPAND_PADDING);
     stick_hbox.pack_start(right_trigger_widget, Gtk::PACK_EXPAND_PADDING);
 
+    // Special case for the X-Box 360 pad, the mapping of the buttons seems to be different
+    // than normal(?). With the following code the widgets of the application will work correctly
+    if (joystick.get_name().compare("Microsoft X-Box 360 pad") == 0) {
+      axis_callbacks[2].connect(sigc::mem_fun(left_trigger_widget, &ThrottleWidget::set_pos));
+      axis_callbacks[3].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_x_axis));
+      axis_callbacks[4].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_y_axis));
+      axis_callbacks[5].connect(sigc::mem_fun(right_trigger_widget, &ThrottleWidget::set_pos));
+    } else {
+      axis_callbacks[2].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_x_axis));
+      axis_callbacks[3].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_y_axis));
+      axis_callbacks[4].connect(sigc::mem_fun(left_trigger_widget, &ThrottleWidget::set_pos));
+      axis_callbacks[5].connect(sigc::mem_fun(right_trigger_widget, &ThrottleWidget::set_pos));
+    }
     axis_callbacks[0].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_x_axis));
     axis_callbacks[1].connect(sigc::mem_fun(stick1_widget, &AxisWidget::set_y_axis));
-    axis_callbacks[2].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_x_axis));
-    axis_callbacks[3].connect(sigc::mem_fun(stick2_widget, &AxisWidget::set_y_axis));
     axis_callbacks[6].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_x_axis));
     axis_callbacks[7].connect(sigc::mem_fun(stick3_widget, &AxisWidget::set_y_axis));
-    axis_callbacks[4].connect(sigc::mem_fun(left_trigger_widget, &ThrottleWidget::set_pos));
-    axis_callbacks[5].connect(sigc::mem_fun(right_trigger_widget, &ThrottleWidget::set_pos));
     break;
 
 
