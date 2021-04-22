@@ -28,7 +28,7 @@ before_script:
     git
     cmake
     g++-8
-    g++-5
+    g++-7
     clang-6.0
     libgtkmm-3.0-dev
     libsigc++-2.0-dev
@@ -45,10 +45,10 @@ before_script:
     - make VERBOSE=1
     # - make test VERBOSE=1 ARGS="-V"
 
-build:gcc5:release:
+build:gcc7:release:
   <<: *build_jstest_gtk
   variables:
-    CXX: "g++-5"
+    CXX: "g++-7"
     BUILD_TYPE: "Release"
 
 build:gcc:release:
@@ -63,10 +63,10 @@ build:clang:release:
     CXX: "clang++-6.0"
     BUILD_TYPE: "Release"
 
-build:gcc5:debug:
+build:gcc7:debug:
   <<: *build_jstest_gtk
   variables:
-    CXX: "g++-5"
+    CXX: "g++-7"
     BUILD_TYPE: "Debug"
 
 build:gcc:debug:
