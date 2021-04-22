@@ -1,0 +1,3 @@
+[submodule "external/shared-modules"]
+	path = external/shared-modules
+	url = https://github.com/Grumbel/shared-modules.git
