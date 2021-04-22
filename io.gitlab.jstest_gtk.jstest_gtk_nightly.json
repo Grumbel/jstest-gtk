@@ -1,7 +1,7 @@
 {
     "app-id": "io.gitlab.jstest_gtk.jstest_gtk_nightly",
     "runtime": "org.gnome.Platform",
-    "runtime-version": "3.28",
+    "runtime-version": "3.38",
     "sdk": "org.gnome.Sdk",
     "rename-icon": "jstest-gtk",
     "rename-desktop-file": "jstest-gtk.desktop",
@@ -14,12 +14,12 @@
         "--socket=session-bus"
     ],
     "modules": [
-        "shared-modules/gtkmm/libsigc++-2.10.0.json",
-        "shared-modules/gtkmm/glibmm-2.56.0.json",
-        "shared-modules/gtkmm/cairomm-1.12.0.json",
-        "shared-modules/gtkmm/pangomm-2.40.1.json",
-        "shared-modules/gtkmm/atkmm-2.24.2.json",
-        "shared-modules/gtkmm/gtkmm-3.22.2.json",
+        "external/shared-modules/sigc++/sigc++-2.0.json",
+        "external/shared-modules/glibmm/glibmm-2.4.json",
+        "external/shared-modules/cairomm/cairomm-1.0.json",
+        "external/shared-modules/pangomm/pangomm-1.4.json",
+        "external/shared-modules/atkmm/atkmm-1.6.json",
+        "external/shared-modules/gtkmm/gtkmm-3.24.2.json",
         {
             "name": "jstest-gtk",
             "buildsystem": "cmake-ninja",
