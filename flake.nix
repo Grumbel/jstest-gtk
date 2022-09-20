@@ -10,21 +10,26 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-      in rec {
-        packages = flake-utils.lib.flattenTree {
+      in {
+        packages = rec {
+          default = jstest-gtk;
+
           jstest-gtk = pkgs.stdenv.mkDerivation {
             pname = "jstest-gtk";
             version = "0.1.1";
+
             src = nixpkgs.lib.cleanSource ./.;
+
             nativeBuildInputs = [
               pkgs.cmake
               pkgs.pkgconfig
             ];
+
             buildInputs = [
               pkgs.gtkmm3
             ];
            };
         };
-        defaultPackage = packages.jstest-gtk;
-      });
+      }
+    );
 }
