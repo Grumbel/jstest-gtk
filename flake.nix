@@ -2,7 +2,7 @@
   description = "A simple joystick tester based on Gtk+";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -20,13 +20,13 @@
 
             src = nixpkgs.lib.cleanSource ./.;
 
-            nativeBuildInputs = [
-              pkgs.cmake
-              pkgs.pkgconfig
+            nativeBuildInputs = with pkgs; [
+              cmake
+              pkgconfig
             ];
 
-            buildInputs = [
-              pkgs.gtkmm3
+            buildInputs = with pkgs; [
+              gtkmm3
             ];
            };
         };
