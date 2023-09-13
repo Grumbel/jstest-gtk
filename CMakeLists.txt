@@ -122,14 +122,4 @@ install(FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/jstest-gtk.1
   DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 
-configure_file(jstest-gtk.appdata.xml.in ${CMAKE_CURRENT_BINARY_DIR}/jstest-gtk.appdata.xml)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/jstest-gtk.appdata.xml
-  DESTINATION ${CMAKE_INSTALL_DATADIR}/metainfo)
-
-if (BUILD_TESTS)
-  add_test(NAME jstest-gtk.appdata.xml
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    COMMAND appstream-util validate-relax ${CMAKE_CURRENT_BINARY_DIR}/jstest-gtk.appdata.xml)
-endif(BUILD_TESTS)
-
 # EOF #
