@@ -29,10 +29,12 @@ are part of most distributions):
 
 You can compile it by typing:
 
-    $ mkdir build
-    $ cd build
-    $ cmake ..
-    $ make
+```bash
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+```
 
 
 Usage
@@ -40,11 +42,15 @@ Usage
 
 Once compiled you can start jstest-gtk with:
 
-    $ ./jstest-gtk
+```bash
+$ ./jstest-gtk
+```
 
 or if you know the device you want to test with:
 
-    $ ./jstest-gtk /dev/input/js0
+```bash
+$ ./jstest-gtk /dev/input/js0
+```
 
 The main window will provide you with a list of currently available
 joysticks. When you double click a joystick it will display the Test
@@ -76,8 +82,10 @@ the joystick interface, not evdev.
 To work around that you have to set an environment variable that
 forces SDL to use the joystick device:
 
-    $ SDL_JOYSTICK_DEVICE="/dev/input/js0"
-    $ export SDL_JOYSTICK_DEVICE
+```bash
+$ SDL_JOYSTICK_DEVICE="/dev/input/js0"
+$ export SDL_JOYSTICK_DEVICE
+```
 
 When you need two or more joysticks this will not work and you might
 need to recompile SDL and disable the evdev support.
