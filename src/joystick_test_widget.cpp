@@ -166,6 +166,8 @@ JoystickTestWidget::JoystickTestWidget(JoystickGui& gui, Joystick& joystick_, bo
     setup_dualshock2_equiv();
   else if (joystick.get_js_type() == "xbox360")
     setup_xbox360_equiv();
+  else if (joystick.get_js_type() == "gamecube")
+    setup_gamecube_equiv();
   else
   {
     switch(joystick.get_axis_count())
@@ -274,7 +276,10 @@ JoystickTestWidget::setup_joystick_widgets(const u_int sticks, const std::vector
     label.set_label(label_base);
   }
 }
-  
+
+
+   // (sticks,  axes,  triggers)
+   // eg: setup_joystick_widgets(2, {0,1,3,4}, {}); => 2 sticks, with axes 0,1 and 3,4, and no triggers
 void
 JoystickTestWidget::setup_sixaxis_equiv()
 {
@@ -297,6 +302,12 @@ void
 JoystickTestWidget::setup_xbox360_equiv()
 {
   setup_joystick_widgets(3, {0,1,3,4,6,7}, {2,5});
+}
+
+void
+JoystickTestWidget::setup_gamecube_equiv()
+{
+  setup_joystick_widgets(3, {0,1,5,2,6,7}, {3,4});
 }
 
 

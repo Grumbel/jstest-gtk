@@ -107,6 +107,7 @@ private:
   void setup_dualshock2_equiv();
   void setup_dualshock4_equiv();
   void setup_xbox360_equiv();
+  void setup_gamecube_equiv();
 
   void on_udev_js_event(const std::string& action, const std::string& devnode);
 };
