@@ -25,7 +25,6 @@
 std::vector<JoystickConfig> joystick_configs;
 
 bool file_is_good(const std::string& filename) {
-  // filename.empty() 
   std::ifstream file(filename);
   return file.good();
 }

@@ -124,6 +124,9 @@ JoystickListWidget::on_refresh_button()
 
   device_list->clear();
 
+  // RELOAD CONFIG FILES
+  joystick_configs = load_all_configs("data");
+
   for(std::vector<JoystickDescription>::const_iterator i = joysticks.begin(); i != joysticks.end(); ++i)
   {
     Gtk::ListStore::iterator it = device_list->append();
@@ -131,9 +134,9 @@ JoystickListWidget::on_refresh_button()
     const Glib::ustring& name = i->name;
     Glib::ustring icon_filename;
     JoystickConfig js_cfg = get_config_for_usb_id(i->usb_id);
-    
+
     icon_filename = js_cfg.icon_filename;
-    
+
     if (! js_cfg.icon_filename_is_good) icon_filename = "generic.png"; // NOTE: you can set the icon_filename in a config file for the controller
 
     (*it)[DeviceListColumns::instance().icon] = Gdk::Pixbuf::create_from_file(Main::current()->get_data_directory() + icon_filename);

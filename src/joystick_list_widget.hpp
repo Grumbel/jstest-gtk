@@ -44,7 +44,7 @@ private:
   Gtk::Button m_close_button;
 
   Glib::RefPtr<Gtk::ListStore> device_list;
-  
+
   std::unique_ptr<UdevMonitor> udev_monitor;
 
 public:
@@ -53,11 +53,13 @@ public:
   void on_refresh_button();
   void on_properties_button();
   void on_row_activated(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column);
-  
+
 private:
   JoystickListWidget(const JoystickListWidget&);
   JoystickListWidget& operator=(const JoystickListWidget&);
+
 };
+
 
 #endif
 
