@@ -188,7 +188,7 @@ Main::run(int argc, char** argv)
       device_files.push_back(argv[i]);
     }
   }
-  
+
   // LOAD CONFIG FILES HERE
   joystick_configs = load_all_configs("data");
 

@@ -104,7 +104,7 @@ JoystickTestWidget::JoystickTestWidget(JoystickGui& gui, Joystick& joystick_, bo
   {
     width += joystick.js_cfg.button_maxlen * char_width;
   }
-    
+
   for(int i = 0; i < joystick.get_button_count(); ++i)
   {
     int x = i / 10;
@@ -220,7 +220,7 @@ JoystickTestWidget::JoystickTestWidget(JoystickGui& gui, Joystick& joystick_, bo
   button_frame.add(button_table);
 
   joystick.axis_move.connect(sigc::mem_fun(this, &JoystickTestWidget::axis_move));
-  joystick.button_move.connect(sigc::mem_fun(this, &JoystickTestWidget::button_move));
+  joystick.button_press.connect(sigc::mem_fun(this, &JoystickTestWidget::button_press));
 
   calibration_button.signal_clicked().connect(sigc::mem_fun(this, &JoystickTestWidget::on_calibrate));
   mapping_button.signal_clicked().connect(sigc::mem_fun(this, &JoystickTestWidget::on_mapping));
@@ -258,7 +258,7 @@ JoystickTestWidget::setup_joystick_widgets(const u_int sticks, const std::vector
     label_base = label_base + "\n<span foreground='red'>ERROR: axis config data</span>";
     label.set_label(label_base);
   }
-    
+
   try {
     if (triggers.size() >= 1) {
       stick_hbox.pack_start(left_trigger_widget, Gtk::PACK_EXPAND_PADDING);
@@ -323,7 +323,7 @@ JoystickTestWidget::axis_move(int number, int value)
 }
 
 void
-JoystickTestWidget::button_move(int number, bool value)
+JoystickTestWidget::button_press(int number, bool value)
 {
   if (value)
     buttons.at(number)->set_active(true);

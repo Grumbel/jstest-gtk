@@ -96,7 +96,7 @@ public:
   */
 
   sigc::signal<void, int, int>  axis_move;
-  sigc::signal<void, int, bool> button_move;
+  sigc::signal<void, int, bool> button_press;
 
   int get_axis_state(int id);
 

@@ -81,7 +81,7 @@ Joystick::Joystick(const std::string& filename_, const std::string& js_id_)
     }
 
     axis_state.resize(axis_count);
-    
+
     auto tmp_usb_id_pair = get_usb_id_pair_from_udev();
     if (!tmp_usb_id_pair.first.empty() and !tmp_usb_id_pair.second.empty()) {
       vendor_id = tmp_usb_id_pair.first;
@@ -251,7 +251,7 @@ Joystick::update()
     else if (event.type & JS_EVENT_BUTTON)
     {
       //std::cout << "Button: " << (int)event.number << " -> " << (int)event.value << std::endl;
-      button_move(event.number, event.value);
+      button_press(event.number, event.value);
     }
   }
   else

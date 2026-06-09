@@ -46,6 +46,7 @@ private:
   Glib::RefPtr<Gtk::ListStore> device_list;
 
   std::unique_ptr<UdevMonitor> udev_monitor;
+  std::vector<std::unique_ptr<Joystick>> m_joysticks;
 
 public:
   JoystickListWidget();
@@ -57,6 +58,9 @@ public:
 private:
   JoystickListWidget(const JoystickListWidget&);
   JoystickListWidget& operator=(const JoystickListWidget&);
+  void js_activity_highlight(int value, Gtk::TreeModel::Path path);
+  void js_activity_analog(int number, int value, Gtk::TreeModel::Path path);
+  void js_activity_bool(int number, bool value, Gtk::TreeModel::Path path);
 
 };
 

@@ -94,7 +94,7 @@ public:
   JoystickTestWidget(JoystickGui& gui, Joystick& joystick, bool simple_ui);
 
   void axis_move(int number, int value);
-  void button_move(int number, bool value);
+  void button_press(int number, bool value);
 
   void on_calibrate();
   void on_mapping();
