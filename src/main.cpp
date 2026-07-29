@@ -2,20 +2,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include <iostream>
+#include <cstring>
+#include <cstdlib>
+
 #include <gtkmm.h>
-#include <string.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 
 #include "joystick_config_files.hpp"
-
 #include "joystick_test_widget.hpp"
-#include "joystick_list_widget.hpp"
-#include "joystick_map_widget.hpp"
-#include "joystick_calibration_widget.hpp"
-#include "joystick.hpp"
 #include "main.hpp"
 
 Main* Main::current_ = 0;
@@ -29,53 +22,6 @@ bool m_verbose = false;
 #  define JSTEST_GTK_VERSION "unknown"
 #endif
 
-JoystickGui::JoystickGui(std::unique_ptr<Joystick> joystick, bool simple_ui, Gtk::Window* parent) :
-  m_joystick(std::move(joystick)),
-  m_test_widget(),
-  m_mapping_widget(),
-  m_calibration_widget()
-{
-  m_test_widget = std::unique_ptr<JoystickTestWidget>(new JoystickTestWidget(*this, *m_joystick, simple_ui));
-  if (parent) {
-    m_test_widget->set_transient_for(*parent);
-  }
-
-  m_test_widget->show_all();
-}
-
-void
-JoystickGui::show_calibration_dialog()
-{
-  if (m_calibration_widget)
-  {
-    m_calibration_widget->present();
-  }
-  else
-  {
-    m_calibration_widget.reset(new JoystickCalibrationWidget(*m_joystick));
-    m_calibration_widget->signal_hide().connect([this] { m_calibration_widget.reset(); });
-    m_calibration_widget->set_transient_for(*m_test_widget);
-    m_calibration_widget->show_all();
-  }
-}
-
-void
-JoystickGui::show_mapping_dialog()
-{
-  if (m_mapping_widget)
-  {
-    m_mapping_widget->present();
-  }
-  else
-  {
-    m_mapping_widget.reset(new JoystickMapWidget(*m_joystick));
-    m_mapping_widget->signal_hide().connect([this] { m_mapping_widget.reset(); });
-    m_mapping_widget->set_transient_for(*m_test_widget);
-    m_mapping_widget->show_all();
-  }
-}
-
-
 Main::Main() :
   Gtk::Application("com.gmail.grumbel.jstest-gtk", Gio::APPLICATION_HANDLES_OPEN),
   datadir(JSTEST_GTK_DATADIR),
@@ -88,42 +34,14 @@ Main::~Main()
 {
 }
 
-JoystickTestWidget*
-Main::show_device_property_dialog(const std::string& filename, Gtk::Window* parent)
-{
-  auto it = m_joystick_guis.find(filename);
-  if (it != m_joystick_guis.end())
-  {
-    JoystickTestWidget* widget = it->second->get_test_widget();
-    widget->present();
-    return widget;
-  }
-  else
-  {
-    std::string js_id = get_js_dev_id_from_filename(filename);
-    std::unique_ptr<Joystick> joystick(new Joystick(filename, js_id));
-    std::unique_ptr<JoystickGui> gui(new JoystickGui(std::move(joystick), m_simple_ui, parent));
-
-    JoystickTestWidget* widget = gui->get_test_widget();
-    m_joystick_guis[filename] = std::move(gui);
-    widget->signal_hide().connect([this, filename]{
-        m_joystick_guis.erase(filename);
-      });
-
-    return widget;
-  }
-}
-
 int
 Main::run(int argc, char** argv)
 {
-  typedef std::vector<std::string> DeviceFiles;
-  DeviceFiles device_files;
+  std::string device_file;
 
-  for(int i = 1; i < argc; ++i)
+  for (int i = 1; i < argc; ++i)
   {
-    if (strcmp("--help", argv[i]) == 0 ||
-        strcmp("-h", argv[i]) == 0)
+    if (strcmp("--help", argv[i]) == 0 || strcmp("-h", argv[i]) == 0)
     {
       std::cout << "Usage: " << argv[0] << " [OPTIONS]... [DEVICE]\n"
                 << "A graphical joystick tester.\n"
@@ -138,8 +56,7 @@ Main::run(int argc, char** argv)
                 << "Report bugs to Ingo Ruhnke <grumbel@gmail.com>.\n";
       return 0;
     }
-    else if (strcmp("--version", argv[i]) == 0 ||
-             strcmp("-v", argv[i]) == 0)
+    else if (strcmp("--version", argv[i]) == 0 || strcmp("-v", argv[i]) == 0)
     {
       std::cout << "jstest-gtk " << JSTEST_GTK_VERSION << std::endl;
       return 0;
@@ -160,12 +77,9 @@ Main::run(int argc, char** argv)
         std::cout << "Error: " << argv[0] << ": argument to --datadir is missing" << std::endl;
         return EXIT_FAILURE;
       }
-      else
-      {
-        datadir = argv[i];
-        if (!datadir.empty() && datadir.back() != '/')
-          datadir += '/';
-      }
+      datadir = argv[i];
+      if (!datadir.empty() && datadir.back() != '/')
+        datadir += '/';
     }
     else if (argv[i][0] == '-')
     {
@@ -174,45 +88,33 @@ Main::run(int argc, char** argv)
     }
     else
     {
-      if (!device_files.empty())
+      if (!device_file.empty())
       {
         std::cout << "Error: " << argv[0] << ": multiple device files given, only one allowed: " << argv[i] << std::endl;
         return EXIT_FAILURE;
       }
-
-      device_files.push_back(argv[i]);
+      device_file = argv[i];
     }
   }
 
-  // LOAD CONFIG FILES HERE
   joystick_configs = load_all_configs(datadir + "mappings");
 
   try
   {
-    if (device_files.empty())
-    {
-      JoystickListWidget list_dialog;
-      list_dialog.show_all();
-      return Gtk::Application::run(list_dialog);
-    }
-    else
-    {
-      auto dialog = show_device_property_dialog(*device_files.begin());
-      return Gtk::Application::run(*dialog);
-    }
+    JoystickTestWidget window(m_simple_ui, device_file);
+    window.show_all();
+    return Gtk::Application::run(window);
   }
-  catch(std::exception& err)
+  catch (std::exception& err)
   {
     std::cout << "Error: " << err.what() << std::endl;
     return EXIT_FAILURE;
   }
-  catch(Glib::Exception& err)
+  catch (Glib::Exception& err)
   {
     std::cout << "Error: " << err.what() << std::endl;
     return EXIT_FAILURE;
   }
-
-  return 0;
 }
 
 int main(int argc, char** argv)
@@ -220,10 +122,9 @@ int main(int argc, char** argv)
   try
   {
     Glib::RefPtr<Main> app = Main::create();
-
     return app->run(argc, argv);
   }
-  catch(std::exception& err)
+  catch (std::exception& err)
   {
     std::cout << "Error: " << err.what() << std::endl;
     return EXIT_FAILURE;

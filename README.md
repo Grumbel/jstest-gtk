@@ -45,10 +45,10 @@ jstest-gtk
 > joydev nodes (old engines, specialized software, or debugging the
 > compatibility layer itself).
 
-jstest-gtk is a simple joystick tester based on Gtk+. It provides you
-with a list of attached joysticks, a way to display which buttons and
-axis are pressed, a way to remap axis and buttons and a way to
-calibrate your joystick.
+jstest-gtk is a simple joystick tester based on Gtk+. The main window
+lets you pick an attached joystick from a drop-down, shows button and
+axis activity, and can remap axes/buttons and calibrate the device
+(Linux joydev only; see the disclaimer above).
 
 You can find the latest version at:
 
@@ -94,9 +94,8 @@ or if you know the device you want to test with:
 $ ./jstest-gtk /dev/input/js0
 ```
 
-The main window will provide you with a list of currently available
-joysticks. When you double click a joystick it will display the Test
-dialog, allowing you to test buttons and axes on the joystick.
+The main window opens on the joystick tester. Use the drop-down at the top to switch devices; when none are connected the selector is disabled.
+
 
 The mapping dialog allows you to reorder the buttons and axis. This is
 useful for example when a game expects the dpad to be on axis 0 and 1,

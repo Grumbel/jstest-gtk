@@ -8,7 +8,7 @@ License: GPL-3.0-or-later. Original author: Ingo Ruhnke. Later work includes USB
 
 ### What it does
 
-- Lists attached joysticks (`JoystickListWidget`)
+- Main window with device combo and live axis/button view (`JoystickTestWidget`)
 - Live test UI with progress bars, optional stick/trigger drawings (`JoystickTestWidget`)
 - Axis/button remapping (`JoystickMapWidget` / `RemapWidget`) — applied to the kernel joydev mapping (not persistent across reboot)
 - Calibration editor and a simple “move sticks to extremes” wizard (`JoystickCalibrationWidget`, `CalibrateMaximumDialog`)
@@ -27,8 +27,7 @@ License: GPL-3.0-or-later. Original author: Ingo Ruhnke. Later work includes USB
 |------|------|
 | `src/main.cpp` / `main.hpp` | App entry, CLI (`--datadir`, `--simple`, `--verbose`), owns GUIs |
 | `src/joystick.*` | Device open, events, calibration/mapping ioctls, USB ID via udev |
-| `src/joystick_list_widget.*` | Device list, icons, activity highlight, udev refresh |
-| `src/joystick_test_widget.*` | Per-device test UI, type-specific stick layouts |
+| `src/joystick_test_widget.*` | Main window: device combo, test UI, udev refresh |
 | `src/joystick_calibration_widget.*` | Manual calibration UI |
 | `src/joystick_map_widget.*` / `remap_widget.*` | Reorder axes/buttons |
 | `src/joystick_config_files.*` | Load `data/mappings/*-mapping.config` |

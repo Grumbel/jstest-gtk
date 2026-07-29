@@ -6,7 +6,6 @@ path = [
   "README.md",
   "AGENTS.md",
   "NEWS",
-  "TODO.md",
   "VERSION",
   ".gitignore",
   "flake.nix",

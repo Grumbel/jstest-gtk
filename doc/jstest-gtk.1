@@ -8,7 +8,7 @@ jstest\-gtk \- joystick testing and configuration tool
 .RI [ options ] ...
 .RI [ device ] ...
 .SH "DESCRIPTION"
-jstest\-gtk is a simple joystick tester based on Gtk+. It provides a list of attached joysticks, a way to display which buttons and axis are pressed, a way to remap axis and buttons and a way to calibrate your joystick.
+jstest\-gtk is a simple joystick tester based on Gtk+. It shows a device selector and a detailed view of buttons and axes, and can remap axes/buttons and calibrate the device (joydev only).
 
 Even when your joystick is working mostly fine, you might want to give it a try, as the calibration lets you get rid of overlarge default deadzones that many joysticks use and then is a noticeable problem in some games.
 .SH "USAGE"
@@ -18,7 +18,7 @@ If you run the program without parameters, you will get a window showing all the
 
 There are two buttons in the detailed window called "Mapping" adn "Calibration", that allows you to reconfigurate the device.
 
-If you run the program with a device as an argument (for example /dev/input/js0), you will get the detailed window for that device directly, without getting the whole list of joysticks in the system.
+If you run the program with a device as an argument (for example /dev/input/js0), that device is selected in the combo box when present.
 
 Calibration of the axis consists in a simple window in which you set the values that go directly into the operative system configuration, without doing any changes on them. They're divided in range and dead zone (or center). In both of them you have to set a minimum and a maximum. You also have a checkbox for inverting the axis.
 
