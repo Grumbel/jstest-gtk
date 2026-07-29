@@ -67,7 +67,8 @@ JoystickConfig load_config(const std::string& filename) {
     if (name == "icon_filename")
     {
       config.icon_filename = value;
-      config.icon_filename_is_good = file_is_good(Main::current()->get_data_directory() + value);
+      config.icon_filename_is_good = file_is_good(
+        Main::current()->get_data_directory() + "icons/" + value);
     }
 
     if (name == "js_type")

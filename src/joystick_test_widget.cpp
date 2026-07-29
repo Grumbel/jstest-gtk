@@ -57,7 +57,7 @@ JoystickTestWidget::JoystickTestWidget(JoystickGui& gui, Joystick& joystick_, bo
   right_trigger_widget(32, 128, true)
 {
   set_title(joystick_.get_name());
-  set_icon_from_file(Main::current()->get_data_directory() + "generic.png");
+  set_icon_from_file(Main::current()->get_data_directory() + "icons/generic.png");
   label_base = label.get_label();
   label.set_use_markup(true);
   label.set_selectable(true);

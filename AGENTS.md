@@ -31,32 +31,33 @@ License: GPL-3.0-or-later. Original author: Ingo Ruhnke. Later work includes USB
 | `src/joystick_test_widget.*` | Per-device test UI, type-specific stick layouts |
 | `src/joystick_calibration_widget.*` | Manual calibration UI |
 | `src/joystick_map_widget.*` / `remap_widget.*` | Reorder axes/buttons |
-| `src/joystick_config_files.*` | Load `data/*-mapping.config` |
+| `src/joystick_config_files.*` | Load `data/mappings/*-mapping.config` |
 | `src/udev_monitor.*` | Netlink udev watch for `/js` nodes |
 | `src/evdev_helper.*` | Name helpers for ABS_/BTN_ codes (mapping labels) |
 | `src/*_widget.*` | Cairo stick/rudder/throttle drawing; buttons are `Gtk::ToggleButton` |
-| `data/` | Runtime icons, mapping configs, app SVG |
+| `data/icons/` | Controller PNGs and app SVG |
+| `data/mappings/` | USB-ID mapping configs + README |
+| `data/applications/` | Desktop entry |
 | `doc/` | Man page (`jstest-gtk.1`) |
 | `CMakeLists.txt` | Build/install; uses `GNUInstallDirs` |
-| `jstest-gtk.sh.in` | Installed wrapper: runs libexec binary with `--datadir` |
 
 ### Data directory
 
 - Compile-time default: `JSTEST_GTK_DATADIR` = `${CMAKE_INSTALL_FULL_DATADIR}/jstest-gtk/` (from CMake)
-- Runtime override: `--datadir DIR`
-- Icons and configs are expected under that directory
-- **Note:** config loading currently still calls `load_all_configs("data")` in places (CWD-relative); should use `Main::current()->get_data_directory()` for installed runs
+- Runtime override: `--datadir DIR` (should end with `/`)
+- Layout under the datadir: `icons/…`, `mappings/…`
+- Configs load from `datadir + "mappings"`; icon basenames from configs resolve under `datadir + "icons/"`
 
-### Mapping configs (`data/*-mapping.config`)
+### Mapping configs (`data/mappings/*-mapping.config`)
 
 Simple `key=value` files (`#` comments). Important keys:
 
 - `js_type` — selects graphical layout (e.g. `xbox360`, `ps4-dualshock4`, `gamecube`)
 - `usb_id` — one or more `vvvv:pppp` lines to match
-- `icon_filename` — PNG under the data dir
+- `icon_filename` — PNG basename under `icons/` (e.g. `xbox360.png`)
 - `axis_N` / `button_N` — display labels
 
-Unknown devices fall back to axis-count heuristics and `generic.png`.
+Unknown devices fall back to axis-count heuristics and `icons/generic.png`.
 
 ## Versioning
 
@@ -78,9 +79,11 @@ make
 
 Install layout:
 
-- Binary → `${CMAKE_INSTALL_LIBEXECDIR}/jstest-gtk`
-- Wrapper → `${CMAKE_INSTALL_BINDIR}/jstest-gtk` (passes `--datadir`)
-- Data → `${CMAKE_INSTALL_DATADIR}/jstest-gtk/`
+- Binary → `${CMAKE_INSTALL_BINDIR}/jstest-gtk` (datadir baked in at compile time)
+- Icons/mappings → `${CMAKE_INSTALL_DATADIR}/jstest-gtk/{icons,mappings}/`
+- Desktop file → `${CMAKE_INSTALL_DATADIR}/applications/`
+- App icon → hicolor scalable apps
+- Man page → `${CMAKE_INSTALL_MANDIR}/man1/`
 
 Optional Nix flake is present (`flake.nix`).
 

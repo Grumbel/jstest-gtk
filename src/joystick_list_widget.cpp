@@ -66,7 +66,7 @@ JoystickListWidget::JoystickListWidget() :
 
 {
   set_title("Joystick Preferences");
-  set_icon_from_file(Main::current()->get_data_directory() + "generic.png");
+  set_icon_from_file(Main::current()->get_data_directory() + "icons/generic.png");
   set_default_size(450, 310);
   //set_border_width(5);
 
@@ -136,7 +136,7 @@ JoystickListWidget::on_refresh_button()
   device_list->clear();
 
   // RELOAD CONFIG FILES
-  joystick_configs = load_all_configs("data");
+  joystick_configs = load_all_configs(Main::current()->get_data_directory() + "mappings");
 
   for(std::vector<JoystickDescription>::const_iterator i = joysticks.begin(); i != joysticks.end(); ++i)
   {
@@ -150,7 +150,8 @@ JoystickListWidget::on_refresh_button()
 
     if (! js_cfg.icon_filename_is_good) icon_filename = "generic.png"; // NOTE: you can set the icon_filename in a config file for the controller
 
-    (*it)[DeviceListColumns::instance().icon] = Gdk::Pixbuf::create_from_file(Main::current()->get_data_directory() + icon_filename);
+    (*it)[DeviceListColumns::instance().icon] = Gdk::Pixbuf::create_from_file(
+      Main::current()->get_data_directory() + "icons/" + icon_filename);
     (*it)[DeviceListColumns::instance().path] = i->filename;
     (*it)[DeviceListColumns::instance().font_weight] = Pango::WEIGHT_NORMAL;
 

@@ -80,11 +80,10 @@ pkg_search_module(GTKMM REQUIRED gtkmm-3.0)
 pkg_search_module(SIGCPP REQUIRED sigc++-2.0)
 pkg_search_module(X11 REQUIRED x11)
 
-# Copy data files over to build/
-file(GLOB JSTEST_GTK_DATA data/*.png data/*.config)
-file(
-  COPY ${JSTEST_GTK_DATA}
-  DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/data/)
+# Mirror data/ into the build tree (icons/, mappings/, …)
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/data"
+  DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
+  PATTERN "*~" EXCLUDE)
 
 file(GLOB JSTEST_GTK_SOURCES src/*.cpp)
 
@@ -109,28 +108,19 @@ target_link_libraries(jstest-gtk
   ${X11_LIBRARIES})
 
 install(TARGETS jstest-gtk
-  RUNTIME DESTINATION ${CMAKE_INSTALL_LIBEXECDIR})
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-configure_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/jstest-gtk.sh.in
-  ${CMAKE_BINARY_DIR}/jstest-gtk.sh)
-
-install(FILES
-  ${CMAKE_BINARY_DIR}/jstest-gtk.sh
-  RENAME jstest-gtk
-  PERMISSIONS OWNER_EXECUTE OWNER_READ OWNER_WRITE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
-  DESTINATION ${CMAKE_INSTALL_BINDIR})
-
-install(DIRECTORY data/ DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}
-  PATTERN "*~" EXCLUDE
-  PATTERN "*.svg" EXCLUDE)
+# Runtime assets: icons/, mappings/ (and applications/ is not required at runtime)
+install(DIRECTORY data/icons data/mappings
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}
+  PATTERN "*~" EXCLUDE)
 
 install(FILES
-  jstest-gtk.desktop
+  data/applications/jstest-gtk.desktop
   DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 
 install(FILES
-  data/jstest-gtk.svg
+  data/icons/jstest-gtk.svg
   DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
 
 install(FILES

@@ -198,7 +198,7 @@ Main::run(int argc, char** argv)
   }
 
   // LOAD CONFIG FILES HERE
-  joystick_configs = load_all_configs("data");
+  joystick_configs = load_all_configs(datadir + "mappings");
 
   try
   {
