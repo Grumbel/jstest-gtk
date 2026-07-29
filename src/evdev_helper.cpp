@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <map>
 #include "evdev_helper.hpp"
-
+
 template<class Enum>
 class EnumBox
 {
@@ -72,7 +72,7 @@ public:
   }
 };
 
-
+
 class EvDevRelEnum : public EnumBox<int>
 {
 public:
@@ -94,7 +94,7 @@ public:
     add(REL_MISC,            "REL_MISC");
   }
 } evdev_rel_names;
-
+
 class EvDevAbsEnum : public EnumBox<int>
 {
 public:
@@ -132,7 +132,7 @@ public:
     add(ABS_MISC,            "ABS_MISC");
   }
 } evdev_abs_names;
-
+
 class EvDevBtnEnum : public EnumBox<int>
 {
 public:
@@ -578,7 +578,7 @@ public:
     add(KEY_MIN_INTERESTING, "KEY_MIN_INTERESTING");
   }
 } evdev_btn_names;
-
+
 class Keysym2Keycode
 {
 public:
@@ -628,7 +628,7 @@ public:
     XFree(keymap);
   }
 };
-
+
 int xkeysym2keycode(const std::string& name)
 {
   static Keysym2Keycode sym2code;
@@ -653,7 +653,7 @@ int xkeysym2keycode(const std::string& name)
     return i->second;
   }
 }
-
+
 bool str2event(const std::string& name, int& type, int& code)
 {
   if (name == "void" || name == "none")
@@ -717,6 +717,6 @@ std::string rel2str(int i)
 {
   return evdev_rel_names[i];
 }
-
+
 /* EOF */
 

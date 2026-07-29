@@ -6,7 +6,7 @@
 
 #include "joystick.hpp"
 #include "calibrate_maximum_dialog.hpp"
-
+
 CalibrateMaximumDialog::CalibrateMaximumDialog(Joystick& joystick_)
   : Gtk::Dialog("CalibrationWizard: " + joystick_.get_name()),
     joystick(joystick_),
@@ -91,5 +91,5 @@ CalibrateMaximumDialog::on_axis_move(int id, int value)
     max_axis_state[id] = std::max(value, max_axis_state[id]);
   }
 }
-
+
 /* EOF */

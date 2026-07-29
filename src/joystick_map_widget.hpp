@@ -13,7 +13,7 @@
 #include "remap_widget.hpp"
 
 class Joystick;
-
+
 class JoystickMapWidget : public Gtk::Dialog
 {
 private:
@@ -31,7 +31,7 @@ private:
   JoystickMapWidget(const JoystickMapWidget&);
   JoystickMapWidget& operator=(const JoystickMapWidget&);
 };
-
+
 #endif
 
 /* EOF */

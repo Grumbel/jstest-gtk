@@ -9,7 +9,7 @@
 #include "joystick.hpp"
 #include "calibrate_maximum_dialog.hpp"
 #include "joystick_calibration_widget.hpp"
-
+
 JoystickCalibrationWidget::JoystickCalibrationWidget(Joystick& joystick)
   : Gtk::Dialog("Calibration: " + joystick.get_name()),
     joystick(joystick),
@@ -168,5 +168,5 @@ JoystickCalibrationWidget::on_response(int i)
     update_with(joystick.get_calibration());
   }
 }
-
+
 /* EOF */

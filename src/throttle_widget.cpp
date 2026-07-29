@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "throttle_widget.hpp"
-
+
 ThrottleWidget::ThrottleWidget(int width, int height, bool invert_)
   : invert(invert_),
     pos(0.0)
@@ -44,5 +44,5 @@ ThrottleWidget::set_pos(double p)
     pos = p;
   queue_draw();
 }
-
+
 /* EOF */

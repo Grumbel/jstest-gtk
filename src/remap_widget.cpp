@@ -6,7 +6,7 @@
 
 #include "joystick.hpp"
 #include "remap_widget.hpp"
-
+
 class RemapWidgetColumns : public Gtk::TreeModel::ColumnRecord
 {
 public:
@@ -31,7 +31,7 @@ private:
 };
 
 RemapWidgetColumns* RemapWidgetColumns::instance_ = 0;
-
+
 RemapWidget::RemapWidget(Joystick& joystick_, Mode mode_)
   : joystick(joystick_),
     mode(mode_)
@@ -157,5 +157,5 @@ RemapWidget::on_my_row_deleted(const Gtk::TreeModel::Path& path)
     }
   }
 }
-
+
 /* EOF */

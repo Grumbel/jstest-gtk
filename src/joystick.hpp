@@ -14,11 +14,8 @@
 #include "joystick_description.hpp"
 #include "joystick_config_files.hpp"
 
-class XMLReader;
-class XMLWriter;
-
 std::string get_js_dev_id_from_filename(const std::string& filename_);
-
+
 class Joystick
 {
 public:
@@ -32,7 +29,7 @@ public:
   };
 
 private:
-  int fd;
+  int fd = -1;
 
   std::string filename;
   std::string orig_name;
@@ -42,8 +39,8 @@ private:
   std::string vendor_id;
   std::string product_id;
   std::string usb_id;
-  int axis_count;
-  int button_count;
+  int axis_count = 0;
+  int button_count = 0;
 
   void connect_js();
   int get_new_joystick_fd();
@@ -76,9 +73,6 @@ public:
   int get_button_count() const        { return button_count; }
 
   std::string get_js_type_from_config(const JoystickConfig& js_cfg);
-  /*
-  std::string get_js_type_from_usb_id(const std::string& usb_id);  // Only use if you want to hardcode usb_id's to gamepad types
-  */
 
   sigc::signal<void, int, int>  axis_move;
   sigc::signal<void, int, bool> button_press;
@@ -104,9 +98,6 @@ public:
   /** Corrects calibration data after remaping axes */
   void correct_calibration(const std::vector<int>& mapping_old, const std::vector<int>& mapping_new);
 
-  void write(XMLWriter& out);
-  void load(const XMLReader& reader);
-
   /** Get the evdev that this joystick device is based on. This call
       is just a guess, not guranteed to be the exact same device, but
       for our uses that should be enough. */
@@ -116,7 +107,7 @@ private:
   Joystick(const Joystick&);
   Joystick& operator=(const Joystick&);
 };
-
+
 #endif
 
 /* EOF */

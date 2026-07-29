@@ -5,7 +5,7 @@
 #define HEADER_JSTEST_GTK_RUDDER_WIDGET_HPP
 
 #include <gtkmm/drawingarea.h>
-
+
 class RudderWidget : public Gtk::DrawingArea
 {
 private:
@@ -21,7 +21,7 @@ private:
   RudderWidget(const RudderWidget&);
   RudderWidget& operator=(const RudderWidget&);
 };
-
+
 #endif
 
 /* EOF */

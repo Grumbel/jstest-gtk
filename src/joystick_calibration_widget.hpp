@@ -13,7 +13,7 @@
 #include <gtkmm/scrolledwindow.h>
 
 #include "joystick.hpp"
-
+
 class JoystickCalibrationWidget : public Gtk::Dialog
 {
 private:
@@ -50,7 +50,7 @@ private:
   JoystickCalibrationWidget(const JoystickCalibrationWidget&);
   JoystickCalibrationWidget& operator=(const JoystickCalibrationWidget&);
 };
-
+
 #endif
 
 /* EOF */

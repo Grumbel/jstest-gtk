@@ -6,7 +6,7 @@
 #include "evdev_helper.hpp"
 #include "joystick.hpp"
 #include "joystick_map_widget.hpp"
-
+
 JoystickMapWidget::JoystickMapWidget(Joystick& joystick)
   : Gtk::Dialog("Mapping: " + joystick.get_name()),
     label("Change the order of axis and button. The order applies directly to the "
@@ -61,5 +61,5 @@ JoystickMapWidget::on_response(int v)
     axis_map.on_clear();
   }
 }
-
+
 /* EOF */

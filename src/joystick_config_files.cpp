@@ -61,7 +61,8 @@ JoystickConfig load_config(const std::string& filename) {
 
     if (name == "usb_id")
     {
-      m_verbose and std::cout << "   registering usb_id: " << value << std::endl;
+      if (m_verbose)
+        std::cout << "   registering usb_id: " << value << std::endl;
       config.usb_ids.push_back(value);
     }
     else
@@ -69,18 +70,25 @@ JoystickConfig load_config(const std::string& filename) {
       config.values[name] = value;
 
       size_t underscore_pos = name.find('_');
-      if (name.rfind("axis_", 0) == 0)
+      if (name.rfind("axis_", 0) == 0 && underscore_pos != std::string::npos)
       {
-        config.axes.insert(config.axes.begin() + std::stoi(name.substr(underscore_pos + 1)), value);
+        int idx = std::stoi(name.substr(underscore_pos + 1));
+        if (idx < 0)
+          continue;
+        if (static_cast<int>(config.axes.size()) <= idx)
+          config.axes.resize(idx + 1);
+        config.axes[idx] = value;
       }
-      else if (name.rfind("button_", 0) == 0)
+      else if (name.rfind("button_", 0) == 0 && underscore_pos != std::string::npos)
       {
-        int new_pos = std::stoi(name.substr(underscore_pos + 1));
-        if (config.buttons.size() < new_pos) {
-            config.buttons.resize(new_pos);
-        }
-        config.buttons.insert(config.buttons.begin() + new_pos, value);
-        if (value.size() > config.button_maxlen) config.button_maxlen = value.size();
+        int idx = std::stoi(name.substr(underscore_pos + 1));
+        if (idx < 0)
+          continue;
+        if (static_cast<int>(config.buttons.size()) <= idx)
+          config.buttons.resize(idx + 1);
+        config.buttons[idx] = value;
+        if (static_cast<int>(value.size()) > config.button_maxlen)
+          config.button_maxlen = static_cast<int>(value.size());
       }
     }
   }

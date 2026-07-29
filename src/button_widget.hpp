@@ -5,7 +5,8 @@
 #ifndef HEADER_JSTEST_GTK_BUTTON_WIDGET_HPP
 #define HEADER_JSTEST_GTK_BUTTON_WIDGET_HPP
 
-
+#include <gtkmm/togglebutton.h>
+#include <gdk/gdk.h>
 
 class ButtonWidget : public Gtk::ToggleButton {
 public:
@@ -17,10 +18,10 @@ public:
 protected:
   bool on_button_press_event(GdkEventButton* event) override
   {
-    return true; // Prevent toggle
+    return true; // Prevent toggle from mouse clicks; state set programmatically
   }
 };
-
+
 #endif
 
 /* EOF */

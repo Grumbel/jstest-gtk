@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "rudder_widget.hpp"
-
+
 RudderWidget::RudderWidget(int width, int height)
   : pos(0.0)
 {
@@ -45,5 +45,5 @@ RudderWidget::set_pos(double p)
   pos = p;
   queue_draw();
 }
-
+
 /* EOF */

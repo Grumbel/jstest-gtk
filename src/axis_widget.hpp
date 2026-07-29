@@ -6,7 +6,7 @@
 
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/alignment.h>
-
+
 class AxisWidget : public Gtk::Alignment
 {
 private:
@@ -26,7 +26,7 @@ private:
   AxisWidget(const AxisWidget&);
   AxisWidget& operator=(const AxisWidget&);
 };
-
+
 #endif
 
 /* EOF */

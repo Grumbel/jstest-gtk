@@ -66,6 +66,7 @@ find_package(Threads)
 pkg_search_module(GTKMM REQUIRED gtkmm-3.0)
 pkg_search_module(SIGCPP REQUIRED sigc++-2.0)
 pkg_search_module(X11 REQUIRED x11)
+pkg_search_module(UDEV REQUIRED libudev)
 
 # Mirror data/ into the build tree (icons/, mappings/, …)
 file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/data"
@@ -78,21 +79,23 @@ add_executable(jstest-gtk ${JSTEST_GTK_SOURCES})
 include_directories(SYSTEM
   ${GTKMM_INCLUDE_DIRS}
   ${SIGCPP_INCLUDE_DIRS}
-  ${X11_INCLUDE_DIRS})
+  ${X11_INCLUDE_DIRS}
+  ${UDEV_INCLUDE_DIRS})
 set_property(TARGET jstest-gtk PROPERTY COMPILE_OPTIONS
   ${GTKMM_CFLAGS_OTHER}
   ${SIGCPP_CFLAGS_OTHER}
   ${X11_CFLAGS_OTHER}
+  ${UDEV_CFLAGS_OTHER}
   ${WARNINGS_CXX_FLAGS})
 target_compile_definitions(jstest-gtk PRIVATE
   JSTEST_GTK_DATADIR="${CMAKE_INSTALL_FULL_DATADIR}/${PROJECT_NAME}/"
   JSTEST_GTK_VERSION="${PROJECT_VERSION_FULL}")
 target_link_libraries(jstest-gtk
-  udev
   ${CMAKE_THREAD_LIBS_INIT}
   ${GTKMM_LIBRARIES}
   ${SIGCPP_LIBRARIES}
-  ${X11_LIBRARIES})
+  ${X11_LIBRARIES}
+  ${UDEV_LIBRARIES})
 
 install(TARGETS jstest-gtk
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

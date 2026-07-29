@@ -36,7 +36,6 @@ SPDX-License-Identifier = "GPL-3.0-or-later"
 path = [
   "data/icons/generic.png",
   "data/icons/xbox360.png",
-  "data/icons/xbox360_small.png",
   "data/icons/ps3-sixaxis.png",
   "data/icons/jstest-gtk.svg",
 ]
@@ -50,10 +49,4 @@ path = [
   "data/icons/ps2-dualshock2.png",
 ]
 SPDX-FileCopyrightText = "2025 Raphael Rosch <jstest-bugs@insaner.com>"
-SPDX-License-Identifier = "GPL-3.0-or-later"
-
-# Full GPL text (verbatim from FSF); also shipped as LICENSES/GPL-3.0-or-later.txt
-[[annotations]]
-path = ["COPYING"]
-SPDX-FileCopyrightText = "1989, 1991, 2007 Free Software Foundation, Inc."
 SPDX-License-Identifier = "GPL-3.0-or-later"

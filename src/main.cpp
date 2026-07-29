@@ -69,7 +69,7 @@ JoystickGui::show_mapping_dialog()
   else
   {
     m_mapping_widget.reset(new JoystickMapWidget(*m_joystick));
-    m_mapping_widget->signal_hide().connect([this] { m_calibration_widget.reset(); });
+    m_mapping_widget->signal_hide().connect([this] { m_mapping_widget.reset(); });
     m_mapping_widget->set_transient_for(*m_test_widget);
     m_mapping_widget->show_all();
   }
@@ -163,6 +163,8 @@ Main::run(int argc, char** argv)
       else
       {
         datadir = argv[i];
+        if (!datadir.empty() && datadir.back() != '/')
+          datadir += '/';
       }
     }
     else if (argv[i][0] == '-')

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "axis_widget.hpp"
-
+
 AxisWidget::AxisWidget(int width, int height)
   : Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_START, 0.0f, 0.0f),
     x(0), y(0)
@@ -71,6 +71,6 @@ AxisWidget::set_y_axis(double y_)
   y = y_;
   queue_draw();
 }
-
+
 /* EOF */
 

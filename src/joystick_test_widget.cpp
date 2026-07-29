@@ -142,7 +142,7 @@ JoystickTestWidget::JoystickTestWidget(JoystickGui& gui, Joystick& joystick_, bo
   m_verbose and std::cout << "joystick.get_js_type(): " << joystick.get_js_type() << std::endl;
   m_verbose and std::cout << "joystick.get_axis_count(): " << joystick.get_axis_count() << std::endl;
   
-  // NOTE: remember to add any new types added here to the list in "data/README.txt" so users can create their own config files
+  // NOTE: remember to add any new types added here to the list in "data/mappings/README.txt" so users can create their own config files
   if (joystick.get_js_type() == "ps4-dualshock4")
     setup_dualshock4_equiv();
   else if (joystick.get_js_type() == "ps3-sixaxis")

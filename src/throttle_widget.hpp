@@ -5,7 +5,7 @@
 #define HEADER_JSTEST_GTK_THROTTLE_WIDGET_HPP
 
 #include <gtkmm/drawingarea.h>
-
+
 class ThrottleWidget : public Gtk::DrawingArea
 {
 private:
@@ -22,7 +22,7 @@ private:
   ThrottleWidget(const ThrottleWidget&);
   ThrottleWidget& operator=(const ThrottleWidget&);
 };
-
+
 #endif
 
 /* EOF */

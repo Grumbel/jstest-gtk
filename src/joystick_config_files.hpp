@@ -13,11 +13,11 @@
 #include <vector>
 #include <string>
 
-#include <dirent.h>
+#include <dirent.h>
 // #include <filesystem>
 
 // namespace fs = std::filesystem;
-
+
 struct JoystickConfig {
     std::unordered_map<std::string, std::string> values;
     std::vector<std::string> usb_ids;
@@ -28,17 +28,17 @@ struct JoystickConfig {
     std::vector<std::string> buttons;
     int button_maxlen = 0;
 };
-
-
+
+
 JoystickConfig load_config(const std::string& filename);
 JoystickConfig get_config_for_usb_id(const std::string& usb_id);
-
+
 std::vector<JoystickConfig> load_all_configs(const std::string& directory);
-
+
 extern std::vector<JoystickConfig> joystick_configs;
-
-
-
+
+
+
 #endif
 
 /* EOF */

@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include <gtkmm.h>
+#include <cstdlib>
 
 #include "main.hpp"
 #include "joystick.hpp"
@@ -195,7 +196,9 @@ void JoystickListWidget::js_activity_bool(int number, bool value, Gtk::TreeModel
 
 void JoystickListWidget::js_activity_analog(int number, int value, Gtk::TreeModel::Path path)
 {
-  js_activity_highlight(value, path);
+  // Ignore small noise near center so rows do not stay bold forever
+  const int threshold = 2000;
+  js_activity_highlight(std::abs(value) >= threshold ? value : 0, path);
 }
 
 /* EOF */

@@ -11,7 +11,7 @@
 #include <gtkmm/scrolledwindow.h>
 
 class Joystick;
-
+
 class RemapWidget : public Gtk::VBox
 {
 public:
@@ -39,7 +39,7 @@ private:
   RemapWidget(const RemapWidget&);
   RemapWidget& operator=(const RemapWidget&);
 };
-
+
 #endif
 
 /* EOF */
