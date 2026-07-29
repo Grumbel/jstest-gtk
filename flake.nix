@@ -59,6 +59,19 @@
             };
           };
         };
+
+        checks = {
+          reuse = pkgs.runCommand "reuse-lint" {
+            src = lib.cleanSource ./.;
+            nativeBuildInputs = [ pkgs.reuse ];
+          } ''
+            cp -rT "$src" src
+            chmod -R u+w src
+            cd src
+            reuse lint
+            mkdir "$out"
+          '';
+        };
       }
     );
 }
