@@ -1,6 +1,7 @@
 /*
 **  jstest-gtk - A graphical joystick tester
 **  Copyright (C) 2009 Ingo Ruhnke <grumbel@gmail.com>
+**  Copyright (C) 2025 Raphael Rosch <jstest-bugs@insaner.com>
 **
 **  This program is free software: you can redistribute it and/or modify
 **  it under the terms of the GNU General Public License as published by
@@ -35,18 +36,24 @@
 
 #include "evdev_helper.hpp"
 #include "joystick.hpp"
-
-Joystick::Joystick(const std::string& filename_)
-  : filename(filename_)
+#include "main.hpp"
+
+std::string get_js_dev_id_from_filename(const std::string& filename)
 {
-  if ((fd = open(filename.c_str(), O_RDONLY)) < 0)
+  size_t pos = filename.find_last_of('/');
+  if (pos == std::string::npos)
   {
-    std::ostringstream str;
-    str << filename << ": " << strerror(errno);
-    throw std::runtime_error(str.str());
+      return filename;  // No '/' found, return whole string
   }
-  else
-  {
+  return filename.substr(pos + 1);
+}
+
+Joystick::Joystick(const std::string& filename_, const std::string& js_id_)
+  : filename(filename_),
+    js_id(js_id_)
+{
+  try {
+    fd = get_new_joystick_fd(); // throws error
     // ok
     uint8_t num_axis   = 0;
     uint8_t num_button = 0;
@@ -74,18 +81,127 @@ Joystick::Joystick(const std::string& filename_)
     }
 
     axis_state.resize(axis_count);
+
+    auto tmp_usb_id_pair = get_usb_id_pair_from_udev();
+    if (!tmp_usb_id_pair.first.empty() and !tmp_usb_id_pair.second.empty()) {
+      vendor_id = tmp_usb_id_pair.first;
+      product_id = tmp_usb_id_pair.second;
+      usb_id = vendor_id + ":" + product_id;
+      js_cfg = get_config_for_usb_id(usb_id);
+      // js_type = get_js_type_from_usb_id(usb_id);
+      js_type = get_js_type_from_config(js_cfg);
+    }
+    connect_js();
+    orig_calibration_data = get_calibration();
+  } catch(std::runtime_error& err) {
+    std::cout << err.what() << std::endl;
   }
-
-  orig_calibration_data = get_calibration();
-
-  connection = Glib::signal_io().connect(sigc::mem_fun(this, &Joystick::on_in), fd,
-                                         Glib::IO_IN | Glib::IO_HUP | Glib::IO_ERR);
 }
 
 Joystick::~Joystick()
 {
   connection.disconnect();
   close(fd);
+}
+
+int
+Joystick::get_new_joystick_fd()
+{
+  int tmp_fd;
+  if ((tmp_fd = open(filename.c_str(), O_RDONLY)) < 0)
+  {
+    std::ostringstream str;
+    str << filename << ": " << strerror(errno);
+    throw std::runtime_error(str.str());
+  }
+  else
+  {
+  return tmp_fd;
+  }
+
+}
+
+void
+Joystick::connect_js()
+{
+  connection = Glib::signal_io().connect(sigc::mem_fun(this, &Joystick::on_in), fd,
+                                        Glib::IO_IN | Glib::IO_HUP | Glib::IO_ERR);
+}
+
+bool
+Joystick::reconnected()   // TODO: jsX devnum needs to be same after reconnecting, or below won't work (eg, reconnecting in different order) 
+{
+  m_verbose and std::cout << "attempting joystick reconnect... " << std::endl;
+
+  try {
+    int tmp_fd = get_new_joystick_fd();
+
+    char name_c_str[1024];
+    if (ioctl(tmp_fd, JSIOCGNAME(sizeof(name_c_str)), name_c_str) < 0)
+    {
+      m_verbose and std::cout << "could not get name from fd "  << std::endl;
+      return false;
+    }
+    if (orig_name != name_c_str)
+    {
+      m_verbose and std::cout << "name mismatch"  << std::endl;
+      return false;
+    }
+    auto tmp_usb_id_pair = get_usb_id_pair_from_udev();
+    std::string tmp_usb_id = tmp_usb_id_pair.first + ":" + tmp_usb_id_pair.second;
+    if (tmp_usb_id != usb_id)
+    {
+      m_verbose and std::cout << "usb_id mismatch"  << std::endl;
+      return false;
+    }
+    // std::string tmp_js_type = get_js_type_from_usb_id(tmp_usb_id);
+    std::string tmp_js_type = get_js_type_from_config(js_cfg);
+    if (tmp_js_type != js_type)
+    {
+      m_verbose and std::cout << "js_type mismatch"  << std::endl;
+      return false;
+    }
+    fd = tmp_fd;
+    connect_js();
+  } catch(std::runtime_error& err) {
+    std::cout << err.what() << std::endl;
+    return false;
+  }
+
+  return true;
+}
+
+
+std::pair<std::string, std::string>
+Joystick::get_usb_id_pair_from_udev()
+{
+    struct udev *udev = udev_new();
+    if (udev) {
+      struct udev_device *input_dev = udev_device_new_from_subsystem_sysname(udev, "input", js_id.c_str());
+      struct udev_device *dev = udev_device_get_parent_with_subsystem_devtype(input_dev, "usb", "usb_device");
+      if (!dev)
+      {
+        std::cout << filename.c_str() << std::endl;
+        std::cout << "udev: Unable to find parent USB device" << std::endl;
+      }
+      else
+      {
+        std::string tmp_vendor_id;
+        std::string tmp_product_id;
+        tmp_vendor_id = udev_device_get_sysattr_value(dev, "idVendor");
+        tmp_product_id = udev_device_get_sysattr_value(dev, "idProduct");
+        // usb_id = vendor_id + ":" + product_id;
+        udev_device_unref(input_dev);
+        udev_unref(udev);
+        return {tmp_vendor_id, tmp_product_id};
+      }
+      udev_unref(udev);
+    }
+    else
+    {
+      std::cout << "udev: Cannot create udev" << std::endl;
+    }
+    return {};
 }
 
 bool
@@ -104,7 +220,7 @@ Joystick::on_in(Glib::IOCondition cond)
 
   if (cond & Glib::IO_ERR)
   {
-    std::cout << filename << ": error ocured while reading from joystick" << std::endl;
+    std::cout << filename << ": error while reading from joystick" << std::endl;
     connection.disconnect();
   }
 
@@ -135,7 +251,7 @@ Joystick::update()
     else if (event.type & JS_EVENT_BUTTON)
     {
       //std::cout << "Button: " << (int)event.number << " -> " << (int)event.value << std::endl;
-      button_move(event.number, event.value);
+      button_press(event.number, event.value);
     }
   }
   else
@@ -153,18 +269,22 @@ Joystick::get_joysticks()
   {
     try
     {
-      std::ostringstream str;
-      str << "/dev/input/js" << i;
+      std::string js_id = std::string("js") + std::to_string(i);;
+      std::string str = std::string("/dev/input/") + js_id;
 
-      if (Glib::file_test(str.str(), Glib::FILE_TEST_EXISTS))
+      if (Glib::file_test(str, Glib::FILE_TEST_EXISTS))
       {
-      Joystick joystick(str.str());
+      Joystick joystick(str, js_id);
 
       joysticks.push_back(JoystickDescription(joystick.get_filename(),
                                               joystick.get_name(),
+                                              joystick.get_js_id(),
+                                              joystick.get_vendor_id(),
+                                              joystick.get_product_id(),
+                                              joystick.get_usb_id(),
                                               joystick.get_axis_count(),
                                               joystick.get_button_count()));
-    }
+      }
     }
     catch(std::exception& err)
     {
@@ -447,6 +567,35 @@ Joystick::get_evdev() const
 
   throw std::runtime_error("couldn't find evdev for " + filename);
 }
+
+std::string
+Joystick::get_js_type_from_config(const JoystickConfig& js_cfg)
+{
+  return js_cfg.js_type;
+}
+
+/*
+  // Only use if you want to hardcode usb_id's to gamepad types (instead of using config files):
+  
+std::string
+Joystick::get_js_type_from_usb_id(const std::string& usb_id)
+{
+  std::string tmp_js_type;
+
+  // eg:
+  if (usb_id == "054c:0000")
+  {
+    tmp_js_type = "gamepad-type1";
+  }
+  else if (usb_id == "045e:1111"
+        or usb_id == "045e:2222")
+  {
+    tmp_js_type = "gamepad-type2";
+  }
+  return tmp_js_type;
+}
+*/
+
 
 #ifdef __TEST__
 
@@ -458,11 +607,15 @@ int main(int argc, char** argv)
   {
     Joystick joystick(argv[i]);
 
-    std::cout << "Filename: '" << joystick.get_filename() << "'\n";
-    std::cout << "Name:     '" << joystick.get_name() << "'\n";
-    std::cout << "Axis:     " << joystick.get_axis_count() << "\n";
-    std::cout << "Button:   " << joystick.get_button_count() << "\n";
-    std::cout << "Evdev:    '" << joystick.get_evdev() << "'\n";
+    std::cout << "Filename:   '" << joystick.get_filename() << "'\n";
+    std::cout << "Name:       '" << joystick.get_name() << "'\n";
+    std::cout << "js_id:      "  << joystick.get_js_id() << "\n";
+    std::cout << "Vendor_id:  "  << joystick.get_vendor_id() << "\n";
+    std::cout << "Product_id: "  << joystick.get_product_id() << "\n";
+    std::cout << "usb_id:     "  << joystick.get_usb_id() << "\n";
+    std::cout << "Axis:       "  << joystick.get_axis_count() << "\n";
+    std::cout << "Button:     "  << joystick.get_button_count() << "\n";
+    std::cout << "Evdev:      '" << joystick.get_evdev() << "'\n";
   }
   return 0;
 }

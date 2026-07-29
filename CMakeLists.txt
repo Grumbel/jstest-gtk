@@ -71,7 +71,7 @@ pkg_search_module(SIGCPP REQUIRED sigc++-2.0)
 pkg_search_module(X11 REQUIRED x11)
 
 # Copy data files over to build/
-file(GLOB JSTEST_GTK_DATA data/*.png)
+file(GLOB JSTEST_GTK_DATA data/*.png data/*.config)
 file(
   COPY ${JSTEST_GTK_DATA}
   DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/data/)
@@ -89,6 +89,7 @@ set_property(TARGET jstest-gtk PROPERTY COMPILE_OPTIONS
   ${X11_CFLAGS_OTHER}
   ${WARNINGS_CXX_FLAGS})
 target_link_libraries(jstest-gtk
+  udev
   ${CMAKE_THREAD_LIBS_INIT}
   ${GTKMM_LIBRARIES}
   ${SIGCPP_LIBRARIES}

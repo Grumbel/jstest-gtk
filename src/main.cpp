@@ -24,6 +24,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#include "joystick_config_files.hpp"
+
 #include "joystick_test_widget.hpp"
 #include "joystick_list_widget.hpp"
 #include "joystick_map_widget.hpp"
@@ -32,6 +34,7 @@
 #include "main.hpp"
 
 Main* Main::current_ = 0;
+bool m_verbose = false;
 
 JoystickGui::JoystickGui(std::unique_ptr<Joystick> joystick, bool simple_ui, Gtk::Window* parent) :
   m_joystick(std::move(joystick)),
@@ -104,7 +107,8 @@ Main::show_device_property_dialog(const std::string& filename, Gtk::Window* pare
   }
   else
   {
-    std::unique_ptr<Joystick> joystick(new Joystick(filename));
+    std::string js_id = get_js_dev_id_from_filename(filename);
+    std::unique_ptr<Joystick> joystick(new Joystick(filename, js_id));
     std::unique_ptr<JoystickGui> gui(new JoystickGui(std::move(joystick), m_simple_ui, parent));
 
     JoystickTestWidget* widget = gui->get_test_widget();
@@ -135,6 +139,7 @@ Main::run(int argc, char** argv)
                 << "  -h, --help      Display this help and exit\n"
                 << "  -v, --version   Display version information and exit\n"
                 << "  --simple        Hide graphical representation of axis\n"
+                << "  --verbose       Print useful extra information\n"
                 << "  --datadir DIR   Load application data from DIR\n"
                 << "\n"
                 << "Report bugs to Ingo Ruhnke <grumbel@gmail.com>.\n";
@@ -149,6 +154,10 @@ Main::run(int argc, char** argv)
     else if (strcmp("--simple", argv[i]) == 0)
     {
       m_simple_ui = true;
+    }
+    else if (strcmp("--verbose", argv[i]) == 0)
+    {
+      m_verbose = true;
     }
     else if (strcmp("--datadir", argv[i]) == 0)
     {
@@ -179,6 +188,9 @@ Main::run(int argc, char** argv)
       device_files.push_back(argv[i]);
     }
   }
+
+  // LOAD CONFIG FILES HERE
+  joystick_configs = load_all_configs("data");
 
   try
   {

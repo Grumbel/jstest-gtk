@@ -23,6 +23,8 @@
 #include <gtkmm.h>
 #include <map>
 
+extern bool m_verbose;
+
 class Joystick;
 class JoystickListWidget;
 class JoystickTestWidget;
