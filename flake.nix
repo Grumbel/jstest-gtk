@@ -54,7 +54,9 @@
           jstest-gtk = {
             type = "app";
             program = "${self.packages.${system}.jstest-gtk}/bin/jstest-gtk";
-            meta.description = self.packages.${system}.jstest-gtk.meta.description;
+            meta = {
+              description = self.packages.${system}.jstest-gtk.meta.description;
+            };
           };
         };
       }
