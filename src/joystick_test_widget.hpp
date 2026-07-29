@@ -9,15 +9,15 @@
 #include <vector>
 
 #include <gtkmm/box.h>
-#include <gtkmm/label.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/progressbar.h>
 #include <gtkmm/table.h>
 #include <gtkmm/buttonbox.h>
 #include <gtkmm/button.h>
 #include <gtkmm/dialog.h>
-#include <gtkmm/alignment.h>
-#include <gtkmm/comboboxtext.h>
+#include <gtkmm/combobox.h>
+#include <gtkmm/liststore.h>
+#include <gtkmm/cellrenderertext.h>
 #include <gtkmm/window.h>
 
 #include "throttle_widget.hpp"
@@ -42,11 +42,8 @@ private:
   bool m_updating_combo = false;
 
   Gtk::VBox m_vbox;
-  Gtk::ComboBoxText m_device_combo;
-  Gtk::Alignment alignment;
-  Gtk::Label label;
-  Glib::ustring label_base;
-
+  Gtk::ComboBox m_device_combo;
+  Glib::RefPtr<Gtk::ListStore> m_device_store;
   Gtk::Frame axis_frame;
   Gtk::VBox  axis_vbox;
   Gtk::Frame button_frame;
@@ -99,6 +96,7 @@ private:
   void schedule_refresh();
   bool on_refresh_timeout();
   void on_device_changed();
+  Glib::ustring get_selected_device_path() const;
   void on_udev_js_event(const std::string& action, const std::string& devnode);
 
   void setup_joystick_widgets(const unsigned sticks,

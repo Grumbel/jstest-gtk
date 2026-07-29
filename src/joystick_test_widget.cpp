@@ -18,12 +18,43 @@
 #include "joystick_test_widget.hpp"
 #include "joystick_config_files.hpp"
 
+namespace {
+
+class DeviceColumns : public Gtk::TreeModel::ColumnRecord
+{
+public:
+  DeviceColumns()
+  {
+    add(path);
+    add(markup);
+  }
+
+  Gtk::TreeModelColumn<Glib::ustring> path;
+  Gtk::TreeModelColumn<Glib::ustring> markup;
+};
+
+DeviceColumns& device_columns()
+{
+  static DeviceColumns cols;
+  return cols;
+}
+
+Glib::ustring device_entry_markup(const Glib::ustring& name,
+                                  const Glib::ustring& path,
+                                  const Glib::ustring& usb_id)
+{
+  return "<b>" + Glib::Markup::escape_text(name) + "</b>\n"
+    "Device: " + Glib::Markup::escape_text(path) + "\n"
+    "USB ID: " + Glib::Markup::escape_text(usb_id.empty() ? "unknown" : usb_id);
+}
+
+} // namespace
+
 JoystickTestWidget::~JoystickTestWidget() = default;
 
 JoystickTestWidget::JoystickTestWidget(bool simple_ui, const std::string& optional_device) :
   Gtk::Window(),
   m_simple_ui(simple_ui),
-  label("", Gtk::ALIGN_START, Gtk::ALIGN_START),
   axis_frame("Axes"),
   button_frame("Buttons"),
   mapping_button("Mapping"),
@@ -41,9 +72,6 @@ JoystickTestWidget::JoystickTestWidget(bool simple_ui, const std::string& option
   set_icon_from_file(Main::current()->get_data_directory() + "icons/generic.png");
   set_default_size(520, 400);
 
-  label.set_use_markup(true);
-  label.set_selectable(true);
-
   axis_frame.set_border_width(5);
   axis_table.set_border_width(5);
   axis_table.set_spacings(5);
@@ -53,12 +81,19 @@ JoystickTestWidget::JoystickTestWidget(bool simple_ui, const std::string& option
   buttonbox.set_border_width(5);
   stick_hbox.set_border_width(5);
 
+  m_device_store = Gtk::ListStore::create(device_columns());
+  m_device_combo.set_model(m_device_store);
   m_device_combo.set_hexpand(true);
+  m_device_combo.set_focus_on_click(false);
+  {
+    auto* renderer = Gtk::manage(new Gtk::CellRendererText());
+    renderer->property_xalign() = 0.0;
+    // Multi-line rows in the popup and closed button
+    m_device_combo.pack_start(*renderer, true);
+    m_device_combo.add_attribute(renderer->property_markup(), device_columns().markup);
+  }
   m_device_combo.signal_changed().connect(
     sigc::mem_fun(this, &JoystickTestWidget::on_device_changed));
-
-  alignment.set_padding(8, 8, 8, 8);
-  alignment.add(label);
 
   buttonbox.add(mapping_button);
   buttonbox.add(calibration_button);
@@ -68,7 +103,6 @@ JoystickTestWidget::JoystickTestWidget(bool simple_ui, const std::string& option
   test_hbox.pack_start(button_frame, Gtk::PACK_EXPAND_WIDGET);
 
   m_vbox.pack_start(m_device_combo, Gtk::PACK_SHRINK);
-  m_vbox.pack_start(alignment, Gtk::PACK_SHRINK);
   m_vbox.pack_start(test_hbox, Gtk::PACK_EXPAND_WIDGET);
   m_vbox.pack_end(buttonbox, Gtk::PACK_SHRINK);
   add(m_vbox);
@@ -122,15 +156,17 @@ JoystickTestWidget::set_empty_state()
   m_connected = false;
 
   m_updating_combo = true;
-  m_device_combo.remove_all();
-  m_device_combo.append("none", "No joystick connected");
-  m_device_combo.set_active_id("none");
+  m_device_store->clear();
+  {
+    auto row = *m_device_store->append();
+    row[device_columns().path] = "none";
+    row[device_columns().markup] = "<i>No joystick connected</i>";
+    m_device_combo.set_active(row);
+  }
   m_device_combo.set_sensitive(false);
   m_updating_combo = false;
 
   set_title("jstest-gtk");
-  label_base = "<i>No joystick connected</i>";
-  label.set_markup(label_base);
   mapping_button.set_sensitive(false);
   calibration_button.set_sensitive(false);
 }
@@ -144,10 +180,6 @@ JoystickTestWidget::build_device_ui()
   Joystick& joystick = *m_joystick;
 
   set_title(joystick.get_name());
-  label_base = "<b>" + Glib::Markup::escape_text(joystick.get_name()) + "</b>\n"
-    "Device: " + Glib::Markup::escape_text(joystick.get_filename()) + "\n"
-    "USB ID: " + Glib::Markup::escape_text(joystick.get_usb_id());
-  label.set_markup(label_base);
 
   for (int i = 0; i < joystick.get_axis_count(); ++i)
   {
@@ -293,7 +325,7 @@ JoystickTestWidget::refresh_device_list(const std::string& prefer_path)
   if (!prefer_path.empty())
     previous = prefer_path;
 
-  struct Entry { std::string path; std::string js_id; std::string name; };
+  struct Entry { std::string path; std::string js_id; std::string name; std::string usb_id; };
   std::vector<Entry> found;
 
   for (int i = 0; i < 32; ++i)
@@ -305,7 +337,7 @@ JoystickTestWidget::refresh_device_list(const std::string& prefer_path)
     try
     {
       Joystick probe(path, js_id);
-      found.push_back({path, js_id, probe.get_name()});
+      found.push_back({path, js_id, probe.get_name(), probe.get_usb_id()});
     }
     catch (const std::exception& err)
     {
@@ -322,27 +354,33 @@ JoystickTestWidget::refresh_device_list(const std::string& prefer_path)
 
   m_updating_combo = true;
   m_device_combo.set_sensitive(true);
-  m_device_combo.remove_all();
-  for (const auto& e : found)
-  {
-    std::string text = e.name + " (" + e.path + ")";
-    m_device_combo.append(e.path, text);
-  }
+  m_device_store->clear();
 
-  std::string select = found.front().path;
+  Gtk::TreeModel::iterator active_it;
   for (const auto& e : found)
   {
-    if (e.path == previous)
-    {
-      select = e.path;
-      break;
-    }
+    auto it = m_device_store->append();
+    auto row = *it;
+    row[device_columns().path] = e.path;
+    row[device_columns().markup] = device_entry_markup(e.name, e.path, e.usb_id);
+    if (!active_it)
+      active_it = it;
+    if (!previous.empty() && e.path == previous)
+      active_it = it;
   }
-  m_device_combo.set_active_id(select);
+  m_device_combo.set_active(active_it);
   m_updating_combo = false;
 
-  // Apply selection (may no-op rebuild if same path still open)
   on_device_changed();
+}
+
+Glib::ustring
+JoystickTestWidget::get_selected_device_path() const
+{
+  auto it = m_device_combo.get_active();
+  if (!it)
+    return {};
+  return (*it)[device_columns().path];
 }
 
 void
@@ -351,7 +389,7 @@ JoystickTestWidget::on_device_changed()
   if (m_updating_combo)
     return;
 
-  Glib::ustring id = m_device_combo.get_active_id();
+  Glib::ustring id = get_selected_device_path();
   if (id.empty() || id == "none")
   {
     set_empty_state();
@@ -457,8 +495,8 @@ JoystickTestWidget::setup_joystick_widgets(const unsigned sticks, const std::vec
     std::cout << "joystick configuration error. Some axis data missing or out of range." << std::endl;
     if (m_verbose)
       std::cout << e.what() << std::endl;
-    label_base = label_base + "\n<span foreground='red'>ERROR: axis config data</span>";
-    label.set_label(label_base);
+    if (m_verbose)
+      std::cout << "ERROR: axis config data" << std::endl;
   }
 
   try {
@@ -475,8 +513,8 @@ JoystickTestWidget::setup_joystick_widgets(const unsigned sticks, const std::vec
     std::cout << "joystick configuration error. Some trigger data missing or out of range." << std::endl;
     if (m_verbose)
       std::cout << e.what() << std::endl;
-    label_base = label_base + "\n<span foreground='red'>ERROR: trigger config data</span>";
-    label.set_label(label_base);
+    if (m_verbose)
+      std::cout << "ERROR: trigger config data" << std::endl;
   }
 }
 
