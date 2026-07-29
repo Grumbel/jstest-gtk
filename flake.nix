@@ -27,6 +27,7 @@
 
             buildInputs = with pkgs; [
               gtkmm3
+              udev
             ];
            };
         };
