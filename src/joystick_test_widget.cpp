@@ -137,10 +137,14 @@ JoystickTestWidget::JoystickTestWidget(JoystickGui& gui, Joystick& joystick_, bo
   for(int i = 0; i < (int)joystick.get_axis_count(); ++i)
     axis_callbacks.push_back(sigc::signal<void, double>());
 
-  m_verbose and std::cout << "joystick.get_name(): " << joystick.get_name() << std::endl;
-  m_verbose and std::cout << "joystick.get_usb_id(): " << joystick.get_usb_id() << std::endl;
-  m_verbose and std::cout << "joystick.get_js_type(): " << joystick.get_js_type() << std::endl;
-  m_verbose and std::cout << "joystick.get_axis_count(): " << joystick.get_axis_count() << std::endl;
+  if (m_verbose)
+    std::cout << "joystick.get_name(): " << joystick.get_name() << std::endl;
+  if (m_verbose)
+    std::cout << "joystick.get_usb_id(): " << joystick.get_usb_id() << std::endl;
+  if (m_verbose)
+    std::cout << "joystick.get_js_type(): " << joystick.get_js_type() << std::endl;
+  if (m_verbose)
+    std::cout << "joystick.get_axis_count(): " << joystick.get_axis_count() << std::endl;
   
   // NOTE: remember to add any new types added here to the list in "data/mappings/README.txt" so users can create their own config files
   if (joystick.get_js_type() == "ps4-dualshock4")
@@ -239,7 +243,8 @@ JoystickTestWidget::setup_joystick_widgets(const u_int sticks, const std::vector
   }
   catch (const std::out_of_range& e) {
     std::cout << "joystick configuration error. Some axis data missing or out of range." << std::endl;
-    m_verbose and std::cout << e.what() << std::endl;
+    if (m_verbose)
+      std::cout << e.what() << std::endl;
     label_base = label_base + "\n<span foreground='red'>ERROR: axis config data</span>";
     label.set_label(label_base);
   }
@@ -256,7 +261,8 @@ JoystickTestWidget::setup_joystick_widgets(const u_int sticks, const std::vector
   }
   catch (const std::out_of_range& e) {
     std::cout << "joystick configuration error. Some trigger data missing or out of range." << std::endl;
-    m_verbose and std::cout << e.what() << std::endl;
+    if (m_verbose)
+      std::cout << e.what() << std::endl;
     label_base = label_base + "\n<span foreground='red'>ERROR: trigger config data</span>";
     label.set_label(label_base);
   }
@@ -331,23 +337,34 @@ JoystickTestWidget::on_mapping()
 void
 JoystickTestWidget::on_udev_js_event(const std::string& action, const std::string& devnode)
 {
-  m_verbose and  std::cout << "joystick_test_widget " << action << ": " << devnode << std::endl;
-  if (devnode == joystick.get_filename()) {
-    if (action == "remove") {
+  if (m_verbose)
+    std::cout << "joystick_test_widget " << action << ": " << devnode << std::endl;
+
+  if (action == "remove") {
+    if (devnode == joystick.get_filename()) {
       connected = false;
       label.set_label(label_base + "\n<span foreground='red'>DISCONNECTED</span>");
-      m_verbose and std::cout << "joystick disconnected: "  <<  joystick.get_name() << std::endl;
+      if (m_verbose)
+        std::cout << "joystick disconnected: " << joystick.get_name() << std::endl;
+      calibration_button.set_sensitive(false);
+      mapping_button.set_sensitive(false);
     }
-    else if (action == "add") {
+    return;
+  }
+
+  if (action == "add") {
+    // Path may change on replug; reconnected() scans by name/USB id
+    if (!connected || devnode == joystick.get_filename()) {
       if (joystick.reconnected()) {
         connected = true;
-        m_verbose and std::cout << "joystick re-connected: "  << joystick.get_name()  << std::endl;
+        if (m_verbose)
+          std::cout << "joystick re-connected: " << joystick.get_name()
+                    << " at " << joystick.get_filename() << std::endl;
         label.set_label(label_base);
-      //label.set_label(label_base + "\n<span foreground='green'>reconnected</span>");
+        calibration_button.set_sensitive(true);
+        mapping_button.set_sensitive(true);
       }
     }
-    calibration_button.set_sensitive(connected);
-    mapping_button.set_sensitive(connected);
   }
 }
 

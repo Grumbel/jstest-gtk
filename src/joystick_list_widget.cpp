@@ -96,8 +96,9 @@ JoystickListWidget::JoystickListWidget() :
 
   udev_monitor.reset(new UdevMonitor());
   udev_monitor->signal_joystick_event.connect([this](const std::string& action, const std::string& devnode) {
-    m_verbose and std::cout << "Joystick " << action << ": " << devnode << std::endl;
-    on_refresh_button();
+    if (m_verbose)
+      std::cout << "Joystick " << action << ": " << devnode << std::endl;
+    schedule_refresh();
   });
 
   on_refresh_button();
@@ -114,52 +115,80 @@ JoystickListWidget::on_row_activated(const Gtk::TreeModel::Path& path, Gtk::Tree
 }
 
 void
+JoystickListWidget::schedule_refresh()
+{
+  // Coalesce bursty udev add/remove events into one list rebuild
+  if (m_refresh_timeout.connected())
+    return;
+  m_refresh_timeout = Glib::signal_timeout().connect(
+    sigc::mem_fun(this, &JoystickListWidget::on_refresh_timeout), 250);
+}
+
+bool
+JoystickListWidget::on_refresh_timeout()
+{
+  on_refresh_button();
+  return false; // one-shot
+}
+
+void
 JoystickListWidget::on_refresh_button()
 {
-  const std::vector<JoystickDescription>& joysticks = Joystick::get_joysticks();
-  m_joysticks.clear();
+  if (m_refresh_timeout.connected())
+    m_refresh_timeout.disconnect();
 
+  m_joysticks.clear();
   device_list->clear();
 
-  // RELOAD CONFIG FILES
   joystick_configs = load_all_configs(Main::current()->get_data_directory() + "mappings");
 
-  for(std::vector<JoystickDescription>::const_iterator i = joysticks.begin(); i != joysticks.end(); ++i)
+  // Open each device once: enumerate and keep for activity monitoring
+  for (int i = 0; i < 32; ++i)
   {
-    Gtk::ListStore::iterator it = device_list->append();
+    std::string js_id = "js" + std::to_string(i);
+    std::string path = "/dev/input/" + js_id;
+    if (!Glib::file_test(path, Glib::FILE_TEST_EXISTS))
+      continue;
 
-    const Glib::ustring& name = i->name;
-    Glib::ustring icon_filename;
-    JoystickConfig js_cfg = get_config_for_usb_id(i->usb_id);
+    try
+    {
+      std::unique_ptr<Joystick> joystick(new Joystick(path, js_id));
 
-    icon_filename = js_cfg.icon_filename;
+      Gtk::ListStore::iterator it = device_list->append();
+      JoystickConfig js_cfg = get_config_for_usb_id(joystick->get_usb_id());
+      Glib::ustring icon_filename = js_cfg.icon_filename;
+      if (!js_cfg.icon_filename_is_good)
+        icon_filename = "generic.png";
 
-    if (! js_cfg.icon_filename_is_good) icon_filename = "generic.png"; // NOTE: you can set the icon_filename in a config file for the controller
+      (*it)[DeviceListColumns::instance().icon] = Gdk::Pixbuf::create_from_file(
+        Main::current()->get_data_directory() + "icons/" + icon_filename);
+      (*it)[DeviceListColumns::instance().path] = path;
+      (*it)[DeviceListColumns::instance().font_weight] = Pango::WEIGHT_NORMAL;
 
-    (*it)[DeviceListColumns::instance().icon] = Gdk::Pixbuf::create_from_file(
-      Main::current()->get_data_directory() + "icons/" + icon_filename);
-    (*it)[DeviceListColumns::instance().path] = i->filename;
-    (*it)[DeviceListColumns::instance().font_weight] = Pango::WEIGHT_NORMAL;
+      std::ostringstream out;
+      out << joystick->get_name() << "\n"
+          << "Device: " << path << "\n"
+          << "usb_id: " << joystick->get_usb_id() << "\n"
+          << "Axes: " << joystick->get_axis_count() << "\n"
+          << "Buttons: " << joystick->get_button_count();
+      (*it)[DeviceListColumns::instance().name] = out.str();
 
-    std::ostringstream out;
-    out << name << "\n"
-        << "Device: " << i->filename << "\n"
-        // << "js_id: " << i->js_id << "\n"
-        // << "vendor_id: " << i->vendor_id << "\n"
-        // << "product_id: " << i->product_id << "\n"
-        << "usb_id: " << i->usb_id << "\n"
-        << "Axes: " << i->axis_count << "\n"
-        << "Buttons: " << i->button_count;
-    (*it)[DeviceListColumns::instance().name] = out.str();
-
-    std::unique_ptr<Joystick> joystick(new Joystick(i->filename, i->js_id));
-
-    joystick->axis_move.connect(sigc::bind(sigc::mem_fun(this, &JoystickListWidget::js_activity_analog), device_list->get_path(it)));
-    joystick->button_press.connect(sigc::bind(sigc::mem_fun(this, &JoystickListWidget::js_activity_bool), device_list->get_path(it)));
-    m_joysticks.push_back(std::move(joystick));
+      joystick->axis_move.connect(sigc::bind(
+        sigc::mem_fun(this, &JoystickListWidget::js_activity_analog),
+        device_list->get_path(it)));
+      joystick->button_press.connect(sigc::bind(
+        sigc::mem_fun(this, &JoystickListWidget::js_activity_bool),
+        device_list->get_path(it)));
+      m_joysticks.push_back(std::move(joystick));
+    }
+    catch (const std::exception& err)
+    {
+      if (m_verbose)
+        std::cout << err.what() << std::endl;
+    }
   }
 
-  if (!joysticks.empty())
+  if (!m_joysticks.empty())
     treeview.get_selection()->select(device_list->children().begin());
 }
 

@@ -24,19 +24,6 @@ if (BUILD_TESTS)
   enable_testing()
 endif(BUILD_TESTS)
 
-find_package(Git)
-if(GIT_FOUND AND EXISTS "${CMAKE_SOURCE_DIR}/.git")
-  execute_process(COMMAND ${GIT_EXECUTABLE} describe --tags --always HEAD
-    OUTPUT_VARIABLE GIT_REPO_VERSION
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-  execute_process(COMMAND ${GIT_EXECUTABLE} log -n 1 --pretty=%cd --date=format:%Y-%m-%d ${GIT_REPO_VERSION}
-    OUTPUT_VARIABLE GIT_REPO_DATE
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
-else()
-  set(GIT_REPO_VERSION "${PROJECT_VERSION_FULL}")
-endif()
-
 if(WARNINGS)
   set(WARNINGS_CXX_FLAGS ${WARNINGS_CXX_FLAGS}
     -Wall -Wextra

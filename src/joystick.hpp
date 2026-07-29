@@ -44,7 +44,8 @@ private:
 
   void connect_js();
   int get_new_joystick_fd();
-  std::pair<std::string, std::string> get_usb_id_pair_from_udev();
+  bool try_adopt_device(const std::string& path, const std::string& new_js_id);
+  std::pair<std::string, std::string> get_usb_id_pair_from_udev(const std::string& sysname);
 
   std::vector<int> axis_state;
   std::vector<CalibrationData> orig_calibration_data;

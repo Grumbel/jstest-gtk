@@ -18,7 +18,8 @@ JoystickConfig get_config_for_usb_id(const std::string& usb_id) {
     for (const auto& cur_usb_id : config.usb_ids) {
       //std::cout << "  USB ID: " << cur_usb_id << "\n";
       if (cur_usb_id == usb_id) {
-          m_verbose and std::cout << " FOUND usb_id: " << usb_id << "\n";
+          if (m_verbose)
+            std::cout << " FOUND usb_id: " << usb_id << "\n";
           return config;
       }
     }
@@ -97,7 +98,8 @@ JoystickConfig load_config(const std::string& filename) {
 }
 
 std::vector<JoystickConfig> load_all_configs(const std::string& directory) {
-  m_verbose and std::cout << "loading config files in: " << directory  << std::endl;
+  if (m_verbose)
+    std::cout << "loading config files in: " << directory  << std::endl;
 
   std::vector<JoystickConfig> conf_files;
   DIR* dir = opendir(directory.c_str());
@@ -107,7 +109,8 @@ std::vector<JoystickConfig> load_all_configs(const std::string& directory) {
   while ((entry = readdir(dir)) != nullptr) {
     std::string name = entry->d_name;
     if (name.size() >= 7 && name.substr(name.size() - 7) == ".config") {
-      m_verbose and std::cout << "loading config: " << directory + "/" + name << std::endl;
+      if (m_verbose)
+        std::cout << "loading config: " << directory + "/" + name << std::endl;
       conf_files.push_back(load_config(directory + "/" + name));
     }
   }

@@ -65,7 +65,7 @@ Joystick::Joystick(const std::string& filename_, const std::string& js_id_)
 
   axis_state.resize(axis_count);
 
-  auto tmp_usb_id_pair = get_usb_id_pair_from_udev();
+  auto tmp_usb_id_pair = get_usb_id_pair_from_udev(js_id);
   if (!tmp_usb_id_pair.first.empty() && !tmp_usb_id_pair.second.empty()) {
     vendor_id = tmp_usb_id_pair.first;
     product_id = tmp_usb_id_pair.second;
@@ -108,63 +108,82 @@ Joystick::connect_js()
 }
 
 bool
-Joystick::reconnected()
+Joystick::try_adopt_device(const std::string& path, const std::string& new_js_id)
 {
-  // Still assumes the same /dev/input/jsN path is the same device after
-  // replug; different enumeration order remains a known limitation.
-  if (m_verbose)
-    std::cout << "attempting joystick reconnect... " << std::endl;
+  int tmp_fd = open(path.c_str(), O_RDONLY);
+  if (tmp_fd < 0)
+    return false;
 
-  try {
-    int tmp_fd = get_new_joystick_fd();
-
-    char name_c_str[1024];
-    if (ioctl(tmp_fd, JSIOCGNAME(sizeof(name_c_str)), name_c_str) < 0)
-    {
-      if (m_verbose)
-        std::cout << "could not get name from fd" << std::endl;
-      close(tmp_fd);
-      return false;
-    }
-    if (orig_name != name_c_str)
-    {
-      if (m_verbose)
-        std::cout << "name mismatch" << std::endl;
-      close(tmp_fd);
-      return false;
-    }
-    auto tmp_usb_id_pair = get_usb_id_pair_from_udev();
-    std::string tmp_usb_id = tmp_usb_id_pair.first + ":" + tmp_usb_id_pair.second;
-    if (tmp_usb_id != usb_id)
-    {
-      if (m_verbose)
-        std::cout << "usb_id mismatch" << std::endl;
-      close(tmp_fd);
-      return false;
-    }
-    std::string tmp_js_type = get_js_type_from_config(js_cfg);
-    if (tmp_js_type != js_type)
-    {
-      if (m_verbose)
-        std::cout << "js_type mismatch" << std::endl;
-      close(tmp_fd);
-      return false;
-    }
-    if (fd >= 0)
-      close(fd);
-    fd = tmp_fd;
-    connect_js();
-  } catch(std::runtime_error& err) {
-    std::cout << err.what() << std::endl;
+  char name_c_str[1024];
+  if (ioctl(tmp_fd, JSIOCGNAME(sizeof(name_c_str)), name_c_str) < 0)
+  {
+    close(tmp_fd);
+    return false;
+  }
+  if (orig_name != name_c_str)
+  {
+    close(tmp_fd);
     return false;
   }
 
+  auto tmp_usb_id_pair = get_usb_id_pair_from_udev(new_js_id);
+  std::string tmp_usb_id = tmp_usb_id_pair.first + ":" + tmp_usb_id_pair.second;
+  if (!usb_id.empty() && tmp_usb_id != usb_id)
+  {
+    close(tmp_fd);
+    return false;
+  }
+
+  if (fd >= 0)
+    close(fd);
+  connection.disconnect();
+
+  fd = tmp_fd;
+  filename = path;
+  js_id = new_js_id;
+  connect_js();
   return true;
+}
+
+bool
+Joystick::reconnected()
+{
+  // Prefer the original node, then scan js0..js31 for the same identity
+  // (name + USB id) so replug order changes can still recover.
+  if (m_verbose)
+    std::cout << "attempting joystick reconnect... " << std::endl;
+
+  if (try_adopt_device(filename, js_id))
+  {
+    if (m_verbose)
+      std::cout << "reconnected on " << filename << std::endl;
+    return true;
+  }
+
+  for (int i = 0; i < 32; ++i)
+  {
+    std::string id = "js" + std::to_string(i);
+    std::string path = "/dev/input/" + id;
+    if (path == filename)
+      continue;
+    if (!Glib::file_test(path, Glib::FILE_TEST_EXISTS))
+      continue;
+    if (try_adopt_device(path, id))
+    {
+      if (m_verbose)
+        std::cout << "reconnected on " << path << " (was rescanned)" << std::endl;
+      return true;
+    }
+  }
+
+  if (m_verbose)
+    std::cout << "reconnect failed for " << orig_name << std::endl;
+  return false;
 }
 
 
 std::pair<std::string, std::string>
-Joystick::get_usb_id_pair_from_udev()
+Joystick::get_usb_id_pair_from_udev(const std::string& sysname)
 {
   struct udev* udev = udev_new();
   if (!udev)
@@ -174,7 +193,7 @@ Joystick::get_usb_id_pair_from_udev()
   }
 
   struct udev_device* input_dev =
-    udev_device_new_from_subsystem_sysname(udev, "input", js_id.c_str());
+    udev_device_new_from_subsystem_sysname(udev, "input", sysname.c_str());
   if (!input_dev)
   {
     std::cout << filename << ": udev: Unable to find input device " << js_id << std::endl;

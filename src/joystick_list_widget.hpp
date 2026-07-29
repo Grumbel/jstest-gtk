@@ -32,11 +32,14 @@ private:
 
   std::unique_ptr<UdevMonitor> udev_monitor;
   std::vector<std::unique_ptr<Joystick>> m_joysticks;
+  sigc::connection m_refresh_timeout;
 
 public:
   JoystickListWidget();
 
   void on_refresh_button();
+  void schedule_refresh();
+  bool on_refresh_timeout();
   void on_properties_button();
   void on_row_activated(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column);
 
