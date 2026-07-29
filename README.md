@@ -3,6 +3,48 @@
 jstest-gtk
 ==========
 
+> **Important: obsolete Linux joystick interface (joydev)**
+>
+> jstest-gtk talks to the old Linux **joydev** layer (`/dev/input/js*`).
+> That interface is a compatibility shim. On modern systems the real
+> driver path is **evdev** (`/dev/input/event*`), which is what the
+> kernel, libinput, most desktop stacks, and almost all current games
+> and engines actually use.
+>
+> **What that means in practice**
+>
+> - The live button/axis display can still be useful for a quick check
+>   that a pad is seen as a joystick device.
+> - **Calibration, axis remapping, and button remapping done in this
+>   tool only change joydev.** They do **not** change the underlying
+>   evdev device. Steam, SDL2 (in its usual configuration), Proton,
+>   native games, and most other software will ignore those settings.
+> - If a game “does not pick up” a calibration you set here, that is
+>   expected: the game is almost certainly reading evdev (or a higher
+>   abstraction built on it), not joydev.
+>
+> **Background (short)**
+>
+> Linux exposes input hardware through the input subsystem. Each
+> physical device typically shows up as an **event** node
+> (`/dev/input/eventN`) with rich, typed events (keys, absolute axes,
+> hats, and so on). For older joystick-centric apps, the kernel can
+> also present a simplified **js** node (`/dev/input/jsN`) with a fixed
+> “axes + buttons” model and optional in-kernel correction coefficients.
+> jstest-gtk configures that simplified view. It never rewrites the
+> modern event stream.
+>
+> **Prefer these tools for modern testing**
+>
+> - [**evtest**](https://cgit.freedesktop.org/evtest/) — command-line
+>   monitor for `/dev/input/event*` (often `sudo evtest`)
+> - [**evtest-qt**](https://github.com/Grumbel/evtest-qt) — Qt GUI along
+>   the same lines as jstest-gtk, but against **evdev**
+>
+> Use jstest-gtk only when you deliberately care about the legacy
+> joydev nodes (old engines, specialized software, or debugging the
+> compatibility layer itself).
+
 jstest-gtk is a simple joystick tester based on Gtk+. It provides you
 with a list of attached joysticks, a way to display which buttons and
 axis are pressed, a way to remap axis and buttons and a way to
