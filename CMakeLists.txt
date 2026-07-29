@@ -88,6 +88,8 @@ set_property(TARGET jstest-gtk PROPERTY COMPILE_OPTIONS
   ${SIGCPP_CFLAGS_OTHER}
   ${X11_CFLAGS_OTHER}
   ${WARNINGS_CXX_FLAGS})
+target_compile_definitions(jstest-gtk PRIVATE
+  JSTEST_GTK_DATADIR="${CMAKE_INSTALL_FULL_DATADIR}/${PROJECT_NAME}/")
 target_link_libraries(jstest-gtk
   udev
   ${CMAKE_THREAD_LIBS_INIT}

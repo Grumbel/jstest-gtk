@@ -36,6 +36,10 @@
 Main* Main::current_ = 0;
 bool m_verbose = false;
 
+#ifndef JSTEST_GTK_DATADIR
+#  define JSTEST_GTK_DATADIR "data/"
+#endif
+
 JoystickGui::JoystickGui(std::unique_ptr<Joystick> joystick, bool simple_ui, Gtk::Window* parent) :
   m_joystick(std::move(joystick)),
   m_test_widget(),
@@ -85,7 +89,7 @@ JoystickGui::show_mapping_dialog()
 
 Main::Main() :
   Gtk::Application("com.gmail.grumbel.jstest-gtk", Gio::APPLICATION_HANDLES_OPEN),
-  datadir("data/"),
+  datadir(JSTEST_GTK_DATADIR),
   m_simple_ui(false)
 {
   current_ = this;
