@@ -40,6 +40,10 @@ bool m_verbose = false;
 #  define JSTEST_GTK_DATADIR "data/"
 #endif
 
+#ifndef JSTEST_GTK_VERSION
+#  define JSTEST_GTK_VERSION "unknown"
+#endif
+
 JoystickGui::JoystickGui(std::unique_ptr<Joystick> joystick, bool simple_ui, Gtk::Window* parent) :
   m_joystick(std::move(joystick)),
   m_test_widget(),
@@ -152,7 +156,7 @@ Main::run(int argc, char** argv)
     else if (strcmp("--version", argv[i]) == 0 ||
              strcmp("-v", argv[i]) == 0)
     {
-      std::cout << "jstest-gtk 0.1.1" << std::endl;
+      std::cout << "jstest-gtk " << JSTEST_GTK_VERSION << std::endl;
       return 0;
     }
     else if (strcmp("--simple", argv[i]) == 0)

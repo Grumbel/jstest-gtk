@@ -57,6 +57,14 @@ Simple `key=value` files (`#` comments). Important keys:
 
 Unknown devices fall back to axis-count heuristics and `generic.png`.
 
+## Versioning
+
+- **Source of truth:** top-level `VERSION` file (e.g. `0.2.0-dev`). Drop the `-dev` suffix when tagging a final release.
+- **CMake:** if `-DPROJECT_VERSION_FULL=...` is not set, reads `VERSION`. Defines `JSTEST_GTK_VERSION` for the binary. `project(VERSION ...)` uses the numeric `major.minor.patch` prefix only.
+- **Nix flake:** reads `VERSION`, appends `+g${shortRev}` (or `dirty`), passes `-DPROJECT_VERSION_FULL=...` via `cmakeFlags`.
+- **CLI:** `--version` prints `jstest-gtk ${JSTEST_GTK_VERSION}`.
+- Do not hardcode version numbers in source; point at `VERSION` / `PROJECT_VERSION_FULL` / `JSTEST_GTK_VERSION`.
+
 ## Build
 
 Dependencies: CMake ≥ 3.5, gtkmm-3.0, sigc++-2.0, X11, **libudev**, threads.
