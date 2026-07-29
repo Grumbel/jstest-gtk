@@ -122,18 +122,19 @@ install(FILES
   DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 install(DIRECTORY data/ DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}
-  PATTERN "*~" EXCLUDE)
+  PATTERN "*~" EXCLUDE
+  PATTERN "*.svg" EXCLUDE)
 
 install(FILES
   jstest-gtk.desktop
   DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 
 install(FILES
-  jstest-gtk.svg
+  data/jstest-gtk.svg
   DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
 
 install(FILES
-  ${CMAKE_CURRENT_SOURCE_DIR}/jstest-gtk.1
+  doc/jstest-gtk.1
   DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 
 # EOF #

@@ -35,7 +35,8 @@ License: GPL-3.0-or-later. Original author: Ingo Ruhnke. Later work includes USB
 | `src/udev_monitor.*` | Netlink udev watch for `/js` nodes |
 | `src/evdev_helper.*` | Name helpers for ABS_/BTN_ codes (mapping labels) |
 | `src/*_widget.*` | Cairo stick/rudder/throttle drawing; buttons are `Gtk::ToggleButton` |
-| `data/` | Icons + mapping configs |
+| `data/` | Runtime icons, mapping configs, app SVG |
+| `doc/` | Man page (`jstest-gtk.1`) |
 | `CMakeLists.txt` | Build/install; uses `GNUInstallDirs` |
 | `jstest-gtk.sh.in` | Installed wrapper: runs libexec binary with `--datadir` |
 
