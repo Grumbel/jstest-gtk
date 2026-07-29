@@ -37,6 +37,24 @@
             cmakeFlags = [
               "-DPROJECT_VERSION_FULL=${version}"
             ];
+
+            meta = with lib; {
+              description = "Simple GTK joystick tester and calibrator for the Linux joydev interface";
+              homepage = "https://github.com/Grumbel/jstest-gtk";
+              license = licenses.gpl3Plus;
+              platforms = platforms.linux;
+              mainProgram = "jstest-gtk";
+            };
+          };
+        };
+
+        apps = rec {
+          default = jstest-gtk;
+
+          jstest-gtk = {
+            type = "app";
+            program = "${self.packages.${system}.jstest-gtk}/bin/jstest-gtk";
+            meta.description = self.packages.${system}.jstest-gtk.meta.description;
           };
         };
       }
